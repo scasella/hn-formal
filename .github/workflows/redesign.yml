@@ -132,7 +132,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
           echo "runId=$runId candidates=$n rounds=$r"
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: steps.decide.outputs.proceed == 'true'
         with:
           name: data
@@ -188,7 +188,7 @@ jobs:
             --out "runs/$RUN_ID/cand-${{ matrix.n }}.json"
       - name: Upload candidate record and screenshots
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: cand-${{ matrix.n }}
           path: |
