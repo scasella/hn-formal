@@ -6,3 +6,5 @@ out/
 *.olean
 .DS_Store
 orchestrator/.cache/
+data/
+out-tier2.json

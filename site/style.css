@@ -1,0 +1,169 @@
+/* hn-formal v0 stylesheet. Styles the DOM produced by HnFormal/Render.lean.
+   Rules: no @import, no url() outside /fonts/, no text in content:, no
+   backslash escapes, no background-image behind text (tier 2 contrast). */
+
+:root {
+  --bg: #f7f4ee;
+  --bg-header: #efe9df;
+  --bg-code: #ebe5da;
+  --text: #1c1916;
+  --muted: #625b53;
+  --link: #9a3d05;
+  --visited: #6b4a8e;
+  --accent: #ff6600;
+  --rule: #d8d1c5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #1b1917;
+    --bg-header: #242120;
+    --bg-code: #2b2825;
+    --text: #e8e3db;
+    --muted: #aaa297;
+    --link: #f0a36a;
+    --visited: #c9aee3;
+    --accent: #ff8a3d;
+    --rule: #3b3732;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+body { margin: 0; min-height: 100vh; background: var(--bg); }
+
+body > * { max-width: 100%; }
+
+a { color: var(--link); text-decoration: underline; text-underline-offset: 0.15em; }
+a:visited { color: var(--visited); }
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Header: warm band with the orange rule on top; links separated by " | ". */
+header {
+  background: var(--bg-header);
+  border-top: 3px solid var(--accent);
+  border-bottom: 1px solid var(--rule);
+  color: var(--muted);
+}
+header nav {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 0.6rem 1rem;
+  font-size: 0.9375rem;
+  line-height: 1.8;
+}
+header nav a { color: var(--text); font-weight: 600; text-decoration: none; }
+header nav a:visited { color: var(--text); }
+header nav a:hover { text-decoration: underline; }
+header nav a:first-child { font-size: 1.0625rem; margin-right: 0.25rem; }
+
+main {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 1rem 1rem 2rem;
+}
+
+/* Front page: numbered stories. */
+ol.stories {
+  margin: 0;
+  padding: 0 0 0 2.5rem;
+  list-style: decimal;
+}
+ol.stories > li { padding: 0.45rem 0; }
+ol.stories > li::marker { color: var(--muted); font-size: 0.9375rem; }
+
+.titleline {
+  color: var(--muted);
+  font-size: 0.9375rem;
+  overflow-wrap: anywhere;
+}
+a[data-hn="title"] {
+  color: var(--text);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+a[data-hn="title"]:visited { color: var(--muted); }
+a[data-hn="title"]:hover { text-decoration: underline; }
+
+.subline, .chead {
+  color: var(--muted);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.subline a, .chead a { color: var(--muted); font-weight: 600; text-decoration: none; }
+.subline a:visited, .chead a:visited { color: var(--muted); }
+.subline a:hover, .chead a:hover { text-decoration: underline; }
+
+.more { padding: 1rem 0 0 2.5rem; }
+.more a { font-weight: 600; text-decoration: none; }
+.more a:hover { text-decoration: underline; }
+
+/* Thread page: story header, then the comment tree. */
+article[data-hn-story] {
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--rule);
+}
+article[data-hn-story] a[data-hn="title"] { font-size: 1.375rem; line-height: 1.3; }
+
+[data-hn="text"] { overflow-wrap: anywhere; }
+[data-hn="text"] p { margin: 0.5rem 0; }
+[data-hn="text"] p:first-child { margin-top: 0.25rem; }
+
+code, pre {
+  font-family: ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.875em;
+  background: var(--bg-code);
+  border-radius: 3px;
+}
+code { padding: 0.05em 0.3em; }
+pre {
+  margin: 0.5rem 0;
+  padding: 0.6rem 0.8rem;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+pre code { padding: 0; background: none; font-size: inherit; }
+
+ol.comments, ol.kids { list-style: none; margin: 0; padding: 0; }
+ol.comments > li { padding: 0.5rem 0; border-top: 1px solid var(--rule); }
+ol.comments > li:first-child { border-top: 0; }
+li[data-hn-comment] li[data-hn-comment] { padding: 0.5rem 0 0; }
+ol.kids:empty { display: none; }
+
+/* Indent replies with a thin rule. Depth is capped so a 50-deep thread
+   still fits a 375px viewport: four levels of indent on narrow screens,
+   twelve on wide ones. */
+ol.kids {
+  margin-top: 0.25rem;
+  padding-left: 0.875rem;
+  border-left: 2px solid var(--rule);
+}
+ol.kids ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
+
+@media (min-width: 48rem) {
+  ol.kids { padding-left: 1.25rem; }
+  ol.kids ol.kids ol.kids ol.kids ol.kids { padding-left: 1.25rem; border-left: 2px solid var(--rule); }
+  ol.kids ol.kids ol.kids ol.kids ol.kids ol.kids ol.kids ol.kids ol.kids ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
+}
+
+footer {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 1rem 1rem 2rem;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 0.8125rem;
+  overflow-wrap: anywhere;
+}

@@ -1,0 +1,24 @@
+{
+  "name": "hn-formal-orchestrator",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "TypeScript CLI for the hn-formal loop: fetch, candidates, tier2, judge, release",
+  "license": "Apache-2.0",
+  "scripts": {
+    "cli": "tsx src/cli.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test test/*.test.ts"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.132.1",
+    "@axe-core/playwright": "^4.13.0",
+    "playwright": "^1.64.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.4",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2"
+  }
+}

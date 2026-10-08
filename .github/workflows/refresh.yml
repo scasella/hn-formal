@@ -1,0 +1,122 @@
+# Refresh the site every 15 minutes (best effort; GitHub schedules are often
+# late). Fetches HN data into the `data` branch (the item cache lives there,
+# not in actions/cache), renders with the proven Lean binary, deploys to Pages.
+# workflow_dispatch runs the same pipeline, so it doubles as the manual
+# "redeploy now" button used by redesign.yml after a release.
+#
+# Requires: Pages source set to "GitHub Actions" in the repo settings.
+name: refresh
+
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: refresh
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Fetch, render, package
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    outputs:
+      paused: ${{ steps.kill.outputs.paused }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Kill switch
+        id: kill
+        run: |
+          if [ -f KILL_SWITCH ]; then
+            echo "paused (KILL_SWITCH present on main)"
+            echo "paused=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "paused=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Check out data branch into data/ (orphan if missing)
+        if: steps.kill.outputs.paused != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          url="https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          rm -rf data
+          if git ls-remote --exit-code --heads origin data >/dev/null 2>&1; then
+            git clone --quiet --depth 1 --branch data "$url" data
+          else
+            echo "data branch does not exist yet; creating an orphan"
+            mkdir data
+            git -C data init --quiet --initial-branch=data
+            git -C data remote add origin "$url"
+          fi
+          git -C data config user.name "github-actions[bot]"
+          git -C data config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Lean toolchain and build (cached .lake)
+        if: steps.kill.outputs.paused != 'true'
+        uses: leanprover/lean-action@v1
+        with:
+          auto-config: false
+          build: true
+          test: false
+          lint: false
+          use-github-cache: true
+
+      - uses: actions/setup-node@v4
+        if: steps.kill.outputs.paused != 'true'
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: orchestrator/package-lock.json
+      - if: steps.kill.outputs.paused != 'true'
+        run: npm --prefix orchestrator ci
+
+      - name: Fetch HN data (delta against data/cache)
+        if: steps.kill.outputs.paused != 'true'
+        run: npm --prefix orchestrator run cli -- fetch --out data/latest.json --cache data/cache
+
+      - name: Commit and push data branch (only if changed)
+        if: steps.kill.outputs.paused != 'true'
+        run: |
+          set -euo pipefail
+          cd data
+          git add -A
+          if git diff --cached --quiet; then
+            echo "data unchanged; nothing to commit"
+          else
+            git commit --quiet -m "data: refresh $(date -u +%Y-%m-%dT%H:%M:%SZ) [bot]"
+            git push --quiet origin HEAD:refs/heads/data
+          fi
+
+      - name: Build site
+        if: steps.kill.outputs.paused != 'true'
+        run: scripts/build-site.sh data/latest.json out/
+
+      - uses: actions/configure-pages@v5
+        if: steps.kill.outputs.paused != 'true'
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.kill.outputs.paused != 'true'
+        with:
+          path: out/
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    if: needs.build.outputs.paused != 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

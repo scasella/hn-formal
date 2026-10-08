@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /orchestrator
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "deps(orchestrator)"
+    labels: [dependencies]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "deps(actions)"
+    labels: [dependencies]

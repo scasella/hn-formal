@@ -1,0 +1,10 @@
+name = "hnformal"
+version = "0.1.0"
+defaultTargets = ["hnformal"]
+
+[[lean_lib]]
+name = "HnFormal"
+
+[[lean_exe]]
+name = "hnformal"
+root = "Main"

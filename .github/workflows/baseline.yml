@@ -1,0 +1,117 @@
+# MANUAL ONLY. Never schedule this.
+#
+# Y Combinator's terms do not permit scraping news.ycombinator.com, and the
+# site is not meant to be hit by robots. The baseline check needs real HN
+# HTML exactly once per spec version so the renderer's structural claims can
+# be compared against the original; a human dispatches this workflow, it makes
+# 31 requests (front page + 30 item pages) with a 2 s pause between them and a
+# descriptive User-Agent, commits the HTML as a timestamped fixture, and opens
+# a PR for review. All automated workflows use the public Firebase API only.
+#
+# Requires the repo setting "Allow GitHub Actions to create and approve pull
+# requests" (Settings > Actions > General > Workflow permissions).
+name: baseline
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: baseline
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    name: Fetch HN HTML once and open a PR
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      UA: 'hn-formal-baseline/1.0 (+https://github.com/scasella/hn-formal; one manual fetch per spec version; contact via repo issues)'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Kill switch
+        id: kill
+        run: |
+          if [ -f KILL_SWITCH ]; then
+            echo "paused (KILL_SWITCH present on main)"
+            echo "paused=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "paused=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Fetch front page and the 30 item pages (2 s apart)
+        id: fetch
+        if: steps.kill.outputs.paused != 'true'
+        run: |
+          set -euo pipefail
+          ts="$(date -u +%Y%m%d-%H%M%S)"
+          dir="fixtures/baseline/$ts"
+          mkdir -p "$dir/item"
+          echo "dir=$dir" >> "$GITHUB_OUTPUT"
+          echo "ts=$ts" >> "$GITHUB_OUTPUT"
+
+          curl --fail --silent --show-error --location --max-time 30 \
+            --user-agent "$UA" --output "$dir/index.html" "https://news.ycombinator.com/"
+
+          # Story ids from the fetched front page (rows look like
+          # <tr class='athing submission' id='45000000'>). Fall back to the
+          # Firebase API's topstories if the markup changed.
+          ids="$(grep -oE "class=['\"]athing[^'\"]*['\"][[:space:]]+id=['\"][0-9]+['\"]" "$dir/index.html" \
+                 | grep -oE '[0-9]+' | head -n 30 || true)"
+          if [ "$(printf '%s\n' "$ids" | grep -c .)" -lt 1 ]; then
+            echo "could not parse ids from front page; falling back to the Firebase API"
+            ids="$(curl --fail --silent --max-time 30 https://hacker-news.firebaseio.com/v0/topstories.json | jq -r '.[0:30][]')"
+          fi
+          printf '%s\n' "$ids" > "$dir/ids.txt"
+
+          while IFS= read -r id; do
+            [ -z "$id" ] && continue
+            sleep 2
+            curl --fail --silent --show-error --location --max-time 30 \
+              --user-agent "$UA" --output "$dir/item/$id.html" "https://news.ycombinator.com/item?id=$id"
+            echo "fetched item $id"
+          done < "$dir/ids.txt"
+
+          jq -n --arg ts "$ts" --arg ua "$UA" --arg actor "${{ github.actor }}" \
+            --argjson n "$(grep -c . "$dir/ids.txt")" \
+            '{ fetchedAt: $ts, userAgent: $ua, dispatchedBy: $actor, items: $n,
+               source: "https://news.ycombinator.com/", note: "manual baseline fetch, one per spec version" }' \
+            > "$dir/meta.json"
+          find "$dir" -type f | sort | head -50
+
+      - uses: actions/setup-node@v4
+        if: steps.kill.outputs.paused != 'true'
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: orchestrator/package-lock.json
+      - if: steps.kill.outputs.paused != 'true'
+        run: npm --prefix orchestrator ci
+
+      - name: Baseline comparison (orchestrator `baseline`; may not exist yet)
+        if: steps.kill.outputs.paused != 'true'
+        continue-on-error: true
+        run: npm --prefix orchestrator run cli -- baseline --fixtures "${{ steps.fetch.outputs.dir }}"
+
+      - name: Commit fixtures on a branch and open a PR
+        if: steps.kill.outputs.paused != 'true'
+        run: |
+          set -euo pipefail
+          ts="${{ steps.fetch.outputs.ts }}"
+          branch="baseline/$ts"
+          # Authored by the human who dispatched the run (not the bot), and
+          # tagged [human] since fixtures/ is outside the bot-editable paths.
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add fixtures/baseline
+          git commit -m "baseline: HN fixtures $ts [human]" -m "Manual one-time fetch dispatched by @${{ github.actor }}. See .github/workflows/baseline.yml."
+          git push origin "$branch"
+          gh pr create --base main --head "$branch" \
+            --title "baseline: HN fixtures $ts" \
+            --body "Manual baseline fetch of https://news.ycombinator.com/ (front page + 30 item pages, 2 s apart) dispatched by @${{ github.actor }}. One fetch per spec version; review and merge."

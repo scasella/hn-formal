@@ -1,6 +1,7 @@
 # hn-formal: design decisions
 
-Status: agreed in grilling session, 2026-10-08. Not yet built.
+Status: agreed in grilling session, 2026-10-08. v0 built the same day; see
+"What the build changed" at the end.
 
 ## The claim
 
@@ -102,3 +103,29 @@ time. Not a claim about matching HN's displayed order (it drifts).
 - GitHub scheduled workflows are best-effort (often late) and are disabled in
   a public repo after 60 days without commits. Daily releases and data-branch
   commits keep it alive; a failed-run commit covers days with no passer.
+
+## What the build changed (2026-10-08)
+
+Writing the proof forced four spec decisions that the grilling did not reach:
+
+- **Blank titles and authors.** The API can return a blank title or author.
+  An anchor with blank text violates the accessibility rule, so the spec now
+  requires `displayTitle` / `displayUser` (the value, or "untitled" /
+  "anonymous" when blank). Both are listed as derived text.
+- **No string concatenation in text nodes.** The content gate checks each
+  text node; a renderer that wants "Title | HN, formally" emits adjacent
+  text nodes, which serialize to the same bytes. Documented in Spec.lean.
+- **Blank-text links in comments.** A user comment can contain
+  `<a href="…"></a>`. The sanitizer gives such links the fixed text "link"
+  and unwraps links with unsafe schemes into a `span`; its theorem now
+  guarantees every emitted anchor is named.
+- **Href percent-encoding.** A real comment contained a URL with `[`, which
+  the HTML validator rejects. The sanitizer and `titleHref` percent-encode
+  characters that are not URL code points. The public claim is "faithful to
+  the API, with hrefs percent-encoded where the URL standard requires it".
+
+Proof engineering facts the loop depends on: `Render.lean` must start with
+`set_option maxHeartbeats 2000000` and `set_option maxRecDepth 4096`; the
+library tactic `hn_auto` discharges all-nodes goals; `hn_decide` is kernel
+`decide` restricted to closed goals; `native_decide` is rejected by the axiom
+check. A full `lake build` of a candidate takes about 45 s on a laptop.

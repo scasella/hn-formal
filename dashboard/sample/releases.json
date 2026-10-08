@@ -1,0 +1,20 @@
+[
+  { "id": "20261010-031912-9f3e2a1", "runId": "20261010-030000", "specVersion": 1,
+    "tier1": { "lakeBuild": "ok", "axioms": ["propext", "Classical.choice", "Quot.sound"], "selftest": "ok" },
+    "tier2": { "vnu": 0, "axe": 0, "contrastMin": 5.12, "reflowWidth": 375, "csp": "ok" },
+    "judge": { "score": 78, "notes": "Clear hierarchy, generous line-height, domain and points read well at 375px. The comment indent guides are a little faint." },
+    "model": "claude-haiku-5-5", "repairRounds": 2, "costUsd": 0.61,
+    "previousRelease": "20261009-031500-ab12cd3", "diffStat": "+140 -96" },
+  { "id": "20261009-031500-ab12cd3", "runId": "20261009-030000", "specVersion": 1,
+    "tier1": { "lakeBuild": "ok", "axioms": ["propext", "Classical.choice", "Quot.sound"], "selftest": "ok" },
+    "tier2": { "vnu": 0, "axe": 0, "contrastMin": 4.7, "reflowWidth": 375, "csp": "ok" },
+    "judge": { "score": 71, "notes": "Reads as a dense list; ranks and titles distinct. Comment tree nesting visible but monotonous." },
+    "model": "claude-haiku-5-5", "repairRounds": 3, "costUsd": 0.42,
+    "previousRelease": "20261008-180000-0000000", "diffStat": "+120 -84" },
+  { "id": "20261008-180000-0000000", "runId": "20261008-174500", "specVersion": 1,
+    "tier1": { "lakeBuild": "ok", "axioms": [], "selftest": "ok" },
+    "tier2": { "vnu": 0, "axe": 0, "contrastMin": 7.0, "reflowWidth": 360, "csp": "ok" },
+    "judge": { "score": 40, "notes": "Baseline. Unstyled list with default fonts." },
+    "model": "human", "repairRounds": 0, "costUsd": 0,
+    "previousRelease": null, "diffStat": "+0 -0" }
+]

@@ -6,7 +6,8 @@ Change it only with a commit that touches all affected parts.
 ## Repo layout
 
 ```
-HnFormal/            Lean library (spec, dom, sanitizer, serializer, item types)
+HnFormal/            Lean library: Item, Dom, Html (serializer), Sanitize,
+                     Spec, Lemmas (+ hn_auto), Check (Bool mirror), Fixtures
 HnFormal/Render.lean LLM-EDITABLE: the renderer + its proof
 Main.lean            Lean executable entry (`hnformal`)
 lakefile.toml, lean-toolchain
@@ -63,9 +64,9 @@ root) and nothing else external. Exit 0 on success, 2 on malformed data JSON.
 ```
 hnformal check <data.json>
 ```
-Runs the decidable form of the spec on the pages it would render and prints
-`ok` or the first violated predicate name. Exit 0/1. (Sanity only; the
-theorem in Render.lean is the real guarantee.)
+Runs the Bool mirror of the spec (`HnFormal/Check.lean`) on the pages it
+would render; prints `ok <page>` or `FAIL <page>: <predicate>` per page.
+Exit 0/1. (Sanity only; the theorem in Render.lean is the real guarantee.)
 
 ```
 hnformal selftest
@@ -75,7 +76,9 @@ trees, hostile HTML) and runs `check` on them. Exit 0/1.
 
 ## Candidate protocol (orchestrator <-> Lean)
 
-A candidate is `{ renderLean: string, styleCss: string }`. To evaluate:
+A candidate is `{ renderLean: string, styleCss: string }`. `Render.lean` must
+begin with `set_option maxHeartbeats 2000000` and `set_option maxRecDepth
+4096`. To evaluate:
 
 1. Write both files into a clean checkout of main.
 2. `scripts/css-lint.sh site/style.css`  (no non-empty `content:`, no `url(`

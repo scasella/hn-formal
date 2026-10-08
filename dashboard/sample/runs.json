@@ -1,0 +1,34 @@
+[
+  { "runId": "20261011-030000", "startedAt": 1791687600, "finishedAt": 1791697200,
+    "candidates": 16, "passedTier1": 0, "passedTier2": 0, "released": null,
+    "costUsd": 3.90, "calls": 160, "stopReason": "no-passer",
+    "perCandidate": [
+      { "n": 0, "rounds": 10, "tier1": "fail:lake-build", "tier2": null, "judge": null, "lastError": "Render.lean:212:14: error: unsolved goals\ncase cons\n⊢ serialize (renderItem i) = ..." },
+      { "n": 1, "rounds": 10, "tier1": "fail:axioms", "tier2": null, "judge": null, "lastError": "axiom-check: FAIL: HnFormal.Render.render_ok depends on disallowed axiom(s): sorryAx" },
+      { "n": 2, "rounds": 4, "tier1": "ok", "tier2": "fail:contrast", "judge": null, "lastError": "contrast 3.9:1 on .meta (fg #8a8a8a on bg #ffffff)" },
+      { "n": 3, "rounds": 10, "tier1": "fail:css-lint", "tier2": null, "judge": null, "lastError": "css-lint: url() outside /fonts/ is not allowed: url(https://fonts.gstatic.com/x.woff2)" }
+    ] },
+  { "runId": "20261010-030000", "startedAt": 1791601200, "finishedAt": 1791612000,
+    "candidates": 16, "passedTier1": 6, "passedTier2": 3, "released": "20261010-031912-9f3e2a1",
+    "costUsd": 2.84, "calls": 121, "stopReason": "released",
+    "perCandidate": [
+      { "n": 0, "rounds": 2, "tier1": "ok", "tier2": "ok", "judge": 78, "lastError": null },
+      { "n": 1, "rounds": 5, "tier1": "ok", "tier2": "ok", "judge": 64, "lastError": null },
+      { "n": 2, "rounds": 10, "tier1": "fail:lake-build", "tier2": null, "judge": null, "lastError": "Render.lean:88:3: error: type mismatch" },
+      { "n": 3, "rounds": 3, "tier1": "ok", "tier2": "fail:reflow", "judge": null, "lastError": "scrollWidth 412 > 375" }
+    ] },
+  { "runId": "20261009-120000", "startedAt": 1791547200, "finishedAt": 1791549000,
+    "candidates": 16, "passedTier1": 0, "passedTier2": 0, "released": null,
+    "costUsd": 0, "calls": 0, "stopReason": "killed", "perCandidate": [] },
+  { "runId": "20261009-030000", "startedAt": 1791514800, "finishedAt": 1791526000,
+    "candidates": 16, "passedTier1": 5, "passedTier2": 3, "released": "20261009-031500-ab12cd3",
+    "costUsd": 2.11, "calls": 97, "stopReason": "released",
+    "perCandidate": [ { "n": 0, "rounds": 4, "tier1": "ok", "tier2": "ok", "judge": 71, "lastError": null } ] },
+  { "runId": "20261008-174500", "startedAt": 1791481500, "finishedAt": 1791481900,
+    "candidates": 1, "passedTier1": 1, "passedTier2": 1, "released": "20261008-180000-0000000",
+    "costUsd": 0, "calls": 0, "stopReason": "released",
+    "perCandidate": [ { "n": 0, "rounds": 0, "tier1": "ok", "tier2": "ok", "judge": 40, "lastError": null } ] },
+  { "runId": "20261008-030000", "startedAt": 1791428400, "finishedAt": 1791428500,
+    "candidates": 16, "passedTier1": 0, "passedTier2": 0, "released": null,
+    "costUsd": 0, "calls": 0, "stopReason": "cap-hit", "perCandidate": [], "lastError": "monthly spend 401.20 >= cap 400" }
+]

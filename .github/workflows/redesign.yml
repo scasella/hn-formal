@@ -1,0 +1,292 @@
+# Daily redesign run: N candidates in parallel, each up to R repair rounds,
+# then aggregate -> release (or a logged failure). See DESIGN.md "The loop"
+# and CONTRACT.md "Candidate protocol" / "Run record".
+#
+# Every run ends in a commit to main (release or failed-run record); that is
+# what keeps the schedule alive past GitHub's 60-day idle cutoff.
+name: redesign
+
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+    inputs:
+      candidates:
+        description: Number of candidates (matrix size)
+        type: number
+        default: 16
+      rounds:
+        description: Repair rounds per candidate
+        type: number
+        default: 10
+
+concurrency:
+  group: redesign
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  RUN_CAP_USD: ${{ vars.RUN_CAP_USD || 25 }}
+  MONTH_CAP_USD: ${{ vars.MONTH_CAP_USD || 400 }}
+  MAX_CALLS: ${{ vars.MAX_CALLS || 200 }}
+
+jobs:
+  prepare:
+    name: Guardrails, data, matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      proceed: ${{ steps.decide.outputs.proceed }}
+      runId: ${{ steps.decide.outputs.runId }}
+      matrix: ${{ steps.decide.outputs.matrix }}
+      candidates: ${{ steps.decide.outputs.candidates }}
+      rounds: ${{ steps.decide.outputs.rounds }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Kill switch
+        id: kill
+        run: |
+          if [ -f KILL_SWITCH ]; then
+            echo "paused (KILL_SWITCH present on main)"
+            echo "paused=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "paused=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.kill.outputs.paused != 'true'
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: orchestrator/package-lock.json
+      - if: steps.kill.outputs.paused != 'true'
+        run: npm --prefix orchestrator ci
+
+      - name: Monthly spend cap
+        id: spend
+        if: steps.kill.outputs.paused != 'true'
+        run: |
+          set -u
+          # CONTRACT.md does not fix the output of `spend --month`. The
+          # orchestrator prints "month YYYY-MM: $<total> of $<cap> cap, ..."
+          # and exits 0; we parse that line and compare. Fallbacks: a non-zero
+          # exit is treated as cap-hit, and a bare-number / JSON
+          # ({usd|total|totalUsd|costUsd}) last line is compared to
+          # MONTH_CAP_USD.
+          out="$(npm --prefix orchestrator run --silent cli -- spend --month 2>&1)"; rc=$?
+          printf '%s\n' "$out"
+          if [ "$rc" -ne 0 ]; then
+            echo "spend --month exited $rc: treating as cap-hit"
+            echo "capped=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          total="$(printf '%s\n' "$out" | sed -nE 's/^month [0-9]{4}-[0-9]{2}: [$]([0-9.]+) of [$]([0-9.]+) cap.*/\1/p' | head -n 1)"
+          cap="$(printf '%s\n' "$out" | sed -nE 's/^month [0-9]{4}-[0-9]{2}: [$]([0-9.]+) of [$]([0-9.]+) cap.*/\2/p' | head -n 1)"
+          if [ -z "$total" ]; then
+            total="$(printf '%s' "$out" | tail -n 1 | jq -r 'if type=="number" then . elif type=="object" then (.usd // .total // .totalUsd // .costUsd // empty) else empty end' 2>/dev/null || true)"
+          fi
+          [ -n "$cap" ] || cap="$MONTH_CAP_USD"
+          if [ -n "$total" ] && awk -v t="$total" -v c="$cap" 'BEGIN { exit !(t+0 >= c+0) }'; then
+            echo "month-to-date spend $total >= cap $cap: cap-hit"
+            echo "capped=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          echo "month-to-date spend ${total:-unknown} < cap $cap: proceeding"
+          echo "capped=false" >> "$GITHUB_OUTPUT"
+
+      - name: Data cache from data branch (read-only)
+        if: steps.kill.outputs.paused != 'true' && steps.spend.outputs.capped != 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          rm -rf data; mkdir data
+          if git ls-remote --exit-code --heads origin data >/dev/null 2>&1; then
+            git clone --quiet --depth 1 --branch data "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" data
+            rm -rf data/.git
+          fi
+
+      - name: Fetch HN data
+        if: steps.kill.outputs.paused != 'true' && steps.spend.outputs.capped != 'true'
+        run: npm --prefix orchestrator run cli -- fetch --out data/latest.json --cache data/cache
+
+      - name: Decide run id and matrix
+        id: decide
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.kill.outputs.paused }}" = "true" ] || [ "${{ steps.spend.outputs.capped }}" = "true" ]; then
+            echo "proceed=false" >> "$GITHUB_OUTPUT"
+            echo "matrix=[0]" >> "$GITHUB_OUTPUT"  # placeholder; the candidate job is skipped via proceed=false
+            exit 0
+          fi
+          n="${{ inputs.candidates || 16 }}"
+          r="${{ inputs.rounds || 10 }}"
+          runId="$(date -u +%Y%m%d-%H%M%S)"
+          {
+            echo "proceed=true"
+            echo "runId=$runId"
+            echo "candidates=$n"
+            echo "rounds=$r"
+            echo "matrix=$(jq -nc --argjson n "$n" '[range(0; $n)]')"
+          } >> "$GITHUB_OUTPUT"
+          echo "runId=$runId candidates=$n rounds=$r"
+
+      - uses: actions/upload-artifact@v4
+        if: steps.decide.outputs.proceed == 'true'
+        with:
+          name: data
+          path: data/latest.json
+          if-no-files-found: error
+          retention-days: 7
+
+  candidate:
+    name: Candidate ${{ matrix.n }}
+    needs: prepare
+    if: needs.prepare.outputs.proceed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix:
+        n: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    env:
+      COPY_LAKE: "1"
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      RUN_ID: ${{ needs.prepare.outputs.runId }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lean toolchain and baseline build (cached .lake)
+        uses: leanprover/lean-action@v1
+        with:
+          auto-config: false
+          build: true
+          test: false
+          lint: false
+          use-github-cache: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: orchestrator/package-lock.json
+      - run: npm --prefix orchestrator ci
+      - name: Chromium for tier 2 (Playwright)
+        run: cd orchestrator && npx playwright install --with-deps chromium
+      - uses: actions/download-artifact@v4
+        with:
+          name: data
+          path: data/
+      - name: Run candidate (generate -> lint -> build -> axioms -> selftest -> tier 2 -> judge)
+        run: |
+          mkdir -p "runs/$RUN_ID"
+          npm --prefix orchestrator run cli -- candidate \
+            --n ${{ matrix.n }} \
+            --run "$RUN_ID" \
+            --data data/latest.json \
+            --rounds ${{ needs.prepare.outputs.rounds }} \
+            --out "runs/$RUN_ID/cand-${{ matrix.n }}.json"
+      - name: Upload candidate record and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cand-${{ matrix.n }}
+          path: |
+            runs/${{ needs.prepare.outputs.runId }}/cand-${{ matrix.n }}.json
+            runs/${{ needs.prepare.outputs.runId }}/**/*.png
+            runs/${{ needs.prepare.outputs.runId }}/cand-${{ matrix.n }}/**
+          if-no-files-found: warn
+          retention-days: 30
+
+  aggregate:
+    name: Aggregate, release, record
+    needs: [prepare, candidate]
+    if: always() && needs.prepare.outputs.proceed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+      actions: write
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      RUN_ID: ${{ needs.prepare.outputs.runId }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: orchestrator/package-lock.json
+      - run: npm --prefix orchestrator ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: data
+          path: data/
+      - name: Download all candidate artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: cand-*
+          path: runs/${{ needs.prepare.outputs.runId }}/
+          merge-multiple: true
+      - name: Aggregate
+        id: agg
+        continue-on-error: true
+        run: |
+          ls -la "runs/$RUN_ID/" || true
+          npm --prefix orchestrator run cli -- aggregate --run "$RUN_ID" --dir "runs/$RUN_ID/"
+
+      - name: Commit release or failed-run record, push, redeploy
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          record="runs/$RUN_ID.json"
+          if [ ! -f "$record" ]; then
+            # aggregate crashed or produced nothing: write a minimal failed run
+            # record so the day still produces a commit (keeps the schedule
+            # alive) and the dashboard shows the failure.
+            echo "no $record produced (aggregate outcome: ${{ steps.agg.outcome }}); writing fallback"
+            now="$(date -u +%s)"
+            jq -n --arg runId "$RUN_ID" --argjson now "$now" \
+              --argjson candidates "${{ needs.prepare.outputs.candidates }}" \
+              --arg err "aggregate step outcome: ${{ steps.agg.outcome }}" '
+              { runId: $runId, startedAt: $now, finishedAt: $now,
+                candidates: $candidates, passedTier1: 0, passedTier2: 0,
+                released: null, costUsd: 0, calls: 0, stopReason: "no-passer",
+                perCandidate: [], lastError: $err }' > "$record"
+            if [ -f runs/index.json ]; then
+              jq --slurpfile r "$record" '[$r[0]] + .' runs/index.json > runs/index.json.tmp
+            else
+              jq -n --slurpfile r "$record" '[$r[0]]' > runs/index.json.tmp
+            fi
+            mv runs/index.json.tmp runs/index.json
+          fi
+
+          released="$(jq -r '.released // empty' "$record")"
+          # Only record/editable paths are staged; runs/<runId>/cand-*.json
+          # intermediates stay in the artifacts, not in git.
+          git add runs/*.json
+          if [ -n "$released" ]; then
+            git add HnFormal/Render.lean site/style.css releases/
+            msg="release: $released [bot]"
+          else
+            msg="run: $RUN_ID failed [bot]"
+          fi
+          if git diff --cached --quiet; then
+            echo "nothing to commit"; exit 0
+          fi
+          git commit --quiet -m "$msg"
+          scripts/path-guard.sh HEAD~1 HEAD
+          git pull --rebase --quiet origin main
+          git push --quiet origin HEAD:main
+          echo "pushed: $msg"
+
+          if [ -n "$released" ]; then
+            # Pushes made with GITHUB_TOKEN do not trigger `push` workflows,
+            # so kick the refresh/deploy explicitly.
+            gh workflow run refresh.yml --ref main
+          fi

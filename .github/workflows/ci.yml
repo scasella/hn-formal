@@ -1,0 +1,79 @@
+# CI for every push to main and every PR.
+#   lean          lake build (cached .lake) + selftest + axiom-check
+#   css-lint      scripts/css-lint.sh on site/style.css (+ its own fixtures)
+#   orchestrator  typecheck + tests
+#   path-guard    bot pushes to main may only touch the LLM-editable/record paths
+#
+# Caveat: pushes made with the default GITHUB_TOKEN do not trigger `push`
+# workflows, so the path-guard job only fires for bot commits pushed with a
+# PAT. redesign.yml therefore also runs scripts/path-guard.sh on its own commit
+# before pushing (belt and braces).
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lean:
+    name: Lean build, selftest, axiom check
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build with lean-action (toolchain from lean-toolchain, .lake cached)
+        uses: leanprover/lean-action@v1
+        with:
+          auto-config: false
+          build: true
+          test: false
+          lint: false
+          use-github-cache: true
+      - name: Selftest (built-in fixtures through the decidable spec)
+        run: lake exe hnformal selftest
+      - name: Axiom check on HnFormal.Render.render_ok
+        run: scripts/axiom-check.sh
+
+  css-lint:
+    name: Stylesheet lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint fixtures (the linter's own tests)
+        run: scripts/css-lint.test.sh
+      - name: Lint site/style.css
+        run: scripts/css-lint.sh site/style.css
+
+  orchestrator:
+    name: Orchestrator typecheck and tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: orchestrator/package-lock.json
+      - run: npm --prefix orchestrator ci
+      - name: Typecheck
+        run: npm --prefix orchestrator run typecheck
+      - name: Tests
+        run: npm --prefix orchestrator test
+
+  path-guard:
+    name: Bot commit touches only allowed paths
+    if: github.event_name == 'push' && (github.actor == 'github-actions[bot]' || github.event.head_commit.author.name == 'github-actions[bot]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: path-guard
+        run: scripts/path-guard.sh "${{ github.event.before }}" "${{ github.sha }}"
