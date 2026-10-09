@@ -1,0 +1,142 @@
+{
+  "runId": "20261009-104231",
+  "startedAt": 1791542600,
+  "finishedAt": 1791543497,
+  "candidates": 16,
+  "passedTier1": 15,
+  "passedTier2": 15,
+  "released": "20261009-105817-d1c2f42",
+  "costUsd": 0.2194,
+  "calls": 34,
+  "stopReason": "released",
+  "perCandidate": [
+    {
+      "n": 0,
+      "rounds": 2,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 72,
+      "lastError": ""
+    },
+    {
+      "n": 1,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 72,
+      "lastError": ""
+    },
+    {
+      "n": 2,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 62,
+      "lastError": ""
+    },
+    {
+      "n": 3,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 72,
+      "lastError": ""
+    },
+    {
+      "n": 4,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 62,
+      "lastError": ""
+    },
+    {
+      "n": 5,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 62,
+      "lastError": ""
+    },
+    {
+      "n": 6,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 72,
+      "lastError": ""
+    },
+    {
+      "n": 7,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 72,
+      "lastError": ""
+    },
+    {
+      "n": 8,
+      "rounds": 3,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 62,
+      "lastError": ""
+    },
+    {
+      "n": 9,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 74,
+      "lastError": ""
+    },
+    {
+      "n": 10,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 68,
+      "lastError": ""
+    },
+    {
+      "n": 11,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 62,
+      "lastError": ""
+    },
+    {
+      "n": 12,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 62,
+      "lastError": ""
+    },
+    {
+      "n": 13,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 72,
+      "lastError": ""
+    },
+    {
+      "n": 14,
+      "rounds": 2,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 48,
+      "lastError": ""
+    },
+    {
+      "n": 15,
+      "rounds": 1,
+      "tier1": "n/a",
+      "tier2": "n/a",
+      "judge": null,
+      "lastError": "Error: Failed to parse structured output: Error: Failed to parse structured output as JSON: Unterminated string in JSON at position 21344 (line 1 column 21345)\n    at parseOutputFormat (/home/runner/work/hn-formal/hn-formal/orchestrator/node_modules/@anthropic-ai/sdk/src/lib/parser.ts:121:11)\n    at <anonymous> (/home/runner/work/hn-formal/hn-formal/orchestrator/node_modules/@anthropic-ai/sdk/src/lib/parser.ts:82:30)\n    at Array.map (<anonymous>)\n    at parseMessage (/home/runner/work/hn-formal/hn-formal/orchestrator/node_modules/@anthropic-ai/sdk/src/lib/parser.ts:79:102)\n    at maybeParseMessage (/home/runner/work/hn-formal/hn-formal/orchestrator/node_modules/@anthropic-ai/sdk/src/lib/parser.ts:69:10)\n    at MessageStream._MessageStream_addStreamEvent (/home/runner/work/hn-formal/hn-formal/orchestrator/node_modules/@anthropic-ai/sdk/src/lib/MessageStream.ts:505:26)\n    at MessageStream._createMessage (/home/runner/work/hn-formal/hn-formal/orchestrator/node_modules/@anthropic-ai/sdk/src/lib/MessageStream.ts:216:29)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+    }
+  ]
+}

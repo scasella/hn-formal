@@ -1,0 +1,32 @@
+{
+  "id": "20261009-105817-d1c2f42",
+  "runId": "20261009-104231",
+  "specVersion": 1,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 8.51,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 74,
+    "notes": "The front page has a distinct warm-paper, serif editorial look with small-caps metadata that stays quieter than the bold titles, and the two-column 30-story grid at 1280px is easy to skim with numbers aligned in a consistent gutter. The lead story is given appropriate prominence without competing too hard with the rest. The thread page uses nested left rules in green and grey that make comment depth visible, though the deepest replies get squeezed toward the right edge and the italic body text in long comments is a bit tiring to read. Overall it is restrained and coherent, with some hierarchy weakness in the thread view and a large unused area below the footer on the front page."
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 0,
+  "costUsd": 0.0177,
+  "previousRelease": "20261009-003724-49aa276",
+  "diffStat": "+28 -188",
+  "candidate": 9,
+  "createdAt": 1791543497
+}
