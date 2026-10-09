@@ -32,10 +32,10 @@ export const PREFIX_WARN_TOKENS = envInt("PREFIX_WARN_TOKENS", 60_000);
  * Output cap per generation call. Haiku 5.5 thinks adaptively by default and
  * the thinking counts against max_tokens, so 32K cut long rounds off mid-file
  * (run 20261009-104231, candidates 8 and 15) and a candidate at effort high
- * used 63K. At effort xhigh the cap is 96K of the model's 128K: at most
- * $0.048 per call on the low rate card.
+ * used 63K and one at xhigh used 80K. The cap is 120K of the model's 128K:
+ * at most $0.06 per call on the low rate card.
  */
-export const GENERATE_MAX_TOKENS = envInt("GENERATE_MAX_TOKENS", 96_000);
+export const GENERATE_MAX_TOKENS = envInt("GENERATE_MAX_TOKENS", 120_000);
 export const CACHE_TTL: "5m" | "1h" = envStr("CACHE_TTL", "1h") === "5m" ? "5m" : "1h";
 
 export const MOCK = process.env.ANTHROPIC_MOCK === "1";
@@ -161,6 +161,30 @@ export interface CallResult<T> {
   usage: UsageLike;
 }
 
+/** Image tokens are about (w*h)/750 after the API's resize to a 1568px long edge; a full-page screenshot lands near 2K. Budget 4K each. */
+export const IMAGE_TOKEN_ESTIMATE = 4_000;
+
+/**
+ * Rough prompt size for the price-cliff guard: text at ~3 chars per token,
+ * images at a flat estimate (counting their base64 as text refused every
+ * round-1 call that carried the live site's screenshot: run 20261009-233734).
+ */
+export function estimateMessageTokens(messages: Anthropic.MessageParam[]): number {
+  let chars = 0;
+  let images = 0;
+  for (const m of messages) {
+    if (typeof m.content === "string") {
+      chars += m.content.length;
+      continue;
+    }
+    for (const block of m.content) {
+      if (block.type === "image") images++;
+      else chars += JSON.stringify(block).length;
+    }
+  }
+  return Math.ceil(chars / 3) + images * IMAGE_TOKEN_ESTIMATE;
+}
+
 function roughTokens(parts: Array<string | { length: number }>): number {
   return Math.ceil(parts.reduce((a, p) => a + (typeof p === "string" ? p.length : p.length), 0) / 3);
 }
@@ -180,8 +204,7 @@ export async function generateCandidate(
   if (MOCK) return mockCandidate(budget);
 
   const prefix = prefixCount ?? (await countPrefixTokens(system));
-  const msgChars = JSON.stringify(messages).length;
-  const estimate = prefix + Math.ceil(msgChars / 3);
+  const estimate = prefix + estimateMessageTokens(messages);
   if (estimate > PRICING.tierSplitTokens && process.env.ALLOW_OVER_100K !== "1") {
     return {
       ok: false,

@@ -301,3 +301,13 @@ test("judge composite and novelty tie-break", async () => {
   assert.equal(pickWinner([a, b])!.n, 1);
   assert.equal(buildRunRecord("R", [a, b], null).perCandidate[1]!.novelty, 80);
 });
+
+test("prompt estimate counts an image as a flat budget, not its base64 length", async () => {
+  const { estimateMessageTokens, IMAGE_TOKEN_ESTIMATE } = await import("../src/anthropic.js");
+  const big = "A".repeat(600_000);
+  const withImage = estimateMessageTokens([
+    { role: "user", content: [{ type: "image", source: { type: "base64", media_type: "image/png", data: big } }, { type: "text", text: "go" }] },
+  ]);
+  assert.ok(withImage < IMAGE_TOKEN_ESTIMATE + 100, `got ${withImage}`);
+  assert.equal(estimateMessageTokens([{ role: "user", content: "x".repeat(300) }]), 100);
+});
