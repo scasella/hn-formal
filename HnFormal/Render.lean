@@ -48,6 +48,7 @@ def topNav : Dom :=
 
 def footer : Dom :=
   .el "footer" [] [
+    .el "p" [("data-hn", "about")] [.text aboutText],
     .text "Unofficial. Not affiliated with Y Combinator. ",
     a hnBase "The original is at", .text " ", a hnBase "news.ycombinator.com", .text ". ",
     a loopHref "how this works"]
@@ -249,11 +250,13 @@ theorem front_ok (f : Front) : FrontOk f (renderFront f) := by
   have hall : (nodes (renderFront f)).all (commonP (.front f)) = true := by
     unfold renderFront a; hn_auto
   obtain ⟨hnodes, hlinks, hnamed, hlinkTags, htexts⟩ := all_commonP _ _ hall
-  refine ⟨⟨⟨rfl, rfl, ?_, ?_, ?_, hnodes, hnamed, hlinkTags⟩, hlinks, htexts⟩, ?_⟩
+  refine ⟨⟨⟨rfl, rfl, ?_, ?_, ?_, ?_, hnodes, hnamed, hlinkTags⟩, hlinks, htexts⟩, ?_⟩
   · simp [renderFront, pageHead, topNav, nodes, nodesList, isEl]
   · simp [renderFront, pageHead, nodes, nodesList, isEl, textContent, texts, textsList, concat]
     left; decide +kernel
   · simp [renderFront, pageHead, nodes, nodesList, isCspMeta, List.lookup]
+  · simp [renderFront, pageHead, topNav, footer, a, nodes, nodesList, isAbout, hasAttr, List.lookup,
+      textContent, texts, textsList, concat]
   · have hrow : ∀ s, storyMarkers (storyRow f.fetchedAt s) = [storyRow f.fetchedAt s] := by
       intro s; simp [storyRow, storyMarkers, List.lookup]
     have : storyMarkers (renderFront f) = f.stories.map (storyRow f.fetchedAt) := by
@@ -283,11 +286,13 @@ theorem thread_ok (t : Thread) : ThreadOk t (renderThread t) := by
     (wrapShape t.fetchedAt) (fun c ds _ hds => wrap_noStory _ c ds hds) t.comments (fun _ _ => trivial)
   have htrees := CTree.treesOk_of_wrap t.fetchedAt (wrapShape t.fetchedAt) (wrap_tree t.fetchedAt)
     (wrap_fidelity t.fetchedAt) (wrap_marker t.fetchedAt) t.comments
-  refine ⟨⟨⟨rfl, rfl, ?_, ?_, ?_, hnodes, hnamed, hlinkTags⟩, hlinks, htexts⟩, ?_, ?_⟩
+  refine ⟨⟨⟨rfl, rfl, ?_, ?_, ?_, ?_, hnodes, hnamed, hlinkTags⟩, hlinks, htexts⟩, ?_, ?_⟩
   · simp [renderThread, pageHead, topNav, nodes, nodesList, isEl]
   · simp [renderThread, pageHead, nodes, nodesList, isEl, textContent, texts, textsList, concat]
     left; apply Nat.lt_add_left; decide +kernel
   · simp [renderThread, pageHead, nodes, nodesList, isCspMeta, List.lookup]
+  · simp [renderThread, pageHead, topNav, footer, a, nodes, nodesList, isAbout, hasAttr, List.lookup,
+      textContent, texts, textsList, concat]
   · have : storyMarkers (renderThread t) = [storyHeader t.fetchedAt t.story] := by
       simp [renderThread, pageHead, topNav, footer, a, storyMarkers, storyMarkersList, List.lookup,
         storyMarkersList_eq_nil _ hnoStory, storyHeader]

@@ -1,6 +1,6 @@
 import HnFormal.Sanitize
 /-!
-# The specification (version 1)
+# The specification (version 2)
 
 Human-authored. The loop may not edit this file. `Spec p d` is what
 `Render.render_ok` proves for every page `p`.
@@ -23,9 +23,14 @@ else about the DOM is free, subject to the structural rules below.
 namespace HnFormal
 namespace Spec
 
-def version : Nat := 1
+def version : Nat := 2
 
 def hnBase : String := "https://news.ycombinator.com/"
+
+/-- The one-sentence explanation every page must carry, as a single text
+node inside an element marked `data-hn="about"` (placement is free). -/
+def aboutText : String :=
+  "An AI redesigns the Hacker News front page every night. Each design is proven in Lean 4 to render the data correctly before it ships, with no human review."
 
 /-- Root-relative path prefix the site is served under (GitHub project
 Pages: `https://scasella.github.io/hn-formal/`). Empty for a root deploy. -/
@@ -89,7 +94,7 @@ def allowedTags : List String :=
 
 /-- Text the renderer may emit that is not API data (compared after trim). -/
 def fixedText : List String :=
-  ["HN, formally", "Hacker News", "hn-formal", "front page", "new", "past",
+  [aboutText, "HN, formally", "Hacker News", "hn-formal", "front page", "new", "past",
    "comments", "comment", "ask", "show", "jobs", "submit", "login", "More",
    "more", "points", "point", "pts", "by", "ago", "|", "·", "•", "—", "–", "-",
    "(", ")", "[", "]", ".", ",", ":", ";", "#", "↑", "▲", "△", "*", "/", "\\",
@@ -139,18 +144,22 @@ def linkTagOk (l : Dom) : Bool :=
 def anchorNamed (a : Dom) : Bool :=
   !(trimS a.textContent).isEmpty || (a.attr "aria-label").isSome
 
+def isAbout (n : Dom) : Bool :=
+  n.hasAttr "data-hn" "about" && n.textContent == aboutText
+
 def isCspMeta (m : Dom) : Bool :=
   m.attr "http-equiv" == some "Content-Security-Policy" && m.attr "content" == some cspContent
 
 /-- Page-level structure: an `html[lang]` root, a `main`, a non-empty
-`title`, the CSP meta, every anchor named, only allowed elements and
-attributes, only the one stylesheet. -/
+`title`, the CSP meta, the about sentence, every anchor named, only allowed
+elements and attributes, only the one stylesheet. -/
 def Structure (d : Dom) : Prop :=
   d.tag = some "html" ∧
   d.attr "lang" = some "en" ∧
   (d.nodes.any (Dom.isEl "main")) = true ∧
   (d.nodes.any fun n => n.isEl "title" && decide (0 < n.textContent.length)) = true ∧
   (d.nodes.any isCspMeta) = true ∧
+  (d.nodes.any isAbout) = true ∧
   (d.nodes.all nodeOk) = true ∧
   ((d.byTag "a").all anchorNamed) = true ∧
   ((d.byTag "link").all linkTagOk) = true

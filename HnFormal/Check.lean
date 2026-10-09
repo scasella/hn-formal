@@ -33,6 +33,7 @@ def structure_ (d : Dom) : List (String × Bool) :=
    ("has-main", d.nodes.any (isEl "main")),
    ("has-title", d.nodes.any fun n => n.isEl "title" && decide (0 < n.textContent.length)),
    ("csp-meta", d.nodes.any isCspMeta),
+   ("about-sentence", d.nodes.any isAbout),
    ("allowed-nodes", d.nodes.all nodeOk),
    ("anchors-named", (d.byTag "a").all anchorNamed),
    ("stylesheet-only", (d.byTag "link").all linkTagOk)]

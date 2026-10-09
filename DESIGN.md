@@ -131,3 +131,14 @@ Proof engineering facts the loop depends on: `Render.lean` must start with
 library tactic `hn_auto` discharges all-nodes goals; `hn_decide` is kernel
 `decide` restricted to closed goals; `native_decide` is rejected by the axiom
 check. A full `lake build` of a candidate takes about 45 s on a laptop.
+
+## Spec version 2 (2026-10-09)
+
+Every page carries a one-sentence explanation as a single text node in an
+element marked `data-hn="about"`, placement free:
+
+> An AI redesigns the Hacker News front page every night. Each design is
+> proven in Lean 4 to render the data correctly before it ships, with no
+> human review.
+
+Requested by the user; made a spec requirement so no redesign can drop it.
