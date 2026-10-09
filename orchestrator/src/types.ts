@@ -57,8 +57,16 @@ export interface Tier2Report {
   checkedAt: number;
 }
 
+export interface JudgeDetail {
+  adherence: number;
+  novelty: number;
+  craft: number;
+}
+
 export interface JudgeResult {
+  /** Composite: 0.4 adherence + 0.3 novelty + 0.3 craft, rounded. */
   score: number | null;
+  detail?: JudgeDetail;
   notes: string;
   costUsd: number;
   calls: number;
@@ -99,7 +107,13 @@ export interface CandidateRecord {
   tier1: string; // "ok" | "fail:<stage>" | "n/a"
   tier2: string; // "ok" | "fail:<check>" | "n/a"
   judge: number | null;
+  judgeDetail?: JudgeDetail;
   judgeNotes?: string;
+  /** Brief key and full text (CONTRACT step 8); `brief` holds the short title. */
+  briefKey?: string;
+  briefText?: string;
+  /** The brief's required structural move was present in the rendered HTML. */
+  briefOk?: boolean;
   lastError: string;
   costUsd: number;
   calls: number;
@@ -124,6 +138,8 @@ export interface PerCandidateSummary {
   tier1: string;
   tier2: string;
   judge: number | null;
+  novelty?: number | null;
+  briefOk?: boolean | null;
   domChanged?: boolean | null;
   lastError: string;
 }
@@ -150,7 +166,7 @@ export interface ReleaseReport {
   specVersion: number;
   tier1: Tier1Record;
   tier2: Tier2Record;
-  judge: { score: number | null; notes: string };
+  judge: { score: number | null; notes: string; adherence?: number; novelty?: number; craft?: number };
   model: string;
   repairRounds: number;
   costUsd: number;
@@ -159,6 +175,7 @@ export interface ReleaseReport {
   candidate?: number;
   /** The design brief the candidate was given (from the fixed list in prompts.ts). */
   brief?: string;
+  briefOk?: boolean;
   domChanged?: boolean;
   createdAt?: number;
 }

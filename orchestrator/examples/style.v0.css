@@ -1,0 +1,169 @@
+/* hn-formal v1 stylesheet: dense monospace terminal. Styles the DOM from HnFormal/Render.lean. No @import, no url(), no content: text, no backslashes. */
+
+:root {
+  --bg: #f4f4ec;
+  --bg-code: #e4e4d8;
+  --text: #141414;
+  --muted: #55554d;
+  --link: #8a3200;
+  --visited: #5b3d7a;
+  --accent: #1f6f2a;
+  --rule: #c4c4b6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #111311;
+    --bg-code: #1f231f;
+    --text: #d9e2d6;
+    --muted: #9aa897;
+    --link: #f0b27a;
+    --visited: #c9aee3;
+    --accent: #7fd18b;
+    --rule: #2d342d;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--bg);
+  color: var(--text);
+  font: 13px/1.35 ui-monospace, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  overflow-wrap: anywhere;
+}
+
+body > * { max-width: 100%; }
+
+a { color: var(--link); text-decoration: underline; }
+a:visited { color: var(--visited); }
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* Header: a single dense line of fixed-width links. */
+header {
+  background: var(--bg);
+  border-bottom: 1px solid var(--rule);
+  color: var(--muted);
+}
+header nav {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 0.25rem 0.5rem;
+  white-space: normal;
+}
+header nav a { color: var(--text); font-weight: bold; text-decoration: none; }
+header nav a:visited { color: var(--text); }
+header nav a:hover { text-decoration: underline; }
+
+main {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 0.25rem 0.5rem 1rem;
+}
+
+/* Front page: one story per line, numbered, flowing inline. */
+ol.stories {
+  margin: 0;
+  padding: 0 0 0 2.25rem;
+  list-style: decimal;
+}
+ol.stories > li {
+  padding: 0.1rem 0;
+  white-space: normal;
+}
+ol.stories > li::marker { color: var(--muted); }
+
+.titleline {
+  display: inline;
+  color: var(--text);
+}
+a[data-hn="title"] {
+  color: var(--text);
+  font-weight: bold;
+  text-decoration: none;
+}
+a[data-hn="title"]:visited { color: var(--visited); }
+a[data-hn="title"]:hover { text-decoration: underline; }
+
+.subline, .chead {
+  display: inline;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.subline { margin-left: 0.5ch; }
+.subline a, .chead a { color: var(--muted); text-decoration: none; }
+.subline a:visited, .chead a:visited { color: var(--muted); }
+.subline a:hover, .chead a:hover { text-decoration: underline; }
+
+.more { padding: 0.5rem 0 0 2.25rem; }
+.more a { font-weight: bold; text-decoration: none; }
+.more a:hover { text-decoration: underline; }
+
+/* Thread page: story header, then the comment tree. */
+article[data-hn-story] {
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-bottom: 1px dashed var(--rule);
+}
+article[data-hn-story] a[data-hn="title"] { font-size: 15px; }
+
+[data-hn="text"] { overflow-wrap: anywhere; margin: 0.25rem 0; }
+[data-hn="text"] p { margin: 0.35rem 0; }
+[data-hn="text"] p:first-child { margin-top: 0.1rem; }
+
+code, pre {
+  font-family: ui-monospace, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+  background: var(--bg-code);
+}
+code { padding: 0 0.2em; }
+pre {
+  margin: 0.35rem 0;
+  padding: 0.35rem 0.5rem;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+pre code { padding: 0; background: none; }
+
+ol.comments, ol.kids { list-style: none; margin: 0; padding: 0; }
+ol.comments > li {
+  padding: 0.25rem 0;
+  border-top: 1px dotted var(--rule);
+}
+ol.comments > li:first-child { border-top: 0; }
+li[data-hn-comment] li[data-hn-comment] { padding: 0.2rem 0 0; }
+ol.kids:empty { display: none; }
+
+/* Replies indented by a dotted guide. Depth capped so deep threads still fit 375px. */
+ol.kids {
+  margin-top: 0.15rem;
+  padding-left: 0.75rem;
+  border-left: 1px dotted var(--rule);
+}
+ol.kids ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
+
+@media (min-width: 48rem) {
+  ol.kids { padding-left: 1.25rem; }
+  ol.kids ol.kids ol.kids ol.kids ol.kids { padding-left: 1.25rem; border-left: 1px dotted var(--rule); }
+  ol.kids ol.kids ol.kids ol.kids ol.kids ol.kids ol.kids ol.kids ol.kids ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
+}
+
+footer {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 0.5rem;
+  border-top: 1px dashed var(--rule);
+  color: var(--muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}

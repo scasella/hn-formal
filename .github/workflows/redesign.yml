@@ -34,7 +34,9 @@ env:
   # Structure check rounds (CONTRACT step 7); 0 disables.
   STRUCTURE_ROUNDS: ${{ vars.STRUCTURE_ROUNDS || 2 }}
   # Output cap per generation call; adaptive thinking counts against it.
-  GENERATE_MAX_TOKENS: ${{ vars.GENERATE_MAX_TOKENS || 64000 }}
+  GENERATE_MAX_TOKENS: ${{ vars.GENERATE_MAX_TOKENS || 96000 }}
+  # Thinking effort for generation (low|medium|high|xhigh|max).
+  GENERATE_EFFORT: ${{ vars.GENERATE_EFFORT || 'xhigh' }}
 
 jobs:
   prepare:

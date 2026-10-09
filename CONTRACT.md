@@ -108,6 +108,20 @@ begin with `set_option maxHeartbeats 2000000` and `set_option maxRecDepth
    passes. Beyond those rounds a CSS-only pass is accepted outright. The
    result is `domChanged` (true/false; absent when the check did not run) on
    the candidate record, the run record and the release report.
+8. Brief check (soft; orchestrator). Every design brief
+   (`orchestrator/src/prompts.ts`, `BRIEFS`) names one required structural
+   move and a check on the rendered HTML: the `main` of `index.html` and of
+   the item page with the most comments (for example "stories are `<tr>`
+   rows of a `<table>`", "no `<ol>`/`<ul>` inside main"). A missing move is
+   handled exactly like step 7 (stage `brief`, same rounds, same fallback)
+   and recorded as `briefOk`. Briefs rotate across candidate slots by day
+   (`briefFor(n, runId)`), so a slot does not get the same brief every run.
+
+The prompt's worked example is fixed: `orchestrator/examples/Render.v0.lean`
+and `style.v0.css`, the plain human-written renderer, not the last release.
+CI proves the example still builds against the library. The brief block also
+lists the last five releases' briefs as designs not to repeat, and round 1
+includes a screenshot of the current live site as the thing not to resemble.
 
 Tier 2 (orchestrator, Playwright + Chromium):
 - vnu.jar on every html file: zero errors.
@@ -118,10 +132,13 @@ Tier 2 (orchestrator, Playwright + Chromium):
 - CSP header simulated: no inline script, no <script>, no external origins
   in computed stylesheet (belt and braces over css-lint).
 
-Judge (orchestrator): `claude-haiku-5-5` with screenshots (1280px and 375px
-of index.html, 1280px of one item page). Returns `{ score: 0-100, notes }`.
-Never blocks. The winner among passers is the highest score; ties go to a
-candidate with `domChanged: true`, then to the lowest `n`.
+Judge (orchestrator): `claude-haiku-5-5` with the candidate's brief, a
+screenshot of the current live site (the novelty reference), and the
+candidate's screenshots (1280px and 375px of index.html, 1280px of one item
+page). Returns `{ adherence, novelty, craft: 0-100, notes }`; the composite
+`score` is `round(0.4 adherence + 0.3 novelty + 0.3 craft)`. Never blocks.
+The winner among passers is the highest score; ties go to higher novelty,
+then `domChanged: true`, then the lowest `n`.
 
 ## Release record
 
@@ -134,9 +151,10 @@ Render.lean  style.css  report.json  index-1280.png  index-375.png  item-1280.pn
 { "id": "20261009-031500-ab12cd3", "runId": "...", "specVersion": 1,
   "tier1": { "lakeBuild": "ok", "axioms": ["propext","Classical.choice","Quot.sound"], "selftest": "ok" },
   "tier2": { "vnu": 0, "axe": 0, "contrastMin": 4.7, "reflowWidth": 375, "csp": "ok" },
-  "judge": { "score": 71, "notes": "..." },
+  "judge": { "score": 71, "adherence": 80, "novelty": 65, "craft": 66, "notes": "..." },
   "model": "claude-haiku-5-5", "repairRounds": 3, "costUsd": 0.42,
-  "previousRelease": "...", "diffStat": "+120 -84", "candidate": 9, "domChanged": true }
+  "previousRelease": "...", "diffStat": "+120 -84", "candidate": 9,
+  "brief": "cards on a grid", "briefOk": true, "domChanged": true }
 ```
 `releases/index.json` is the array of all report.json, newest first.
 A release = one commit to main by the bot that replaces the two editable
@@ -150,7 +168,7 @@ which re-copies that release's two files and commits.
 { "runId": "20261009-030000", "startedAt": ..., "finishedAt": ...,
   "candidates": 16, "passedTier1": 5, "passedTier2": 3, "released": "<id>|null",
   "costUsd": 2.11, "calls": 97, "stopReason": "released|no-passer|cap-hit|killed",
-  "perCandidate": [ { "n": 0, "rounds": 4, "tier1": "ok|fail:<stage>", "tier2": "ok|fail:<check>", "judge": 71, "domChanged": true, "lastError": "..." } ] }
+  "perCandidate": [ { "n": 0, "rounds": 4, "tier1": "ok|fail:<stage>", "tier2": "ok|fail:<check>", "judge": 71, "novelty": 65, "briefOk": true, "domChanged": true, "lastError": "..." } ] }
 ```
 
 ## Guardrails (orchestrator)

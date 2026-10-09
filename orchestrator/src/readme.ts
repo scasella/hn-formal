@@ -29,6 +29,7 @@ export function renderGenerationSection(reports: ReleaseReport[], currentId?: st
     `Generation \`${cur.id}\` (${fmtDate(cur.id)})`,
     cur.brief ? `brief "${cur.brief.replace(/[<>]/g, "")}"` : null,
     cur.judge.score !== null ? `judge ${cur.judge.score}/100` : null,
+    cur.judge.novelty !== undefined ? `novelty ${cur.judge.novelty}` : null,
     `spec v${cur.specVersion}`,
     cur.domChanged === true ? "new DOM" : cur.domChanged === false ? "CSS-only" : null,
     `${cur.repairRounds} repair round${cur.repairRounds === 1 ? "" : "s"}`,

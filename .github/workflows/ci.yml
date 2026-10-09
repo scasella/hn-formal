@@ -37,6 +37,12 @@ jobs:
         run: lake exe hnformal selftest
       - name: Axiom check on HnFormal.Render.render_ok
         run: scripts/axiom-check.sh
+      - name: The fixed worked example (orchestrator/examples/Render.v0.lean) still proves
+        run: |
+          cp orchestrator/examples/Render.v0.lean HnFormal/Render.lean
+          lake build
+          scripts/axiom-check.sh
+          git checkout -- HnFormal/Render.lean
 
   css-lint:
     name: Stylesheet lint

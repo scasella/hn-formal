@@ -62,7 +62,7 @@ export async function releaseFromCandidate(cand: CandidateRecord): Promise<{ rep
     specVersion: await specVersion(),
     tier1: cand.tier1Detail,
     tier2: cand.tier2Report.tier2,
-    judge: { score: cand.judge, notes: cand.judgeNotes ?? "" },
+    judge: { score: cand.judge, notes: cand.judgeNotes ?? "", ...(cand.judgeDetail ?? {}) },
     model: cand.model,
     repairRounds: Math.max(0, cand.rounds - 1),
     costUsd: Math.round(cand.costUsd * 1e4) / 1e4,
@@ -70,6 +70,7 @@ export async function releaseFromCandidate(cand: CandidateRecord): Promise<{ rep
     diffStat: stat,
     candidate: cand.n,
     brief: cand.brief,
+    ...(cand.briefOk !== undefined ? { briefOk: cand.briefOk } : {}),
     ...(cand.domChanged !== undefined ? { domChanged: cand.domChanged } : {}),
     createdAt: nowSec(),
   };

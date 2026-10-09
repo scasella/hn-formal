@@ -31,10 +31,11 @@ export const PREFIX_WARN_TOKENS = envInt("PREFIX_WARN_TOKENS", 60_000);
 /**
  * Output cap per generation call. Haiku 5.5 thinks adaptively by default and
  * the thinking counts against max_tokens, so 32K cut long rounds off mid-file
- * (run 20261009-104231, candidates 8 and 15). The model allows 128K; 64K is
- * at most $0.032 per call on the low rate card.
+ * (run 20261009-104231, candidates 8 and 15) and a candidate at effort high
+ * used 63K. At effort xhigh the cap is 96K of the model's 128K: at most
+ * $0.048 per call on the low rate card.
  */
-export const GENERATE_MAX_TOKENS = envInt("GENERATE_MAX_TOKENS", 64_000);
+export const GENERATE_MAX_TOKENS = envInt("GENERATE_MAX_TOKENS", 96_000);
 export const CACHE_TTL: "5m" | "1h" = envStr("CACHE_TTL", "1h") === "5m" ? "5m" : "1h";
 
 export const MOCK = process.env.ANTHROPIC_MOCK === "1";
@@ -144,8 +145,10 @@ export const CandidateOutput = z.object({
 export type CandidateOutput = z.infer<typeof CandidateOutput>;
 
 export const JudgeOutput = z.object({
-  score: z.number().describe("Integer 0-100"),
-  notes: z.string().describe("Two to five sentences of concrete observations"),
+  adherence: z.number().describe("Integer 0-100: how fully the candidate realizes its design brief"),
+  novelty: z.number().describe("Integer 0-100: how different the candidate is from the current live site"),
+  craft: z.number().describe("Integer 0-100: readability, hierarchy, scannability, palette, 375px"),
+  notes: z.string().describe("Two to five sentences of concrete observations, including what the brief asked for that is missing"),
 });
 export type JudgeOutput = z.infer<typeof JudgeOutput>;
 
@@ -195,7 +198,7 @@ export async function generateCandidate(
     max_tokens: GENERATE_MAX_TOKENS,
     system,
     messages,
-    output_config: { format: plainFormat(CandidateOutput), effort: effortFor("GENERATE_EFFORT", "high") },
+    output_config: { format: plainFormat(CandidateOutput), effort: effortFor("GENERATE_EFFORT", "xhigh") },
   });
   const final = await stream.finalMessage();
   const cost = costOf(final.usage);
@@ -249,7 +252,7 @@ function parseTextJson<T>(msg: Anthropic.Message, schema: z.ZodType<T>): T | nul
   }
 }
 
-function effortFor(envName: string, def: "low" | "medium" | "high"): "low" | "medium" | "high" | "xhigh" | "max" {
+function effortFor(envName: string, def: "low" | "medium" | "high" | "xhigh"): "low" | "medium" | "high" | "xhigh" | "max" {
   const v = process.env[envName];
   if (v === "low" || v === "medium" || v === "high" || v === "xhigh" || v === "max") return v;
   return def;
@@ -265,17 +268,19 @@ export async function judgeScreens(
   rubric: string,
   images: JudgeImage[],
   budget: Budget,
+  preface?: string,
 ): Promise<CallResult<JudgeOutput>> {
   budget.beforeCall();
   if (MOCK) return mockJudge(budget);
 
   const content: Anthropic.ContentBlockParam[] = [];
+  if (preface) content.push({ type: "text", text: preface });
   for (const im of images) {
     const data = (await fsp.readFile(im.pngPath)).toString("base64");
     content.push({ type: "text", text: im.label });
     content.push({ type: "image", source: { type: "base64", media_type: "image/png", data } });
   }
-  content.push({ type: "text", text: "Score the design per the rubric." });
+  content.push({ type: "text", text: "Score the candidate per the rubric: adherence, novelty, craft, notes." });
 
   const msg = await getClient().messages.create({
     model: MODEL,
@@ -291,7 +296,7 @@ export async function judgeScreens(
   }
   const parsed = parseTextJson(msg, JudgeOutput);
   if (!parsed) return { ok: false, parsed: null, stopReason: msg.stop_reason, error: "judge output did not parse", cost, usage: msg.usage };
-  parsed.score = Math.max(0, Math.min(100, Math.round(parsed.score)));
+  for (const k of ["adherence", "novelty", "craft"] as const) parsed[k] = Math.max(0, Math.min(100, Math.round(parsed[k])));
   return { ok: true, parsed, stopReason: msg.stop_reason, cost, usage: msg.usage };
 }
 

@@ -2,12 +2,13 @@ import Anthropic from "@anthropic-ai/sdk";
 import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { CandidateRecord, RoundLog, Screenshots, Tier1Record, Tier2Report } from "./types.js";
+import type { CandidateRecord, JudgeDetail, RoundLog, Screenshots, Tier1Record, Tier2Report } from "./types.js";
 import { MOCK, MODEL, countPrefixTokens, generateCandidate, type CandidateOutput } from "./anthropic.js";
 import { Budget, CapHit, killSwitchPresent, recordCandidateSpend, redact } from "./guardrails.js";
 import { judgeSite, takeScreenshots } from "./judge.js";
 import { EDITABLE_FILES, fromRepo, repoRoot } from "./paths.js";
-import { ALLOWED_AXIOMS, briefBlock, briefFor, buildSystemPrefix, roundMessages, type RoundContext } from "./prompts.js";
+import { ALLOWED_AXIOMS, briefBlock, briefFor, buildSystemPrefix, roundMessages, type Brief, type RoundContext } from "./prompts.js";
+import { readReleasesIndex } from "./release.js";
 import { firstFailingCheck, runTier2 } from "./tier2.js";
 import { copyDir, ensureDir, envInt, envStr, exists, log, nowSec, runShell, tail, writeFileAtomic, writeJsonAtomic } from "./util.js";
 
@@ -40,9 +41,32 @@ export const STRUCTURE_ROUNDS = envInt("STRUCTURE_ROUNDS", MOCK ? 0 : 2);
  * renderer emits double-quoted attributes only. Pages without `main` (which
  * the spec forbids) are compared whole.
  */
-export function normalizeDom(html: string): string {
+export function mainOf(html: string): string {
   const m = html.match(/<main[\s>][\s\S]*?<\/main>/);
-  return (m ? m[0] : html).replace(/\sclass="[^"]*"/g, "");
+  return m ? m[0] : html;
+}
+
+export function normalizeDom(html: string): string {
+  return mainOf(html).replace(/\sclass="[^"]*"/g, "");
+}
+
+/** `main` of index.html and of the item page with the most comments (for the brief check). */
+export async function mainPages(outDir: string): Promise<{ index: string; item: string }> {
+  const index = mainOf(await fsp.readFile(path.join(outDir, "index.html"), "utf8"));
+  let item = "";
+  let best = -1;
+  const itemDir = path.join(outDir, "item");
+  if (exists(itemDir)) {
+    for (const f of (await fsp.readdir(itemDir)).filter((f) => f.endsWith(".html")).sort()) {
+      const m = mainOf(await fsp.readFile(path.join(itemDir, f), "utf8"));
+      const n = (m.match(/\sdata-hn-comment=/g) ?? []).length;
+      if (n > best) {
+        best = n;
+        item = m;
+      }
+    }
+  }
+  return { index, item };
 }
 
 export function sameDom(a: string, b: string): boolean {
@@ -69,15 +93,21 @@ export async function domChangedVs(baseDir: string, outDir: string): Promise<boo
   return false;
 }
 
-export function structureMessage(brief: string, structureRounds: number): string {
-  return (
-    "structure check: the candidate passed tier 1 and tier 2, but the rendered HTML inside <main> (the stories and the comment threads) is identical to the current site's once class attributes are ignored. Changes to the header, nav or footer do not count. " +
-    "It is a CSS-only restyle, which this loop accepts only as a last resort.\n\n" +
-    `The design brief is: "${brief}".\n\n` +
-    "Change the structure of the stories and comments to fit the brief: different element types or nesting for each story and each comment (cards, table rows, timeline nodes, a definition list for the metadata), a different order of the metadata fields, different grouping of the list. " +
-    "Keep every data-hn-story / data-hn-comment / data-hn marker, the about sentence, and the nav and footer strings, and re-prove render_ok for the new tree with the recipe.\n\n" +
-    `Your CSS-only version has been kept as a fallback: if no structural attempt passes within the remaining rounds, the fallback ships. This check applies to the first ${structureRounds} round(s) only.`
+/** The soft-failure text for the structure check (step 7) and the brief check (step 8). */
+export function designMessage(brief: Brief, domUnchanged: boolean, briefProblem: string | null, rounds: number): string {
+  const parts: string[] = [];
+  if (domUnchanged) {
+    parts.push(
+      "structure check: the candidate passed tier 1 and tier 2, but the rendered HTML inside <main> (the stories and the comment threads) is identical to the current site's once class attributes are ignored. Changes to the header, nav or footer do not count. It is a CSS-only restyle, which this loop accepts only as a last resort.",
+    );
+  }
+  if (briefProblem) parts.push(`brief check: the brief's required structure is missing. ${briefProblem}.`);
+  parts.push(
+    `The design brief is "${brief.title}": ${brief.text}\n\nRequired structure: ${brief.move}.`,
+    "Build that tree: change the element types and nesting of each story and each comment as the brief says, keep every data-hn-story / data-hn-comment / data-hn marker, the about sentence, and the nav and footer strings, and re-prove render_ok for the new tree with the recipe.",
+    `Your passing version has been kept as a fallback: if no attempt with the required structure passes within the remaining rounds, the fallback ships. These checks apply to the first ${rounds} round(s) only.`,
   );
+  return parts.join("\n\n");
 }
 
 /** Everything a passing round produced; applied to the record now or kept as the fallback. */
@@ -86,9 +116,11 @@ interface PassState {
   tier1: Tier1Record;
   tier2: Tier2Report;
   judge: number | null;
+  judgeDetail?: JudgeDetail;
   judgeNotes: string;
   screenshots?: Screenshots;
   domChanged?: boolean;
+  briefOk?: boolean;
 }
 
 function applyPass(rec: CandidateRecord, p: PassState): void {
@@ -100,9 +132,11 @@ function applyPass(rec: CandidateRecord, p: PassState): void {
   rec.tier2 = "ok";
   rec.tier2Report = p.tier2;
   rec.judge = p.judge;
+  if (p.judgeDetail) rec.judgeDetail = p.judgeDetail;
   rec.judgeNotes = p.judgeNotes;
   if (p.screenshots) rec.screenshots = p.screenshots;
   if (p.domChanged !== undefined) rec.domChanged = p.domChanged;
+  if (p.briefOk !== undefined) rec.briefOk = p.briefOk;
   rec.stopReason = "passed";
   rec.lastError = "";
 }
@@ -274,11 +308,13 @@ export async function cmdCandidate(args: CandidateArgs): Promise<CandidateRecord
   const outPath = path.isAbsolute(args.out) ? args.out : fromRepo(args.out);
   const artifactDir = path.join(path.dirname(outPath), `cand-${args.n}`);
   await ensureDir(artifactDir);
-  const brief = briefFor(args.n);
+  const brief = briefFor(args.n, args.run);
   const rec: CandidateRecord = {
     runId: args.run,
     n: args.n,
-    brief,
+    brief: brief.title,
+    briefKey: brief.key,
+    briefText: brief.text,
     model: MODEL,
     startedAt,
     finishedAt: 0,
@@ -310,7 +346,13 @@ export async function cmdCandidate(args: CandidateArgs): Promise<CandidateRecord
     return rec;
   }
   const { system, found } = await buildSystemPrefix();
-  log(`cand-${args.n}: brief="${brief}" library files=${found.join(",") || "(none)"}`);
+  log(`cand-${args.n}: brief="${brief.title}" (${brief.key}) library files=${found.join(",") || "(none)"}`);
+  // The live site (the newest release) is the novelty reference for the model and the judge;
+  // the recent releases' briefs are the do-not-repeat list.
+  const releases = await readReleasesIndex();
+  const recent = releases.slice(0, 5).map((r) => r.brief).filter((b): b is string => !!b);
+  const currentSitePng = releases[0] ? fromRepo("releases", releases[0].id, "index-1280.png") : "";
+  const currentSiteB64 = exists(currentSitePng) ? (await fsp.readFile(currentSitePng)).toString("base64") : undefined;
   await countPrefixTokens(system);
 
   const dataAbs = path.isAbsolute(args.data) ? args.data : fromRepo(args.data);
@@ -343,7 +385,11 @@ export async function cmdCandidate(args: CandidateArgs): Promise<CandidateRecord
 
       let gen: Awaited<ReturnType<typeof generateCandidate>>;
       try {
-        gen = await generateCandidate([...system, briefBlock(brief)], roundMessages({ round, maxRounds: args.rounds, previous, failure }), budget);
+        gen = await generateCandidate(
+          [...system, briefBlock(brief, recent)],
+          roundMessages({ round, maxRounds: args.rounds, previous, failure, ...(round === 1 && currentSiteB64 ? { currentSitePng: currentSiteB64 } : {}) }),
+          budget,
+        );
       } catch (e) {
         // Transport/API errors after the SDK's retries cost one round, not the candidate.
         if (e instanceof CapHit || !(e instanceof Anthropic.APIError)) throw e;
@@ -425,8 +471,9 @@ export async function cmdCandidate(args: CandidateArgs): Promise<CandidateRecord
         // another runner (the aggregate job downloads cand-<n>/** as artifacts).
         const rel = (p: string) => path.relative(repoRoot(), p);
         pass.screenshots = { index1280: rel(shots.index1280), index375: rel(shots.index375), item1280: rel(shots.item1280) };
-        const j = await judgeSite(shots, budget);
+        const j = await judgeSite(shots, budget, { brief, currentSitePng });
         pass.judge = j.score;
+        if (j.detail) pass.judgeDetail = j.detail;
         pass.judgeNotes = j.notes;
       } catch (e) {
         if (e instanceof CapHit) log(`judge skipped: ${e.message}`);
@@ -438,15 +485,19 @@ export async function cmdCandidate(args: CandidateArgs): Promise<CandidateRecord
       rec.calls = budget.calls;
 
       if (baseline) pass.domChanged = await domChangedVs(baseline, pipeline.outDir);
-      if (pass.domChanged === false && round <= STRUCTURE_ROUNDS && round < args.rounds) {
+      const mains = await mainPages(pipeline.outDir);
+      const briefProblem = brief.check(mains.index, mains.item);
+      pass.briefOk = briefProblem === null;
+      if ((pass.domChanged === false || briefProblem) && round <= STRUCTURE_ROUNDS && round < args.rounds) {
         fallback = pass;
-        const msg = structureMessage(brief, STRUCTURE_ROUNDS);
-        roundLog.stage = "structure";
+        const stage = pass.domChanged === false ? "structure" : "brief";
+        const msg = designMessage(brief, pass.domChanged === false, briefProblem, STRUCTURE_ROUNDS);
+        roundLog.stage = stage;
         roundLog.errorTail = msg;
         rec.lastError = msg;
-        failure = { stage: "structure", output: msg };
+        failure = { stage, output: msg };
         roundLog.durationMs = Date.now() - t0;
-        log(`cand-${args.n} round ${round}: passed both tiers with an unchanged DOM (judge ${pass.judge}); held as fallback, asking for structure`);
+        log(`cand-${args.n} round ${round}: passed both tiers but ${stage} check failed (judge ${pass.judge}); held as fallback, asking again`);
         await save();
         continue;
       }
@@ -454,7 +505,7 @@ export async function cmdCandidate(args: CandidateArgs): Promise<CandidateRecord
       roundLog.stage = "passed";
       roundLog.ok = true;
       roundLog.durationMs = Date.now() - t0;
-      log(`cand-${args.n} round ${round}: PASSED (judge ${rec.judge}${pass.domChanged === false ? ", CSS-only" : ""})`);
+      log(`cand-${args.n} round ${round}: PASSED (judge ${rec.judge}${pass.domChanged === false ? ", CSS-only" : ""}${pass.briefOk === false ? ", brief structure missing" : ""})`);
       await save();
       break;
     }

@@ -193,6 +193,13 @@
     return pill('muted', '\u2013');
   }
 
+  // briefOk: the brief's required structure was present in the rendered HTML.
+  function briefPill(v) {
+    if (v === true) return pill('ok', 'met');
+    if (v === false) return pill('fail', 'missed');
+    return pill('muted', '\u2013');
+  }
+
   function candidatesTable(run) {
     var pc = Array.isArray(run.perCandidate) ? run.perCandidate : [];
     if (!pc.length) return el('p', { 'class': 'empty', text: (run.lastError ? 'No per-candidate records. ' + run.lastError : 'No per-candidate records.') });
@@ -204,6 +211,8 @@
         el('td', null, [tierPill(c.tier1)]),
         el('td', null, [tierPill(c.tier2)]),
         el('td', { 'class': 'num', text: fmtNum(c.judge) }),
+        el('td', { 'class': 'num', text: fmtNum(c.novelty) }),
+        el('td', null, [briefPill(c.briefOk)]),
         el('td', null, [domPill(c.domChanged)]),
         el('td', { 'class': 'err', text: c.lastError ? String(c.lastError) : '' })
       ]));
@@ -212,7 +221,8 @@
       el('thead', null, [el('tr', null, [
         el('th', { scope: 'col', text: '#' }), el('th', { scope: 'col', text: 'Rounds' }),
         el('th', { scope: 'col', text: 'Tier 1' }), el('th', { scope: 'col', text: 'Tier 2' }),
-        el('th', { scope: 'col', text: 'Judge' }), el('th', { scope: 'col', text: 'DOM' }),
+        el('th', { scope: 'col', text: 'Judge' }), el('th', { scope: 'col', text: 'Novelty' }),
+        el('th', { scope: 'col', text: 'Brief' }), el('th', { scope: 'col', text: 'DOM' }),
         el('th', { scope: 'col', text: 'Last error' })
       ])]),
       tbody

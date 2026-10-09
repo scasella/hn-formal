@@ -1,9 +1,10 @@
 import path from "node:path";
 import { chromium, type Browser } from "playwright";
-import type { JudgeResult, Screenshots } from "./types.js";
-import { judgeScreens } from "./anthropic.js";
+import fs from "node:fs";
+import type { JudgeDetail, JudgeResult, Screenshots } from "./types.js";
+import { judgeScreens, type JudgeImage } from "./anthropic.js";
 import { Budget } from "./guardrails.js";
-import { JUDGE_RUBRIC } from "./prompts.js";
+import { JUDGE_RUBRIC, type Brief } from "./prompts.js";
 import { serveStatic } from "./server.js";
 import { listHtml } from "./tier2.js";
 import { ensureDir, envInt, log, writeJsonAtomic } from "./util.js";
@@ -42,22 +43,39 @@ export async function takeScreenshots(siteDir: string, shotsDir: string, browser
   return shots;
 }
 
+/** Composite judge score (CONTRACT): adherence 40%, novelty 30%, craft 30%. */
+export function compositeScore(d: JudgeDetail): number {
+  const c = (x: number) => Math.max(0, Math.min(100, x));
+  return Math.round(0.4 * c(d.adherence) + 0.3 * c(d.novelty) + 0.3 * c(d.craft));
+}
+
+export interface JudgeContext {
+  brief?: Brief;
+  /** Screenshot of the current live site's front page, the reference for novelty. */
+  currentSitePng?: string;
+}
+
 /** Judge an already-screenshotted site. Never throws; never blocks. */
-export async function judgeSite(shots: Screenshots, budget: Budget): Promise<JudgeResult> {
+export async function judgeSite(shots: Screenshots, budget: Budget, ctx: JudgeContext = {}): Promise<JudgeResult> {
   try {
-    const r = await judgeScreens(
-      JUDGE_RUBRIC,
-      [
-        { label: "index.html at 1280px wide", pngPath: shots.index1280 },
-        { label: "index.html at 375px wide", pngPath: shots.index375 },
-        { label: "an item (thread) page at 1280px wide", pngPath: shots.item1280 },
-      ],
-      budget,
+    const images: JudgeImage[] = [];
+    if (ctx.currentSitePng && fs.existsSync(ctx.currentSitePng)) {
+      images.push({ label: "THE CURRENT LIVE SITE, front page at 1280px (reference for novelty only; do not score it)", pngPath: ctx.currentSitePng });
+    }
+    images.push(
+      { label: "CANDIDATE: index.html at 1280px wide", pngPath: shots.index1280 },
+      { label: "CANDIDATE: index.html at 375px wide", pngPath: shots.index375 },
+      { label: "CANDIDATE: an item (thread) page at 1280px wide", pngPath: shots.item1280 },
     );
+    const preface = ctx.brief
+      ? `Design brief for this candidate: "${ctx.brief.title}". ${ctx.brief.text} Required structure: ${ctx.brief.move}.`
+      : undefined;
+    const r = await judgeScreens(JUDGE_RUBRIC, images, budget, preface);
     if (!r.ok || !r.parsed) {
       return { score: null, notes: `judge failed: ${r.error ?? r.stopReason}`, costUsd: r.cost.usd, calls: 1, screenshots: shots };
     }
-    return { score: r.parsed.score, notes: r.parsed.notes, costUsd: r.cost.usd, calls: 1, screenshots: shots };
+    const detail: JudgeDetail = { adherence: r.parsed.adherence, novelty: r.parsed.novelty, craft: r.parsed.craft };
+    return { score: compositeScore(detail), detail, notes: r.parsed.notes, costUsd: r.cost.usd, calls: 1, screenshots: shots };
   } catch (e) {
     const msg = String((e as Error).message ?? e);
     log(`judge error (non-blocking): ${msg}`);

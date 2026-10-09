@@ -66,12 +66,18 @@ time. Not a claim about matching HN's displayed order (it drifts).
 - Release: among tier-1 and tier-2 passers, a vision judge
   (`claude-haiku-5-5`, scoring Playwright screenshots from the same tier-2
   run) ranks; the top one ships. The judge never blocks. All passers go in
-  the gallery. Ties go to a candidate whose rendered DOM differs from the
-  current site's (class attributes ignored): the first 16-candidate run
-  (2026-10-09) produced fifteen CSS-only restyles of one DOM, so a candidate
-  that passes with an unchanged DOM is sent back for structure during its
-  first two rounds, with the restyle kept as a fallback that ships if no
-  structural attempt passes.
+  the gallery. The judge scores adherence to the brief (40%), novelty
+  against the current live site (30%) and craft (30%); ties go to novelty,
+  then to a changed DOM. This replaced a restraint-rewarding rubric after
+  three identical broadsheet releases in a row (2026-10-09).
+- Creativity levers (2026-10-09): briefs are paragraphs with one required
+  structural move that the orchestrator verifies in the rendered HTML, and
+  rotate across slots by day; a candidate that passes with an unchanged DOM
+  or without its brief's move is sent back during its first two rounds, with
+  the passing version kept as a fallback; the prompt's worked example is the
+  fixed plain human renderer, not the last winner; the brief block lists the
+  last five releases as designs not to repeat and round 1 shows the live
+  site's screenshot; generation runs at effort xhigh.
 - Failure: cap exhausted with no passer means no release, prior build stays,
   run logged publicly as failed.
 - Guardrails: spend cap, iteration cap, kill switch, one-command rollback to

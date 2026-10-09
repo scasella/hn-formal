@@ -4,7 +4,7 @@ import { costOf, PRICING } from "../src/anthropic.js";
 import { buildRunRecord, pickWinner } from "../src/aggregate.js";
 import { cssLint } from "../src/candidate.js";
 import { validateData } from "../src/fetch.js";
-import { BRIEFS, briefFor, roundMessages } from "../src/prompts.js";
+import { BRIEFS, briefFor, briefBlock, roundMessages } from "../src/prompts.js";
 import type { CandidateRecord, DataJson } from "../src/types.js";
 import { tail } from "../src/util.js";
 
@@ -39,11 +39,13 @@ test("cssLint mirrors the CONTRACT rules", () => {
   assert.deepEqual(cssLint('/* content: "in a comment" */ a { color: red }'), []);
 });
 
-test("briefs are divergent and selection wraps", () => {
-  assert.ok(BRIEFS.length >= 20);
-  assert.equal(new Set(BRIEFS).size, BRIEFS.length);
-  assert.equal(briefFor(0), BRIEFS[0]);
-  assert.equal(briefFor(BRIEFS.length + 3), BRIEFS[3]);
+test("briefs: unique keys, a verified move each, slot rotation by day", () => {
+  const keys = new Set(BRIEFS.map((b) => b.key));
+  assert.equal(keys.size, BRIEFS.length);
+  for (const b of BRIEFS) assert.ok(b.title && b.text.length > 80 && b.move && typeof b.check === "function");
+  assert.equal(briefFor(0, "20261009-000000").key, briefFor(BRIEFS.length, "20261009-000000").key);
+  assert.notEqual(briefFor(0, "20261009-000000").key, briefFor(0, "20261010-000000").key);
+  assert.equal(briefFor(0).key, BRIEFS[0]!.key);
 });
 
 test("roundMessages: first round has no previous files; repair rounds carry them", () => {
@@ -245,4 +247,57 @@ test("README generation section: current screenshot, previous thumbnails, no jud
   assert.ok(text.startsWith("# x\n\n") && text.endsWith("\n\nrest\n") && text.includes("## Current generation"));
   await fs.writeFile(p, "# no markers\n");
   assert.equal(await updateReadme(reports, { readmePath: p }), false);
+});
+
+// The plain list shape of the worked example: no brief's required move is present in it.
+function plainMain(stories = 30): string {
+  let li = "";
+  for (let i = 0; i < stories; i++) li += `<li data-hn-story="${i}"><div class="titleline"><a href="/x" data-hn="title">t</a></div><div class="subline"><span data-hn="score">1</span> points</div></li>`;
+  return `<main><ol class="stories">${li}</ol><p><a href="/more">More</a></p></main>`;
+}
+function plainItem(comments = 3): string {
+  let c = "";
+  for (let i = 0; i < comments; i++) c += `<li data-hn-comment="${i}"><div data-hn="text"><p>c</p></div></li>`;
+  return `<main><article data-hn-story="9"><div><a data-hn="title">t</a></div></article><ol>${c}</ol></main>`;
+}
+
+test("brief checks: every brief rejects the plain list shape and accepts its own move", () => {
+  for (const b of BRIEFS) assert.ok(b.check(plainMain(), plainItem()), `${b.key} should reject the plain shape`);
+  const rows = Array.from({ length: 30 }, (_, i) => `<tr data-hn-story="${i}"><td><a data-hn="title">t</a></td><td>1</td></tr>`).join("");
+  const table = `<main><table><thead><tr><th>rank</th><th>title</th><th>points</th></tr></thead><tbody>${rows}</tbody></table></main>`;
+  assert.equal(BRIEFS.find((b) => b.key === "spreadsheet")!.check(table, plainItem()), null);
+  assert.equal(BRIEFS.find((b) => b.key === "classic")!.check(table, plainItem()), null);
+  const cards = `<main><div>${Array.from({ length: 30 }, (_, i) => `<article data-hn-story="${i}"><h3><a data-hn="title">t</a></h3><small>d</small></article>`).join("")}</div></main>`;
+  assert.equal(BRIEFS.find((b) => b.key === "cards")!.check(cards, plainItem()), null);
+  assert.equal(BRIEFS.find((b) => b.key === "reader")!.check(cards, plainItem()), null);
+  assert.equal(BRIEFS.find((b) => b.key === "paper")!.check(cards, plainItem()), null);
+  assert.equal(BRIEFS.find((b) => b.key === "pastel")!.check(cards, plainItem()), null);
+  const mag = `<main><section><article data-hn-story="0">a</article></section><section>b</section><section>c</section></main>`;
+  const quotes = `<main><ol>${Array.from({ length: 3 }, (_, i) => `<blockquote data-hn-comment="${i}"><div data-hn="text"><p>c</p></div></blockquote>`).join("")}</ol></main>`;
+  assert.equal(BRIEFS.find((b) => b.key === "magazine")!.check(mag, quotes), null);
+  assert.ok(BRIEFS.find((b) => b.key === "magazine")!.check(mag, plainItem()));
+  const timeline = `<main><ol>${Array.from({ length: 30 }, (_, i) => `<li data-hn-story="${i}"><time>1h</time><a data-hn="title">t</a></li>`).join("")}</ol></main>`;
+  assert.equal(BRIEFS.find((b) => b.key === "timeline")!.check(timeline, plainItem()), null);
+  // Fewer stories than usual still works (the API can return fewer than 30).
+  assert.equal(BRIEFS.find((b) => b.key === "timeline")!.check(timeline.replace(/<li data-hn-story="2[0-9]".*?<\/li>/g, ""), plainItem()), null);
+});
+
+test("brief block carries the move and the do-not-repeat list; round 1 can carry the live screenshot", () => {
+  const b = briefFor(3, "20261009-000000");
+  const text = briefBlock(b, ["broadsheet", "cards on a grid"]).text;
+  assert.ok(text.includes(b.title) && text.includes(b.move) && text.includes('"broadsheet"') && text.includes("Do not repeat"));
+  const m = roundMessages({ round: 1, maxRounds: 10, currentSitePng: "AAAA" });
+  const content = m[0]!.content as Array<{ type: string }>;
+  assert.ok(Array.isArray(content) && content.some((c) => c.type === "image") && content.some((c) => c.type === "text"));
+  assert.equal(typeof roundMessages({ round: 1, maxRounds: 10 })[0]!.content, "string");
+});
+
+test("judge composite and novelty tie-break", async () => {
+  const { compositeScore } = await import("../src/judge.js");
+  assert.equal(compositeScore({ adherence: 80, novelty: 65, craft: 66 }), 71);
+  assert.equal(compositeScore({ adherence: 200, novelty: -5, craft: 50 }), 55);
+  const a = cand(0, { judge: 70, judgeDetail: { adherence: 70, novelty: 40, craft: 90 } });
+  const b = cand(1, { judge: 70, judgeDetail: { adherence: 60, novelty: 80, craft: 70 } });
+  assert.equal(pickWinner([a, b])!.n, 1);
+  assert.equal(buildRunRecord("R", [a, b], null).perCandidate[1]!.novelty, 80);
 });

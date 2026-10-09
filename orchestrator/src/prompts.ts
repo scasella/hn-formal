@@ -27,36 +27,227 @@ export const RENDER_OK_QUALIFIED = "HnFormal.Render.render_ok";
 
 export const ALLOWED_AXIOMS = ["propext", "Classical.choice", "Quot.sound"];
 
-/** ~24 short, divergent design briefs. Candidate n uses briefs[n % length]. */
-export const BRIEFS: string[] = [
-  "dense monospace terminal: one line per story, fixed-width everything, no decoration",
-  "newspaper broadsheet: serif masthead, columns, hairline rules, small caps for metadata",
-  "high-contrast large type: 20px+ body, black on white, generous line height, for low vision",
-  "cards on a grid: each story a card, responsive grid, comments as nested cards",
-  "brutalist: raw system fonts, thick borders, no rounded corners, visible structure",
-  "warm paper: cream background, dark brown ink, book-like measure, subtle margins",
-  "dark mode first: near-black background, soft off-white text, muted accent, dark by default",
-  "swiss grid: strong typographic hierarchy, flush-left, lots of whitespace, one accent color",
-  "compact dashboard: tight rows, right-aligned numbers, zebra striping, tabular feel",
-  "editorial magazine: big headline for the top story, smaller stack for the rest, pull-quote style comments",
-  "minimal reader: single column, no borders, hierarchy by size and weight only",
-  "retro BBS: amber-on-black, box-drawing-style borders in CSS, blocky headings",
-  "academic preprint: Computer Modern feel, numbered items, footnote-like metadata",
-  "pastel soft UI: light pastel surfaces, rounded containers, gentle shadows, friendly",
-  "high-density classic: the closest to the original HN rhythm, but cleaner and accessible",
-  "timeline: stories as a vertical timeline with age markers, comments as threaded timeline nodes",
-  "two-tone poster: one strong background color band for the header, bold condensed type",
-  "spreadsheet: visible cell grid, column headers for rank/points/author/age/comments",
-  "zen garden: lots of air, thin light type, hairline dividers, ultra restrained color",
-  "mobile first: thumb-friendly tap targets, stacked metadata, designed at 375px then widened",
-  "comic / zine: rough thick outlines, handwritten-feeling system fonts, playful but legible",
-  "bauhaus: primary color blocks, geometric sans, strict alignment, bold numerals for rank",
-  "library catalog: index-card feel, labels for every field, muted institutional palette",
-  "high-contrast dark: pure black, bright white, one neon accent, for OLED and night reading",
+/**
+ * Design briefs. Each is a paragraph of direction plus one REQUIRED structural
+ * move that the orchestrator verifies in the rendered HTML (CONTRACT step 8):
+ * a candidate that restyles the default list shape cannot satisfy any of them.
+ * Checks receive the `main` element's HTML of the front page and of the item
+ * page with the most comments; they return null when satisfied.
+ */
+export interface Brief {
+  key: string;
+  title: string;
+  text: string;
+  /** Human-readable statement of the required move (goes in the prompt). */
+  move: string;
+  check: (indexMain: string, itemMain: string) => string | null;
+}
+
+const tagCount = (html: string, tag: string): number => (html.match(new RegExp(`<${tag}(?=[\\s>])`, "g")) ?? []).length;
+const markedCount = (html: string, tag: string, marker: string): number =>
+  (html.match(new RegExp(`<${tag}[^>]*\\s${marker}=`, "g")) ?? []).length;
+const storyCount = (html: string): number => (html.match(/\sdata-hn-story=/g) ?? []).length;
+const commentCount = (html: string): number => (html.match(/\sdata-hn-comment=/g) ?? []).length;
+
+/** The story marker sits on a <tag>. */
+function storiesAre(tag: string): Brief["check"] {
+  return (idx) => {
+    const n = storyCount(idx);
+    const c = markedCount(idx, tag, "data-hn-story");
+    return c >= Math.max(1, n) ? null : `expected every story container (data-hn-story) to be a <${tag}>; found ${c} of ${n} on the front page`;
+  };
+}
+/** At least one <tag> per story on the front page. */
+function perStory(tag: string, what: string): Brief["check"] {
+  return (idx) => {
+    const n = Math.max(1, storyCount(idx));
+    const c = tagCount(idx, tag);
+    return c >= n ? null : `expected ${what}: at least ${n} <${tag}> elements inside <main> on the front page, found ${c}`;
+  };
+}
+function atLeast(tag: string, min: number, what: string): Brief["check"] {
+  return (idx) => {
+    const c = tagCount(idx, tag);
+    return c >= min ? null : `expected ${what}: at least ${min} <${tag}> inside <main> on the front page, found ${c}`;
+  };
+}
+const noLists: Brief["check"] = (idx) => {
+  const c = tagCount(idx, "ol") + tagCount(idx, "ul");
+  return c === 0 ? null : `expected no <ol> or <ul> inside <main> on the front page (stories are not a list in this brief), found ${c}`;
+};
+/** Comment containers on the thread page are <tag>. */
+function commentsAre(tag: string): Brief["check"] {
+  return (_idx, item) => {
+    const n = commentCount(item);
+    if (n === 0) return null;
+    const c = markedCount(item, tag, "data-hn-comment");
+    return c >= n ? null : `expected every comment container (data-hn-comment) on the thread page to be a <${tag}>; found ${c} of ${n}`;
+  };
+}
+function all(...checks: Brief["check"][]): Brief["check"] {
+  return (idx, item) => {
+    for (const c of checks) {
+      const r = c(idx, item);
+      if (r) return r;
+    }
+    return null;
+  };
+}
+
+export const BRIEFS: Brief[] = [
+  {
+    key: "spreadsheet",
+    title: "spreadsheet",
+    text: "A data grid, not a news page. Every story is a row; rank, title, domain, points, author, age and comments are columns with visible headers and a thin cell grid. Monospace or tabular figures, right-aligned numbers, a frozen header row feel. Color is functional only: one highlight for the lead row at most.",
+    move: "stories are <tr> rows of a <table> with <th> column headers",
+    check: all(storiesAre("tr"), atLeast("th", 3, "column headers")),
+  },
+  {
+    key: "dashboard",
+    title: "compact dashboard",
+    text: "An operations console: tight rows, zebra striping, numbers right-aligned in fixed columns, title cells that truncate rather than wrap, a dense 13px-14px scale with generous horizontal rules. Think a trading terminal that happens to show links.",
+    move: "stories are <tr> rows of a <table> (headers optional)",
+    check: storiesAre("tr"),
+  },
+  {
+    key: "cards",
+    title: "cards on a grid",
+    text: "Every story is a card: a bordered or shadowed box with the title as a heading, the domain as a small tag, and metadata along the bottom edge. Cards sit in a responsive grid (3-4 across at 1280px, 1 at 375px). Comments are nested cards with a visible indent.",
+    move: "stories are <article> elements, each with an <h2> or <h3> title",
+    check: all(storiesAre("article"), (idx) => (tagCount(idx, "h2") + tagCount(idx, "h3") >= Math.max(1, storyCount(idx)) ? null : "expected a heading (<h2> or <h3>) per story card")),
+  },
+  {
+    key: "magazine",
+    title: "editorial magazine",
+    text: "A front page with a lead: the first story is a big headline in its own section with its metadata as a deck line; the next few are a secondary tier; the rest run as a compact stack in a narrower column. Serif display type, generous margins, a single accent. Comments read like pull quotes with the author as a byline.",
+    move: "the front page is split into at least 3 <section> groups (lead, secondary, the rest); comments on the thread page are <blockquote> elements",
+    check: all(atLeast("section", 3, "story groups"), commentsAre("blockquote")),
+  },
+  {
+    key: "catalog",
+    title: "library catalog",
+    text: "Index cards from a card catalog: each story is a card with labelled fields, every label visible (domain, points, by, age, comments) in a small uppercase sans, values in a typewriter face. Muted institutional palette: manila, ink, one rubber-stamp red.",
+    move: "each story's metadata is a <dl> definition list (dt/dd pairs)",
+    check: perStory("dl", "a definition list per story"),
+  },
+  {
+    key: "preprint",
+    title: "academic preprint",
+    text: "A paper in Computer Modern spirit: numbered items in a single measure, titles in roman, metadata set as footnote-sized small text under each title, hairlines between sections, no color beyond black and one link blue. The thread page reads like a numbered appendix.",
+    move: "metadata per story is wrapped in <small>",
+    check: perStory("small", "footnote-sized metadata"),
+  },
+  {
+    key: "swiss",
+    title: "swiss grid",
+    text: "Strict modernist grid: flush-left, strong size contrast between a bold grotesque title and a light metadata line, columns aligned to a visible baseline, lots of white, one primary accent used on exactly one element per story. No boxes, no rules; alignment does the work.",
+    move: "every story title is an <h2> or <h3>",
+    check: (idx) => (tagCount(idx, "h2") + tagCount(idx, "h3") >= Math.max(1, storyCount(idx)) ? null : "expected a heading (<h2> or <h3>) per story"),
+  },
+  {
+    key: "reader",
+    title: "minimal reader",
+    text: "A long-form reading view: no list at all. Each story is a short block of prose-like lines in a single comfortable measure, hierarchy by size and weight only, no borders, no rules, no numbers in a gutter. Quiet, warm neutrals.",
+    move: "no <ol> or <ul> inside main; each story is a <section> or <article>",
+    check: all(noLists, (idx) => (markedCount(idx, "section", "data-hn-story") + markedCount(idx, "article", "data-hn-story") >= Math.max(1, storyCount(idx)) ? null : "expected each story to be a <section> or <article>")),
+  },
+  {
+    key: "zen",
+    title: "zen garden",
+    text: "Air and hairlines: thin light type, very wide margins, a horizontal rule between every story, metadata reduced to a whisper, one small accent. Reads slowly on purpose; at 375px the rules and margins still breathe.",
+    move: "a real <hr> between stories (at least 10 inside main)",
+    check: atLeast("hr", 10, "rules between stories"),
+  },
+  {
+    key: "timeline",
+    title: "timeline",
+    text: "A vertical timeline: a spine down the page, each story a node with its age as the timestamp on the spine and the title branching off it. Comments on the thread page are nodes on a nested spine. The age is the most prominent metadata.",
+    move: "each story's age is a <time> element",
+    check: perStory("time", "a <time> element per story"),
+  },
+  {
+    key: "terminal",
+    title: "dense monospace terminal",
+    text: "A terminal session: fixed-width everything, one story per line at 1280px (title, then fields in fixed columns), prompt-like markers via CSS, no decoration beyond color. Dark or light, but one monospace face throughout.",
+    move: "every story's metadata fields are inside <code> elements",
+    check: perStory("code", "monospace metadata in <code>"),
+  },
+  {
+    key: "bbs",
+    title: "retro BBS",
+    text: "Amber or green on near-black, box-drawing-style borders done in CSS, blocky headings, a menu bar look for the nav, a status-line footer. Metadata rendered like keyboard hints.",
+    move: "metadata values are wrapped in <kbd>",
+    check: perStory("kbd", "metadata in <kbd>"),
+  },
+  {
+    key: "brutalist",
+    title: "brutalist",
+    text: "Raw system fonts, thick black borders, no rounded corners, visible structure: each story is a heavy bordered block, numbers huge, metadata in plain black on white. Ugly on purpose, legible in fact.",
+    move: "each story is an <article> and there is an <hr> after at least 10 of them",
+    check: all(storiesAre("article"), atLeast("hr", 10, "rules between blocks")),
+  },
+  {
+    key: "largetype",
+    title: "high-contrast large type",
+    text: "For low vision: 20px+ body, 28px+ titles, black on white, generous line height, metadata as full sentences in a paragraph under each title rather than a pipe-separated line. Links underlined, thick focus rings.",
+    move: "each story's metadata is a <p> paragraph and each title an <h2>",
+    check: all(perStory("p", "a metadata paragraph per story"), perStory("h2", "an <h2> per story")),
+  },
+  {
+    key: "paper",
+    title: "warm paper",
+    text: "A printed broadside: cream paper, dark brown ink, book measure, titles in a text serif, metadata in small caps as a running line under each title, no list numbering in the gutter. Stories are prose entries, not list items.",
+    move: "no <ol> or <ul> inside main; each story is an <article>",
+    check: all(noLists, storiesAre("article")),
+  },
+  {
+    key: "dark",
+    title: "dark mode first",
+    text: "Near-black background, soft off-white text, one muted accent, dark by default and not a recolor of a light page: metadata sits in a side rail next to each title, titles carry the weight. Thread page uses the rail for author and age.",
+    move: "each story's metadata is an <aside> next to the title",
+    check: perStory("aside", "a metadata rail per story"),
+  },
+  {
+    key: "pastel",
+    title: "pastel soft UI",
+    text: "Friendly app surface: rounded containers, gentle shadows, pastel surfaces with dark text for contrast, pill-shaped tags for the domain and comment count, round avatars' worth of spacing. Each story is a soft card.",
+    move: "each story is an <article>; the domain and comment count are inside <small> tags",
+    check: all(storiesAre("article"), perStory("small", "pill tags in <small>")),
+  },
+  {
+    key: "classic",
+    title: "high-density classic",
+    text: "The original HN rhythm, done properly: a two-line story row in a table, tiny metadata, maximum density, but with real contrast, real tap targets at 375px and no orange header.",
+    move: "stories are <tr> rows of a <table>",
+    check: storiesAre("tr"),
+  },
+  {
+    key: "mobile",
+    title: "mobile first",
+    text: "Designed at 375px then widened: thumb-sized tap targets, stacked metadata as separate lines, titles first, big comment-count buttons, nothing side by side until 700px. Each story is a section with its metadata stacked.",
+    move: "each story is a <section>",
+    check: storiesAre("section"),
+  },
+  {
+    key: "poster",
+    title: "two-tone poster",
+    text: "One strong color band for the header, bold condensed type, numbers as display elements: points and comment counts set huge and bold next to a smaller title. Two colors plus black.",
+    move: "points and comment counts are wrapped in <strong>; each title is an <h2> or <h3>",
+    check: all(perStory("strong", "bold display numbers"), (idx) => (tagCount(idx, "h2") + tagCount(idx, "h3") >= Math.max(1, storyCount(idx)) ? null : "expected a heading per story")),
+  },
 ];
 
-export function briefFor(n: number): string {
-  return BRIEFS[((n % BRIEFS.length) + BRIEFS.length) % BRIEFS.length]!;
+/** Day offset so the same slot does not get the same brief every run (slot 1 won three ties in a row as "broadsheet"). */
+export function briefOffset(runId: string): number {
+  const m = runId.match(/^(\d{4})(\d{2})(\d{2})/);
+  if (!m) return 0;
+  const days = Math.floor(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3])) / 86_400_000);
+  return ((days % BRIEFS.length) + BRIEFS.length) % BRIEFS.length;
+}
+
+export function briefFor(n: number, runId = ""): Brief {
+  const i = (((n + briefOffset(runId)) % BRIEFS.length) + BRIEFS.length) % BRIEFS.length;
+  return BRIEFS[i]!;
 }
 
 const LIB_DIR = "HnFormal";
@@ -73,7 +264,7 @@ async function readLeanLibrary(): Promise<{ library: string; renderExample: stri
       const src = await fsp.readFile(full, "utf8");
       found.push(name);
       if (name === "Render.lean") {
-        renderExample = src;
+        renderExample = src; // fallback only; the fixed example below wins when present
       } else {
         library += `\n\n<file path="${LIB_DIR}/${name}">\n${src}\n</file>`;
       }
@@ -87,6 +278,22 @@ async function readLeanLibrary(): Promise<{ library: string; renderExample: stri
     renderExample = `-- PLACEHOLDER: ${EDITABLE_FILES.renderLean} did not exist when this prompt was built.\n-- Write it from scratch following the library above.`;
   }
   return { library, renderExample, found };
+}
+
+/**
+ * The worked example is FIXED (orchestrator/examples/*.v0.*): the plain
+ * human-written renderer, not the last release. Showing the last winner
+ * anchored every run on it (three broadsheet releases in a row). CI proves
+ * the example still builds against the library.
+ */
+const EXAMPLE_DIR = "orchestrator/examples";
+async function readFixedExample(): Promise<{ lean: string | null; css: string | null }> {
+  const lean = fromRepo(EXAMPLE_DIR, "Render.v0.lean");
+  const css = fromRepo(EXAMPLE_DIR, "style.v0.css");
+  return {
+    lean: exists(lean) ? await fsp.readFile(lean, "utf8") : null,
+    css: exists(css) ? await fsp.readFile(css, "utf8") : null,
+  };
 }
 
 async function readCurrentCss(): Promise<string> {
@@ -140,7 +347,9 @@ Free: everything else. Layout, typography, color, spacing, ordering of metadata 
 
 ## The worked example is the proof pattern, not the design
 
-The current Render.lean below shows how a renderer is proved. It does not show what a renderer should look like. The brief decides the DOM: if the brief calls for cards, a table, a timeline, a masthead, or metadata in a different order, change the DOM to match and re-prove it with the recipe below. A candidate that keeps the DOM byte-identical and only restyles is accepted but weak; it is the fallback when a structural attempt cannot be proved, not the plan. Keep the markers and field attributes the spec requires; everything else about the tree is yours to change. The orchestrator checks this: after a candidate passes both tiers it renders the current site and the candidate on the same data and compares the \`main\` element's HTML with class attributes removed (header, nav and footer do not count). If they are identical, the first rounds are sent back with a "structure" failure (the restyle is kept as a fallback), and a changed DOM wins ties in the final ranking.
+The Render.lean below is a deliberately plain human-written renderer. It shows how a renderer is proved; it is not what the live site looks like and not what you should produce. The brief decides the DOM: it names a required structural move (a table, cards, a definition list, headings, a timeline, no list at all) and the orchestrator verifies that move in the rendered HTML. Build the tree the brief asks for and re-prove it with the recipe below. The proof for a different tree is the same work: the same block lemmas, the same case splits, one \`hn_auto\` per block; only the constructors between the markers change.
+
+How a release is chosen: among candidates that pass the kernel and the browser suite, a judge scores adherence to the brief (40%), novelty against the current live site (30%) and craft (30%). A restyle of the plain list shape scores near zero on the first two. Be bold in the brief's direction; keep the markers and field attributes the spec requires; everything else about the tree is yours. The orchestrator checks this: after a candidate passes both tiers it renders the current site and the candidate on the same data and compares the \`main\` element's HTML with class attributes removed (header, nav and footer do not count). If they are identical, the first rounds are sent back with a "structure" failure (the restyle is kept as a fallback), and a changed DOM wins ties in the final ranking.
 
 ## Proof recipe (this is how the worked example does it; copy the shape of the proof, not the design)
 
@@ -159,20 +368,32 @@ The current Render.lean below shows how a renderer is proved. It does not show w
  */
 export async function buildSystemPrefix(): Promise<{ system: SystemBlocks; found: string[] }> {
   const { library, renderExample, found } = await readLeanLibrary();
-  const css = await readCurrentCss();
+  const fixed = await readFixedExample();
+  const lean = fixed.lean ?? renderExample;
+  const css = fixed.css ?? (await readCurrentCss());
   const text =
     INSTRUCTIONS +
     `\n\n## Lean library (read-only)\n${library}` +
-    `\n\n## Worked example: the current ${EDITABLE_FILES.renderLean} (a renderer that passes)\n\n<file path="${EDITABLE_FILES.renderLean}">\n${renderExample}\n</file>` +
-    `\n\n## The current ${EDITABLE_FILES.styleCss}\n\n<file path="${EDITABLE_FILES.styleCss}">\n${css}\n</file>`;
+    `\n\n## Worked example: a plain renderer that passes (the proof pattern; NOT the design to produce)\n\n<file path="${EDITABLE_FILES.renderLean}">\n${lean}\n</file>` +
+    `\n\n## The stylesheet of that plain example\n\n<file path="${EDITABLE_FILES.styleCss}">\n${css}\n</file>`;
   return {
     system: [{ type: "text", text, cache_control: { type: "ephemeral", ttl: CACHE_TTL } }],
     found,
   };
 }
 
-export function briefBlock(brief: string): Anthropic.TextBlockParam {
-  return { type: "text", text: `## Design brief for this candidate\n\n${brief}` };
+export function briefBlock(brief: Brief, recent: string[] = []): Anthropic.TextBlockParam {
+  const avoid = recent.length
+    ? `\n\n## Do not repeat\n\nThe live site and the most recent releases were, newest first: ${recent.map((r) => `"${r}"`).join(", ")}. The judge scores novelty against the live site; a design that resembles it scores at most 20 of 100 on novelty whatever its brief. Make something a reader would not mistake for any of those.`
+    : "";
+  return {
+    type: "text",
+    text:
+      `## Design brief for this candidate: ${brief.title}\n\n${brief.text}\n\n` +
+      `Required structure (verified by the orchestrator in the rendered HTML): ${brief.move}. ` +
+      `This is checked for your first rounds; a candidate without it is sent back with the reason, and the orchestrator keeps any passing version as a fallback, so you lose nothing by attempting it.` +
+      avoid,
+  };
 }
 
 export interface RoundContext {
@@ -180,6 +401,8 @@ export interface RoundContext {
   maxRounds: number;
   previous?: { renderLean: string; styleCss: string; designNotes: string };
   failure?: { stage: string; output: string };
+  /** base64 PNG of the current live site's front page (round 1 only): what NOT to resemble. */
+  currentSitePng?: string;
 }
 
 /**
@@ -201,15 +424,23 @@ export function roundMessages(ctx: RoundContext): Anthropic.MessageParam[] {
           : "") +
         "Respond with valid JSON only: the three string fields, nothing else.";
     }
-    return [
-      {
-        role: "user",
-        content:
-          `Round ${ctx.round} of ${ctx.maxRounds}. Produce a complete new Render.lean and style.css following the design brief. ` +
-          `Respond with the JSON object only.` +
-          extra,
-      },
-    ];
+    const ask =
+      `Round ${ctx.round} of ${ctx.maxRounds}. Produce a complete new Render.lean and style.css following the design brief, including its required structure. ` +
+      `Respond with the JSON object only.` +
+      extra;
+    if (ctx.currentSitePng) {
+      return [
+        {
+          role: "user",
+          content: [
+            { type: "text", text: "This is the current live site's front page at 1280px. Novelty is scored against it: your design must not be mistaken for it." },
+            { type: "image", source: { type: "base64", media_type: "image/png", data: ctx.currentSitePng } },
+            { type: "text", text: ask },
+          ],
+        },
+      ];
+    }
+    return [{ role: "user", content: ask }];
   }
   const f = ctx.failure ?? { stage: "unknown", output: "" };
   return [
@@ -221,22 +452,20 @@ export function roundMessages(ctx: RoundContext): Anthropic.MessageParam[] {
         `<file path="${EDITABLE_FILES.renderLean}">\n${ctx.previous.renderLean}\n</file>\n\n` +
         `<file path="${EDITABLE_FILES.styleCss}">\n${ctx.previous.styleCss}\n</file>\n\n` +
         `Output of the failing stage (${f.stage}; tail shown if long):\n<output>\n${tail(f.output)}\n</output>\n\n` +
-        (f.stage === "structure"
-          ? `Keep the visual direction but change the document structure as the output describes, re-prove render_ok for the new tree, and respond with the full new files as the JSON object only.`
+        (f.stage === "structure" || f.stage === "brief"
+          ? `Keep the visual direction but change the document structure as the output describes (the brief's required move is not optional), re-prove render_ok for the new tree, and respond with the full new files as the JSON object only.`
           : `Fix the reported problem, keep the design, and respond with the full corrected files as the JSON object only.`),
     },
   ];
 }
 
-export const JUDGE_RUBRIC = `You are judging screenshots of candidate redesigns of "HN, formally", a read-only Hacker News front page and thread renderer. All candidates already passed a validity, accessibility, contrast and reflow test suite; you rank them on design quality alone. Your score never blocks a release; it only picks the best among passers.
+export const JUDGE_RUBRIC = `You judge candidate redesigns of "HN, formally", a read-only Hacker News front page and thread renderer. Every candidate already passed a validity, accessibility, contrast and reflow suite; your scores pick the best among passers and never block a release.
 
-Score 0-100 on these, equally weighted:
-- Readability: comfortable type size and measure, enough line height, clear text.
-- Hierarchy: the eye finds titles, then metadata, then comments; depth of comment nesting is visible.
-- Scannability: 30 stories can be skimmed quickly; numbers and metadata align; nothing competes with titles.
-- Taste: coherent palette and spacing, intentional, not generic; works at 1280px and at 375px.
+You receive: the candidate's design brief, one screenshot of the CURRENT LIVE SITE (a reference for novelty; do not score it), and three screenshots of the candidate (front page at 1280px, front page at 375px, a thread page at 1280px).
 
-Penalize: cramped or overflowing layouts at 375px, walls of undifferentiated text, huge empty areas, gaudy color, broken alignment, metadata louder than titles.
-Reward: restraint, consistency, a distinct point of view that still reads as a news page.
+Return three integer sub-scores, 0-100 each:
+- adherence: how fully the candidate realizes the brief: its layout grammar, its required structure, its type and color direction. 90+ only if someone who had read the brief would recognize it at a glance; 40 or below if the brief is only hinted at by colors or fonts.
+- novelty: how different the candidate is from the current live site in page shape and look. Same layout with new colors or fonts: at most 20. Same layout with reordered metadata or an extra wrapper: at most 35. A genuinely different page shape (table, cards, timeline, magazine lead, prose blocks, side rails): 70 or more.
+- craft: readability, hierarchy (titles, then metadata, then comments; nesting depth visible), scannability of 30 stories, coherent palette and spacing, and whether it holds up at 375px. Penalize overflow, walls of undifferentiated text, huge empty areas, broken alignment, metadata louder than titles.
 
-Be calibrated: 50 is competent-but-plain, 70 is good, 85+ is excellent and rare. Give concrete notes.`;
+A safe generic news-list look is not a virtue here: reward bold, specific choices that still read. Be calibrated within each sub-score (50 competent, 70 good, 85+ rare). Give two to five sentences of concrete notes, including what the brief asked for that is missing.`;
