@@ -66,7 +66,12 @@ time. Not a claim about matching HN's displayed order (it drifts).
 - Release: among tier-1 and tier-2 passers, a vision judge
   (`claude-haiku-5-5`, scoring Playwright screenshots from the same tier-2
   run) ranks; the top one ships. The judge never blocks. All passers go in
-  the gallery.
+  the gallery. Ties go to a candidate whose rendered DOM differs from the
+  current site's (class attributes ignored): the first 16-candidate run
+  (2026-10-09) produced fifteen CSS-only restyles of one DOM, so a candidate
+  that passes with an unchanged DOM is sent back for structure during its
+  first two rounds, with the restyle kept as a fallback that ships if no
+  structural attempt passes.
 - Failure: cap exhausted with no passer means no release, prior build stays,
   run logged publicly as failed.
 - Guardrails: spend cap, iteration cap, kill switch, one-command rollback to

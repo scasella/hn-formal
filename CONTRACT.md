@@ -90,6 +90,16 @@ begin with `set_option maxHeartbeats 2000000` and `set_option maxRecDepth
    subset of {propext, Classical.choice, Quot.sound}. Fail = tier-1 fail.
 5. `lake exe hnformal selftest` (must pass; defense in depth).
 6. `lake exe hnformal render data/latest.json out/` then tier 2 on `out/`.
+7. Structure check (soft; orchestrator). Before step 1 the orchestrator
+   renders the files currently in place into `out-base/`. After tier 2
+   passes it compares `index.html` and the first item page in `out/` and
+   `out-base/` with `class` attributes removed. Identical means a CSS-only
+   restyle: during the candidate's first `STRUCTURE_ROUNDS` rounds (default
+   2; 0 disables) that is a failure at stage `structure`, fed back like any
+   other, and the pass is kept as a fallback that ships if no later round
+   passes. Beyond those rounds a CSS-only pass is accepted outright. The
+   result is `domChanged` (true/false; absent when the check did not run) on
+   the candidate record, the run record and the release report.
 
 Tier 2 (orchestrator, Playwright + Chromium):
 - vnu.jar on every html file: zero errors.
@@ -102,7 +112,8 @@ Tier 2 (orchestrator, Playwright + Chromium):
 
 Judge (orchestrator): `claude-haiku-5-5` with screenshots (1280px and 375px
 of index.html, 1280px of one item page). Returns `{ score: 0-100, notes }`.
-Never blocks.
+Never blocks. The winner among passers is the highest score; ties go to a
+candidate with `domChanged: true`, then to the lowest `n`.
 
 ## Release record
 
@@ -117,7 +128,7 @@ Render.lean  style.css  report.json  index-1280.png  index-375.png  item-1280.pn
   "tier2": { "vnu": 0, "axe": 0, "contrastMin": 4.7, "reflowWidth": 375, "csp": "ok" },
   "judge": { "score": 71, "notes": "..." },
   "model": "claude-haiku-5-5", "repairRounds": 3, "costUsd": 0.42,
-  "previousRelease": "...", "diffStat": "+120 -84" }
+  "previousRelease": "...", "diffStat": "+120 -84", "candidate": 9, "domChanged": true }
 ```
 `releases/index.json` is the array of all report.json, newest first.
 A release = one commit to main by the bot that replaces the two editable
@@ -131,7 +142,7 @@ which re-copies that release's two files and commits.
 { "runId": "20261009-030000", "startedAt": ..., "finishedAt": ...,
   "candidates": 16, "passedTier1": 5, "passedTier2": 3, "released": "<id>|null",
   "costUsd": 2.11, "calls": 97, "stopReason": "released|no-passer|cap-hit|killed",
-  "perCandidate": [ { "n": 0, "rounds": 4, "tier1": "ok|fail:<stage>", "tier2": "ok|fail:<check>", "judge": 71, "lastError": "..." } ] }
+  "perCandidate": [ { "n": 0, "rounds": 4, "tier1": "ok|fail:<stage>", "tier2": "ok|fail:<check>", "judge": 71, "domChanged": true, "lastError": "..." } ] }
 ```
 
 ## Guardrails (orchestrator)

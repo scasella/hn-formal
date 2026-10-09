@@ -4,6 +4,17 @@ import type { CandidateRecord, ReleaseReport } from "./types.js";
 import { EDITABLE_FILES, fromRepo, repoRoot } from "./paths.js";
 import { diffStat, ensureDir, envInt, exists, gitShortSha, log, nowSec, readJson, readJsonOr, sha1Short, stamp, writeFileAtomic, writeJsonAtomic } from "./util.js";
 
+/** `def version : Nat := N` in HnFormal/Spec.lean; SPEC_VERSION overrides. */
+export async function specVersion(): Promise<number> {
+  if (process.env.SPEC_VERSION) return envInt("SPEC_VERSION", 1);
+  const p = fromRepo("HnFormal", "Spec.lean");
+  if (exists(p)) {
+    const m = (await fsp.readFile(p, "utf8")).match(/^def version : Nat := (\d+)/m);
+    if (m) return Number(m[1]);
+  }
+  return 1;
+}
+
 export function releasesIndexPath(): string {
   return fromRepo("releases", "index.json");
 }
@@ -47,7 +58,7 @@ export async function releaseFromCandidate(cand: CandidateRecord): Promise<{ rep
   const report: ReleaseReport = {
     id,
     runId: cand.runId,
-    specVersion: envInt("SPEC_VERSION", 1),
+    specVersion: await specVersion(),
     tier1: cand.tier1Detail,
     tier2: cand.tier2Report.tier2,
     judge: { score: cand.judge, notes: cand.judgeNotes ?? "" },
@@ -57,6 +68,7 @@ export async function releaseFromCandidate(cand: CandidateRecord): Promise<{ rep
     previousRelease: index[0]?.id ?? null,
     diffStat: stat,
     candidate: cand.n,
+    ...(cand.domChanged !== undefined ? { domChanged: cand.domChanged } : {}),
     createdAt: nowSec(),
   };
   await writeJsonAtomic(path.join(dir, "report.json"), report);

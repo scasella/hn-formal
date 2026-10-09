@@ -28,7 +28,13 @@ export const PRICING = {
 /** Refuse to start when the cached prefix exceeds this many tokens. */
 export const PREFIX_MAX_TOKENS = envInt("PREFIX_MAX_TOKENS", 90_000);
 export const PREFIX_WARN_TOKENS = envInt("PREFIX_WARN_TOKENS", 60_000);
-export const GENERATE_MAX_TOKENS = envInt("GENERATE_MAX_TOKENS", 32_000);
+/**
+ * Output cap per generation call. Haiku 5.5 thinks adaptively by default and
+ * the thinking counts against max_tokens, so 32K cut long rounds off mid-file
+ * (run 20261009-104231, candidates 8 and 15). The model allows 128K; 64K is
+ * at most $0.032 per call on the low rate card.
+ */
+export const GENERATE_MAX_TOKENS = envInt("GENERATE_MAX_TOKENS", 64_000);
 export const CACHE_TTL: "5m" | "1h" = envStr("CACHE_TTL", "1h") === "5m" ? "5m" : "1h";
 
 export const MOCK = process.env.ANTHROPIC_MOCK === "1";
@@ -189,7 +195,7 @@ export async function generateCandidate(
     max_tokens: GENERATE_MAX_TOKENS,
     system,
     messages,
-    output_config: { format: zodOutputFormat(CandidateOutput), effort: effortFor("GENERATE_EFFORT", "high") },
+    output_config: { format: plainFormat(CandidateOutput), effort: effortFor("GENERATE_EFFORT", "high") },
   });
   const final = await stream.finalMessage();
   const cost = costOf(final.usage);
@@ -210,11 +216,24 @@ export async function generateCandidate(
   if (final.stop_reason === "max_tokens") {
     return { ok: false, parsed: null, stopReason: "max_tokens", error: `hit max_tokens=${GENERATE_MAX_TOKENS}`, cost, usage: final.usage };
   }
-  const parsed = final.parsed_output ?? parseTextJson(final, CandidateOutput);
+  const parsed = parseTextJson(final, CandidateOutput);
   if (!parsed) {
     return { ok: false, parsed: null, stopReason: final.stop_reason, error: "structured output did not parse", cost, usage: final.usage };
   }
   return { ok: true, parsed, stopReason: final.stop_reason, cost, usage: final.usage };
+}
+
+/**
+ * The json_schema output format WITHOUT the SDK's `parse` member. With it
+ * present, MessageStream parses the text on message_stop and throws on
+ * truncated JSON (a max_tokens response) before stop_reason can be checked
+ * and before the call's cost is recorded; that killed candidate 15 of run
+ * 20261009-104231 and lost its spend. The schema bytes are unchanged; we
+ * parse with zod ourselves after the stop_reason checks.
+ */
+function plainFormat<T>(schema: z.ZodType<T>): Anthropic.Messages.JSONOutputFormat {
+  const { parse: _parse, ...rest } = zodOutputFormat(schema);
+  return rest;
 }
 
 function parseTextJson<T>(msg: Anthropic.Message, schema: z.ZodType<T>): T | null {
@@ -258,19 +277,19 @@ export async function judgeScreens(
   }
   content.push({ type: "text", text: "Score the design per the rubric." });
 
-  const msg = await getClient().messages.parse({
+  const msg = await getClient().messages.create({
     model: MODEL,
     max_tokens: 4000,
     system: [{ type: "text", text: rubric, cache_control: { type: "ephemeral" } }],
     messages: [{ role: "user", content }],
-    output_config: { format: zodOutputFormat(JudgeOutput), effort: effortFor("JUDGE_EFFORT", "low") },
+    output_config: { format: plainFormat(JudgeOutput), effort: effortFor("JUDGE_EFFORT", "low") },
   });
   const cost = costOf(msg.usage);
   budget.record(cost.usd);
   if (msg.stop_reason === "refusal" || msg.stop_reason === "max_tokens") {
     return { ok: false, parsed: null, stopReason: msg.stop_reason, error: `judge stopped: ${msg.stop_reason}`, cost, usage: msg.usage };
   }
-  const parsed = msg.parsed_output ?? parseTextJson(msg, JudgeOutput);
+  const parsed = parseTextJson(msg, JudgeOutput);
   if (!parsed) return { ok: false, parsed: null, stopReason: msg.stop_reason, error: "judge output did not parse", cost, usage: msg.usage };
   parsed.score = Math.max(0, Math.min(100, Math.round(parsed.score)));
   return { ok: true, parsed, stopReason: msg.stop_reason, cost, usage: msg.usage };

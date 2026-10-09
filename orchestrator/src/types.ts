@@ -81,6 +81,8 @@ export interface RoundLog {
   costUsd: number;
   calls: number;
   stopReason?: string | null;
+  /** Output tokens (thinking included) of the generation call, when one was made. */
+  outputTokens?: number;
   errorTail?: string;
   durationMs: number;
 }
@@ -109,6 +111,11 @@ export interface CandidateRecord {
   styleCss?: string;
   designNotes?: string;
   screenshots?: Screenshots;
+  /**
+   * Rendered DOM differs from the current site's (class attributes ignored).
+   * false = CSS-only restyle. Absent when the check did not run.
+   */
+  domChanged?: boolean;
 }
 
 export interface PerCandidateSummary {
@@ -117,6 +124,7 @@ export interface PerCandidateSummary {
   tier1: string;
   tier2: string;
   judge: number | null;
+  domChanged?: boolean | null;
   lastError: string;
 }
 
@@ -149,6 +157,7 @@ export interface ReleaseReport {
   previousRelease: string | null;
   diffStat: string;
   candidate?: number;
+  domChanged?: boolean;
   createdAt?: number;
 }
 

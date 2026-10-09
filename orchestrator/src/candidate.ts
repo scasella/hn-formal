@@ -2,8 +2,8 @@ import Anthropic from "@anthropic-ai/sdk";
 import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import type { CandidateRecord, RoundLog, Tier1Record, Tier2Report } from "./types.js";
-import { MODEL, countPrefixTokens, generateCandidate, type CandidateOutput } from "./anthropic.js";
+import type { CandidateRecord, RoundLog, Screenshots, Tier1Record, Tier2Report } from "./types.js";
+import { MOCK, MODEL, countPrefixTokens, generateCandidate, type CandidateOutput } from "./anthropic.js";
 import { Budget, CapHit, killSwitchPresent, recordCandidateSpend, redact } from "./guardrails.js";
 import { judgeSite, takeScreenshots } from "./judge.js";
 import { EDITABLE_FILES, fromRepo, repoRoot } from "./paths.js";
@@ -22,6 +22,82 @@ export interface CandidateArgs {
 }
 
 export const HNFORMAL_BIN = envStr("HNFORMAL_BIN", "lake exe hnformal");
+
+/**
+ * Structure check (CONTRACT "Candidate protocol" step 7): for its first
+ * STRUCTURE_ROUNDS rounds, a candidate whose rendered DOM equals the current
+ * site's DOM (class attributes ignored) is sent back for a structural change;
+ * the CSS-only pass is kept as a fallback. 0 disables the check. Off in mock
+ * mode, where the fake renderer always produces the same fixture.
+ */
+export const STRUCTURE_ROUNDS = envInt("STRUCTURE_ROUNDS", MOCK ? 0 : 2);
+
+/** HTML with class attributes removed (the renderer emits double-quoted attributes only). */
+export function normalizeDom(html: string): string {
+  return html.replace(/\sclass="[^"]*"/g, "");
+}
+
+export function sameDom(a: string, b: string): boolean {
+  return normalizeDom(a) === normalizeDom(b);
+}
+
+/**
+ * Did the candidate change the DOM, judged on index.html and the first item
+ * page? A page missing on either side counts as a change.
+ */
+export async function domChangedVs(baseDir: string, outDir: string): Promise<boolean> {
+  const pages = ["index.html"];
+  const itemDir = path.join(outDir, "item");
+  if (exists(itemDir)) {
+    const items = (await fsp.readdir(itemDir)).filter((f) => f.endsWith(".html")).sort();
+    if (items[0]) pages.push(path.join("item", items[0]));
+  }
+  for (const rel of pages) {
+    const a = path.join(baseDir, rel);
+    const b = path.join(outDir, rel);
+    if (!exists(a) || !exists(b)) return true;
+    if (!sameDom(await fsp.readFile(a, "utf8"), await fsp.readFile(b, "utf8"))) return true;
+  }
+  return false;
+}
+
+export function structureMessage(brief: string, structureRounds: number): string {
+  return (
+    "structure check: the candidate passed tier 1 and tier 2, but its rendered HTML is identical to the current site's HTML once class attributes are ignored. " +
+    "It is a CSS-only restyle, which this loop accepts only as a last resort.\n\n" +
+    `The design brief is: "${brief}".\n\n` +
+    "Change the document structure to fit the brief: different element types or nesting for stories and comments (cards, table rows, timeline nodes, a masthead block, a definition list for metadata), a different order of the metadata fields, different grouping or sectioning of the page. " +
+    "Keep every data-hn-story / data-hn-comment / data-hn marker, the about sentence, and the nav and footer strings, and re-prove render_ok for the new tree with the recipe.\n\n" +
+    `Your CSS-only version has been kept as a fallback: if no structural attempt passes within the remaining rounds, the fallback ships. This check applies to the first ${structureRounds} round(s) only.`
+  );
+}
+
+/** Everything a passing round produced; applied to the record now or kept as the fallback. */
+interface PassState {
+  files: CandidateOutput;
+  tier1: Tier1Record;
+  tier2: Tier2Report;
+  judge: number | null;
+  judgeNotes: string;
+  screenshots?: Screenshots;
+  domChanged?: boolean;
+}
+
+function applyPass(rec: CandidateRecord, p: PassState): void {
+  rec.renderLean = p.files.renderLean;
+  rec.styleCss = p.files.styleCss;
+  rec.designNotes = p.files.designNotes;
+  rec.tier1 = "ok";
+  rec.tier1Detail = p.tier1;
+  rec.tier2 = "ok";
+  rec.tier2Report = p.tier2;
+  rec.judge = p.judge;
+  rec.judgeNotes = p.judgeNotes;
+  if (p.screenshots) rec.screenshots = p.screenshots;
+  if (p.domChanged !== undefined) rec.domChanged = p.domChanged;
+  rec.stopReason = "passed";
+  rec.lastError = "";
+}
 
 /** Built-in mirror of scripts/css-lint.sh for when the script is absent. */
 export function cssLint(css: string): string[] {
@@ -95,6 +171,29 @@ async function shellStage(stage: string, cmd: string, cwd: string): Promise<Stag
   return { ok: r.code === 0 && !r.timedOut, output };
 }
 
+function renderCommand(p: Pipeline, outDir: string): string {
+  return envStr("RENDER_CMD", `${HNFORMAL_BIN} render {data} {out}`)
+    .replace("{data}", p.dataRel)
+    .replace("{out}", path.relative(p.workdir, outDir) || ".");
+}
+
+/**
+ * Render the files currently in place (before the candidate's) into
+ * <workdir>/out-base for the structure check. Null if that fails; the check
+ * is then skipped for this candidate.
+ */
+export async function renderBaseline(p: Pipeline): Promise<string | null> {
+  const dir = path.join(p.workdir, "out-base");
+  await fsp.rm(dir, { recursive: true, force: true });
+  await ensureDir(dir);
+  const r = await shellStage("render-base", renderCommand(p, dir), p.workdir);
+  if (!r.ok || !exists(path.join(dir, "index.html"))) {
+    log(`baseline render failed; structure check skipped\n${tail(r.output, 1500)}`);
+    return null;
+  }
+  return dir;
+}
+
 /** Steps 2-6 of the CONTRACT candidate protocol. Returns the first failing stage. */
 export async function runTier1(p: Pipeline): Promise<{ failedStage: string | null; output: string; tier1: Tier1Record }> {
   const tier1: Tier1Record = { lakeBuild: "fail", axioms: [], selftest: "fail" };
@@ -145,10 +244,7 @@ export async function runTier1(p: Pipeline): Promise<{ failedStage: string | nul
   // 6. render
   await fsp.rm(p.outDir, { recursive: true, force: true });
   await ensureDir(p.outDir);
-  const renderCmd = envStr("RENDER_CMD", `${HNFORMAL_BIN} render {data} {out}`)
-    .replace("{data}", p.dataRel)
-    .replace("{out}", path.relative(p.workdir, p.outDir) || ".");
-  const rn = await shellStage("render", renderCmd, p.workdir);
+  const rn = await shellStage("render", renderCommand(p, p.outDir), p.workdir);
   if (!rn.ok) return { failedStage: "render", output: rn.output, tier1 };
   if (!exists(path.join(p.outDir, "index.html"))) return { failedStage: "render", output: `render exited 0 but wrote no index.html\n${rn.output}`, tier1 };
   // The site root also needs the stylesheet and fonts (render writes html only).
@@ -216,6 +312,9 @@ export async function cmdCandidate(args: CandidateArgs): Promise<CandidateRecord
   await ensureDir(path.join(workdir, "data"));
   await fsp.copyFile(dataAbs, path.join(workdir, pipeline.dataRel));
   log(`cand-${args.n}: workdir ${workdir}`);
+  const baseline = STRUCTURE_ROUNDS > 0 && args.rounds > 1 ? await renderBaseline(pipeline) : null;
+  /** A CSS-only pass held back by the structure check; ships if nothing better passes. */
+  let fallback: PassState | null = null;
 
   let previous: CandidateOutput | undefined;
   let failure: RoundContext["failure"];
@@ -252,6 +351,7 @@ export async function cmdCandidate(args: CandidateArgs): Promise<CandidateRecord
       roundLog.calls = budget.calls - callsBefore;
       roundLog.costUsd = budget.costUsd - costBefore;
       roundLog.stopReason = gen.stopReason;
+      if (gen.usage.output_tokens) roundLog.outputTokens = gen.usage.output_tokens;
       rec.costUsd = budget.costUsd;
       rec.calls = budget.calls;
 
@@ -306,34 +406,47 @@ export async function cmdCandidate(args: CandidateArgs): Promise<CandidateRecord
         continue;
       }
       rec.tier2 = "ok";
-      roundLog.stage = "passed";
-      roundLog.ok = true;
 
-      // Passed both tiers: keep the files, screenshot, judge (non-blocking).
-      rec.renderLean = files.renderLean;
-      rec.styleCss = files.styleCss;
-      rec.designNotes = files.designNotes;
-      rec.stopReason = "passed";
-      rec.lastError = "";
+      // Passed both tiers: screenshot and judge (non-blocking), then either
+      // finish or, for a CSS-only restyle in the first rounds, hold the pass
+      // as the fallback and ask for structure (CONTRACT step 7).
+      const pass: PassState = { files, tier1: t1.tier1, tier2: t2, judge: null, judgeNotes: "" };
       try {
         const shots = await takeScreenshots(pipeline.outDir, artifactDir);
         // Stored relative to the repo root so the record survives moving to
         // another runner (the aggregate job downloads cand-<n>/** as artifacts).
         const rel = (p: string) => path.relative(repoRoot(), p);
-        rec.screenshots = { index1280: rel(shots.index1280), index375: rel(shots.index375), item1280: rel(shots.item1280) };
+        pass.screenshots = { index1280: rel(shots.index1280), index375: rel(shots.index375), item1280: rel(shots.item1280) };
         const j = await judgeSite(shots, budget);
-        rec.judge = j.score;
-        rec.judgeNotes = j.notes;
-        roundLog.costUsd = budget.costUsd - costBefore;
-        roundLog.calls = budget.calls - callsBefore;
-        rec.costUsd = budget.costUsd;
-        rec.calls = budget.calls;
+        pass.judge = j.score;
+        pass.judgeNotes = j.notes;
       } catch (e) {
         if (e instanceof CapHit) log(`judge skipped: ${e.message}`);
         else log(`screenshots/judge failed (non-blocking): ${String((e as Error).message ?? e)}`);
       }
+      roundLog.costUsd = budget.costUsd - costBefore;
+      roundLog.calls = budget.calls - callsBefore;
+      rec.costUsd = budget.costUsd;
+      rec.calls = budget.calls;
+
+      if (baseline) pass.domChanged = await domChangedVs(baseline, pipeline.outDir);
+      if (pass.domChanged === false && round <= STRUCTURE_ROUNDS && round < args.rounds) {
+        fallback = pass;
+        const msg = structureMessage(brief, STRUCTURE_ROUNDS);
+        roundLog.stage = "structure";
+        roundLog.errorTail = msg;
+        rec.lastError = msg;
+        failure = { stage: "structure", output: msg };
+        roundLog.durationMs = Date.now() - t0;
+        log(`cand-${args.n} round ${round}: passed both tiers with an unchanged DOM (judge ${pass.judge}); held as fallback, asking for structure`);
+        await save();
+        continue;
+      }
+      applyPass(rec, pass);
+      roundLog.stage = "passed";
+      roundLog.ok = true;
       roundLog.durationMs = Date.now() - t0;
-      log(`cand-${args.n} round ${round}: PASSED (judge ${rec.judge})`);
+      log(`cand-${args.n} round ${round}: PASSED (judge ${rec.judge}${pass.domChanged === false ? ", CSS-only" : ""})`);
       await save();
       break;
     }
@@ -348,6 +461,18 @@ export async function cmdCandidate(args: CandidateArgs): Promise<CandidateRecord
       log(`cand-${args.n}: error: ${rec.lastError}`);
     }
   } finally {
+    if (fallback && rec.stopReason !== "passed" && rec.stopReason !== "killed") {
+      // Rounds ran out (or the cap hit, or a later round crashed) without a
+      // structural pass: the CSS-only pass ships, and its files replace the
+      // later rounds' artifacts. Its screenshots are already in artifactDir
+      // (later rounds only screenshot when they pass, which would have ended
+      // the loop).
+      applyPass(rec, fallback);
+      await writeFileAtomic(path.join(artifactDir, "Render.lean"), fallback.files.renderLean);
+      await writeFileAtomic(path.join(artifactDir, "style.css"), fallback.files.styleCss);
+      await writeJsonAtomic(path.join(artifactDir, "tier2.json"), fallback.tier2);
+      log(`cand-${args.n}: no structural pass; restored the CSS-only fallback (judge ${rec.judge})`);
+    }
     rec.costUsd = budget.costUsd;
     rec.calls = budget.calls;
     await save();

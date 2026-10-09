@@ -40,7 +40,8 @@ export async function readCandidates(dir: string): Promise<CandidateRecord[]> {
 export function pickWinner(cands: CandidateRecord[]): CandidateRecord | null {
   const passers = cands.filter((c) => c.stopReason === "passed" && c.tier1 === "ok" && c.tier2 === "ok" && c.renderLean && c.styleCss);
   if (!passers.length) return null;
-  passers.sort((a, b) => (b.judge ?? -1) - (a.judge ?? -1) || a.n - b.n);
+  // Highest judge score; ties go to a changed DOM over a CSS-only restyle; then lowest n.
+  passers.sort((a, b) => (b.judge ?? -1) - (a.judge ?? -1) || Number(b.domChanged === true) - Number(a.domChanged === true) || a.n - b.n);
   return passers[0]!;
 }
 
@@ -69,6 +70,7 @@ export function buildRunRecord(runId: string, cands: CandidateRecord[], released
       tier1: c.tier1,
       tier2: c.tier2,
       judge: c.judge,
+      domChanged: c.domChanged ?? null,
       lastError: c.lastError.slice(0, 2000),
     })),
   };

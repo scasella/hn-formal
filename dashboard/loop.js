@@ -164,7 +164,7 @@
           el('span', { 'class': 'card-id', text: rel.id }),
           el('span', { 'class': 'card-date', text: fmtDate(dateFromId(rel.id)) }),
           scoreNode(rel.judge),
-          el('span', { 'class': 'card-date', text: 'cost ' + fmtUsd(rel.costUsd) + (isNum(rel.repairRounds) ? ' · ' + rel.repairRounds + ' rounds' : '') })
+          el('span', { 'class': 'card-date', text: 'cost ' + fmtUsd(rel.costUsd) + (isNum(rel.repairRounds) ? ' · ' + rel.repairRounds + ' rounds' : '') + (rel.domChanged === false ? ' · CSS-only' : rel.domChanged === true ? ' · new DOM' : '') })
         ])
       ]);
       ul.appendChild(li);
@@ -185,6 +185,14 @@
     return pill('fail', s);
   }
 
+  // domChanged: true = the rendered DOM differs from the previous site's
+  // (class attributes ignored); false = CSS-only restyle; null/absent = not checked.
+  function domPill(v) {
+    if (v === true) return pill('ok', 'changed');
+    if (v === false) return pill('muted', 'CSS-only');
+    return pill('muted', '\u2013');
+  }
+
   function candidatesTable(run) {
     var pc = Array.isArray(run.perCandidate) ? run.perCandidate : [];
     if (!pc.length) return el('p', { 'class': 'empty', text: (run.lastError ? 'No per-candidate records. ' + run.lastError : 'No per-candidate records.') });
@@ -196,6 +204,7 @@
         el('td', null, [tierPill(c.tier1)]),
         el('td', null, [tierPill(c.tier2)]),
         el('td', { 'class': 'num', text: fmtNum(c.judge) }),
+        el('td', null, [domPill(c.domChanged)]),
         el('td', { 'class': 'err', text: c.lastError ? String(c.lastError) : '' })
       ]));
     });
@@ -203,7 +212,8 @@
       el('thead', null, [el('tr', null, [
         el('th', { scope: 'col', text: '#' }), el('th', { scope: 'col', text: 'Rounds' }),
         el('th', { scope: 'col', text: 'Tier 1' }), el('th', { scope: 'col', text: 'Tier 2' }),
-        el('th', { scope: 'col', text: 'Judge' }), el('th', { scope: 'col', text: 'Last error' })
+        el('th', { scope: 'col', text: 'Judge' }), el('th', { scope: 'col', text: 'DOM' }),
+        el('th', { scope: 'col', text: 'Last error' })
       ])]),
       tbody
     ]);

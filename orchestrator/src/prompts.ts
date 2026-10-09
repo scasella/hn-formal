@@ -121,6 +121,7 @@ Both files are written verbatim. Output the whole file every time, never a diff 
 - Every text node must have contrast >= 4.5:1 against its effective background (3:1 for text >= 24px, or bold >= 18.66px). Avoid text over gradients or images: the checker cannot compute contrast there and fails it.
 - At a 375px viewport the page must not scroll horizontally (document.scrollWidth <= 375). Long words, URLs and code must wrap or be clipped with overflow-wrap / overflow-x on the element.
 - vnu (the W3C validator) must report zero errors; axe-core must report zero serious/critical violations.
+- Links inside running text (comment bodies and story text under \`[data-hn="text"]\`, and any \`a\` inside a \`p\`) must be distinguishable without color: keep \`text-decoration: underline\` on them. axe rule link-in-text-block fails otherwise; removing those underlines cost several candidates a repair round.
 - No JavaScript at all. The site ships with CSP script-src 'none'.
 
 ## What is fixed and what is free
@@ -139,7 +140,7 @@ Free: everything else. Layout, typography, color, spacing, ordering of metadata 
 
 ## The worked example is the proof pattern, not the design
 
-The current Render.lean below shows how a renderer is proved. It does not show what a renderer should look like. The brief decides the DOM: if the brief calls for cards, a table, a timeline, a masthead, or metadata in a different order, change the DOM to match and re-prove it with the recipe below. A candidate that keeps the DOM byte-identical and only restyles is accepted but weak; it is the fallback when a structural attempt cannot be proved, not the plan. Keep the markers and field attributes the spec requires; everything else about the tree is yours to change.
+The current Render.lean below shows how a renderer is proved. It does not show what a renderer should look like. The brief decides the DOM: if the brief calls for cards, a table, a timeline, a masthead, or metadata in a different order, change the DOM to match and re-prove it with the recipe below. A candidate that keeps the DOM byte-identical and only restyles is accepted but weak; it is the fallback when a structural attempt cannot be proved, not the plan. Keep the markers and field attributes the spec requires; everything else about the tree is yours to change. The orchestrator checks this: after a candidate passes both tiers it renders the current site and the candidate on the same data and compares the HTML with class attributes removed. If they are identical, the first rounds are sent back with a "structure" failure (the restyle is kept as a fallback), and a changed DOM wins ties in the final ranking.
 
 ## Proof recipe (this is how the worked example does it; copy the shape of the proof, not the design)
 
@@ -220,7 +221,9 @@ export function roundMessages(ctx: RoundContext): Anthropic.MessageParam[] {
         `<file path="${EDITABLE_FILES.renderLean}">\n${ctx.previous.renderLean}\n</file>\n\n` +
         `<file path="${EDITABLE_FILES.styleCss}">\n${ctx.previous.styleCss}\n</file>\n\n` +
         `Output of the failing stage (${f.stage}; tail shown if long):\n<output>\n${tail(f.output)}\n</output>\n\n` +
-        `Fix the reported problem, keep the design, and respond with the full corrected files as the JSON object only.`,
+        (f.stage === "structure"
+          ? `Keep the visual direction but change the document structure as the output describes, re-prove render_ok for the new tree, and respond with the full new files as the JSON object only.`
+          : `Fix the reported problem, keep the design, and respond with the full corrected files as the JSON object only.`),
     },
   ];
 }

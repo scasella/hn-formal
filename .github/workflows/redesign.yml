@@ -31,6 +31,10 @@ env:
   RUN_CAP_USD: ${{ vars.RUN_CAP_USD || 25 }}
   MONTH_CAP_USD: ${{ vars.MONTH_CAP_USD || 400 }}
   MAX_CALLS: ${{ vars.MAX_CALLS || 200 }}
+  # Structure check rounds (CONTRACT step 7); 0 disables.
+  STRUCTURE_ROUNDS: ${{ vars.STRUCTURE_ROUNDS || 2 }}
+  # Output cap per generation call; adaptive thinking counts against it.
+  GENERATE_MAX_TOKENS: ${{ vars.GENERATE_MAX_TOKENS || 64000 }}
 
 jobs:
   prepare:

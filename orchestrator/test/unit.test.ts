@@ -166,3 +166,51 @@ test("SITE_PREFIX normalization and request mapping", async () => {
     await bare.close();
   }
 });
+
+test("structure check: class attributes are ignored, anything else counts", async () => {
+  const { normalizeDom, sameDom, domChangedVs } = await import("../src/candidate.js");
+  assert.equal(normalizeDom('<div class="a b"><p class="x">t</p></div>'), "<div><p>t</p></div>");
+  assert.ok(sameDom('<li class="row">x</li>', "<li>x</li>"));
+  assert.ok(!sameDom("<li><b>x</b></li>", "<li>x</li>"));
+  const fs = await import("node:fs/promises");
+  const os = await import("node:os");
+  const path = await import("node:path");
+  const base = await fs.mkdtemp(path.join(os.tmpdir(), "hn-base-"));
+  const out = await fs.mkdtemp(path.join(os.tmpdir(), "hn-out-"));
+  await fs.mkdir(path.join(base, "item"));
+  await fs.mkdir(path.join(out, "item"));
+  await fs.writeFile(path.join(base, "index.html"), '<ol class="s"><li>a</li></ol>');
+  await fs.writeFile(path.join(out, "index.html"), '<ol class="stories"><li>a</li></ol>');
+  await fs.writeFile(path.join(base, "item", "1.html"), "<article>c</article>");
+  await fs.writeFile(path.join(out, "item", "1.html"), "<article>c</article>");
+  assert.equal(await domChangedVs(base, out), false);
+  await fs.writeFile(path.join(out, "item", "1.html"), "<article><h1>c</h1></article>");
+  assert.equal(await domChangedVs(base, out), true);
+  await fs.rm(path.join(base, "item", "1.html"));
+  assert.equal(await domChangedVs(base, out), true);
+});
+
+test("pickWinner: equal judge scores go to the changed DOM", () => {
+  const cands = [cand(0, { judge: 60, domChanged: false }), cand(1, { judge: 60, domChanged: true }), cand(2, { judge: 60 })];
+  assert.equal(pickWinner(cands)!.n, 1);
+  assert.equal(pickWinner([cand(0, { judge: 61, domChanged: false }), cand(1, { judge: 60, domChanged: true })])!.n, 0);
+  const r = buildRunRecord("R", cands, null);
+  assert.deepEqual(r.perCandidate.map((c) => c.domChanged), [false, true, null]);
+});
+
+test("roundMessages: a structure failure asks for a new tree, not a fix", () => {
+  const m = roundMessages({
+    round: 2,
+    maxRounds: 10,
+    previous: { renderLean: "L", styleCss: "C", designNotes: "N" },
+    failure: { stage: "structure", output: "structure check: ..." },
+  });
+  const text = String(m[0]!.content);
+  assert.ok(text.includes("change the document structure"));
+  assert.ok(!text.includes("keep the design,"));
+});
+
+test("specVersion comes from Spec.lean", async () => {
+  const { specVersion } = await import("../src/release.js");
+  assert.ok((await specVersion()) >= 2);
+});
