@@ -172,6 +172,10 @@ test("structure check: class attributes are ignored, anything else counts", asyn
   assert.equal(normalizeDom('<div class="a b"><p class="x">t</p></div>'), "<div><p>t</p></div>");
   assert.ok(sameDom('<li class="row">x</li>', "<li>x</li>"));
   assert.ok(!sameDom("<li><b>x</b></li>", "<li>x</li>"));
+  // Only <main> counts: a wrapper around the nav is not a structural change.
+  assert.ok(sameDom('<body><header><div><nav>n</nav></div></header><main class="m"><ol><li>a</li></ol></main><footer><section>f</section></footer></body>',
+    "<body><header><nav>n</nav></header><main><ol><li>a</li></ol></main><footer>f</footer></body>"));
+  assert.ok(!sameDom("<body><main><ol><li>a</li></ol></main></body>", "<body><main><table><tr><td>a</td></tr></table></main></body>"));
   const fs = await import("node:fs/promises");
   const os = await import("node:os");
   const path = await import("node:path");
@@ -179,12 +183,12 @@ test("structure check: class attributes are ignored, anything else counts", asyn
   const out = await fs.mkdtemp(path.join(os.tmpdir(), "hn-out-"));
   await fs.mkdir(path.join(base, "item"));
   await fs.mkdir(path.join(out, "item"));
-  await fs.writeFile(path.join(base, "index.html"), '<ol class="s"><li>a</li></ol>');
-  await fs.writeFile(path.join(out, "index.html"), '<ol class="stories"><li>a</li></ol>');
-  await fs.writeFile(path.join(base, "item", "1.html"), "<article>c</article>");
-  await fs.writeFile(path.join(out, "item", "1.html"), "<article>c</article>");
+  await fs.writeFile(path.join(base, "index.html"), '<main><ol class="s"><li>a</li></ol></main>');
+  await fs.writeFile(path.join(out, "index.html"), '<main><ol class="stories"><li>a</li></ol></main>');
+  await fs.writeFile(path.join(base, "item", "1.html"), "<main><article>c</article></main>");
+  await fs.writeFile(path.join(out, "item", "1.html"), "<main><article>c</article></main>");
   assert.equal(await domChangedVs(base, out), false);
-  await fs.writeFile(path.join(out, "item", "1.html"), "<article><h1>c</h1></article>");
+  await fs.writeFile(path.join(out, "item", "1.html"), "<main><article><h1>c</h1></article></main>");
   assert.equal(await domChangedVs(base, out), true);
   await fs.rm(path.join(base, "item", "1.html"));
   assert.equal(await domChangedVs(base, out), true);

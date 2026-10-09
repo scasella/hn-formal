@@ -92,8 +92,9 @@ begin with `set_option maxHeartbeats 2000000` and `set_option maxRecDepth
 6. `lake exe hnformal render data/latest.json out/` then tier 2 on `out/`.
 7. Structure check (soft; orchestrator). Before step 1 the orchestrator
    renders the files currently in place into `out-base/`. After tier 2
-   passes it compares `index.html` and the first item page in `out/` and
-   `out-base/` with `class` attributes removed. Identical means a CSS-only
+   passes it compares the `main` element of `index.html` and of the first
+   item page in `out/` and `out-base/` with `class` attributes removed
+   (header, nav and footer do not count). Identical means a CSS-only
    restyle: during the candidate's first `STRUCTURE_ROUNDS` rounds (default
    2; 0 disables) that is a failure at stage `structure`, fed back like any
    other, and the pass is kept as a fallback that ships if no later round

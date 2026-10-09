@@ -32,9 +32,17 @@ export const HNFORMAL_BIN = envStr("HNFORMAL_BIN", "lake exe hnformal");
  */
 export const STRUCTURE_ROUNDS = envInt("STRUCTURE_ROUNDS", MOCK ? 0 : 2);
 
-/** HTML with class attributes removed (the renderer emits double-quoted attributes only). */
+/**
+ * The part of a page the structure check compares: the `main` element (the
+ * stories or the thread), with class attributes removed. Header, nav and
+ * footer are excluded, otherwise a wrapper div around the nav passes as a
+ * structural change (validation run 20261009-133837, candidate 1). The
+ * renderer emits double-quoted attributes only. Pages without `main` (which
+ * the spec forbids) are compared whole.
+ */
 export function normalizeDom(html: string): string {
-  return html.replace(/\sclass="[^"]*"/g, "");
+  const m = html.match(/<main[\s>][\s\S]*?<\/main>/);
+  return (m ? m[0] : html).replace(/\sclass="[^"]*"/g, "");
 }
 
 export function sameDom(a: string, b: string): boolean {
@@ -63,10 +71,10 @@ export async function domChangedVs(baseDir: string, outDir: string): Promise<boo
 
 export function structureMessage(brief: string, structureRounds: number): string {
   return (
-    "structure check: the candidate passed tier 1 and tier 2, but its rendered HTML is identical to the current site's HTML once class attributes are ignored. " +
+    "structure check: the candidate passed tier 1 and tier 2, but the rendered HTML inside <main> (the stories and the comment threads) is identical to the current site's once class attributes are ignored. Changes to the header, nav or footer do not count. " +
     "It is a CSS-only restyle, which this loop accepts only as a last resort.\n\n" +
     `The design brief is: "${brief}".\n\n` +
-    "Change the document structure to fit the brief: different element types or nesting for stories and comments (cards, table rows, timeline nodes, a masthead block, a definition list for metadata), a different order of the metadata fields, different grouping or sectioning of the page. " +
+    "Change the structure of the stories and comments to fit the brief: different element types or nesting for each story and each comment (cards, table rows, timeline nodes, a definition list for the metadata), a different order of the metadata fields, different grouping of the list. " +
     "Keep every data-hn-story / data-hn-comment / data-hn marker, the about sentence, and the nav and footer strings, and re-prove render_ok for the new tree with the recipe.\n\n" +
     `Your CSS-only version has been kept as a fallback: if no structural attempt passes within the remaining rounds, the fallback ships. This check applies to the first ${structureRounds} round(s) only.`
   );
