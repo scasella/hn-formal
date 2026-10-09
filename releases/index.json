@@ -1,5 +1,38 @@
 [
   {
+    "id": "20261009-134625-6643a1d",
+    "runId": "20261009-133916",
+    "specVersion": 2,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 8.51,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 72,
+      "notes": "The front page at 1280px has a clear title-over-metadata hierarchy with bold serif titles, small-caps metadata, and a restrained cream palette that reads as a news page. The two-column layout keeps 30 stories skimmable, with rank numbers hanging in the margin and a thin vertical rule separating columns. At 375px the single column holds up, though metadata wraps awkwardly (words like 'com-ments' and 'com-' break across lines) and the header nav wraps messily. The thread page uses green left borders and indentation to show nesting, which works, but the italic body text at this size is somewhat tiring to read over long comments."
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 1,
+    "costUsd": 0.0308,
+    "previousRelease": "20261009-105817-d1c2f42",
+    "diffStat": "+23 -24",
+    "candidate": 1,
+    "domChanged": true,
+    "createdAt": 1791553585
+  },
+  {
     "id": "20261009-105817-d1c2f42",
     "runId": "20261009-104231",
     "specVersion": 1,
