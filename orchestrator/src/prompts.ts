@@ -136,7 +136,11 @@ Free: everything else. Layout, typography, color, spacing, ordering of metadata 
 - Content gate: every text node, after trimming, must be whitespace, a string in \`Spec.fixedText\`, or a value in \`Spec.derivedText\` for an item on the page. NEVER concatenate strings in a text node: write \`[.text (displayTitle s), .text " | ", .text "HN, formally"]\` as adjacent text nodes (same bytes, each node checkable).
 - Links: every \`a\` href must be in \`Spec.fixedHrefs\` or \`Spec.itemHrefs i\` for an item on the page; every \`a\` must have non-blank text (or aria-label). Only tags in \`Spec.allowedTags\`; attribute names per \`attrNameOk\` (no \`style\`, no \`on*\`); the one stylesheet link; the CSP meta with \`cspContent\`; \`html[lang=en]\`; a \`main\`; a non-empty \`title\`.
 
-## Proof recipe (this is how the worked example does it; copy the shape)
+## The worked example is the proof pattern, not the design
+
+The current Render.lean below shows how a renderer is proved. It does not show what a renderer should look like. The brief decides the DOM: if the brief calls for cards, a table, a timeline, a masthead, or metadata in a different order, change the DOM to match and re-prove it with the recipe below. A candidate that keeps the DOM byte-identical and only restyles is accepted but weak; it is the fallback when a structural attempt cannot be proved, not the plan. Keep the markers and field attributes the spec requires; everything else about the tree is yours to change.
+
+## Proof recipe (this is how the worked example does it; copy the shape of the proof, not the design)
 
 - Start Render.lean with \`set_option maxHeartbeats 2000000\` and \`set_option maxRecDepth 4096\` (the proofs are big case splits; these lines are required).
 - All-nodes properties (allowed tags, link targets, anchor names, text gate) are proved per block with the library tactic \`hn_auto\` after \`unfold\`-ing the block and doing \`cases h : s.field\` on every optional field it uses (score, author, time, descendants, url, text) and \`rcases Decidable.em (s.type = .job) with hj | hj <;> simp only [hj, ite_true, ite_false]\` where the block branches on jobs. \`hn_auto\` needs a hypothesis \`hi : s ∈ p.items\` in context. Blocks are assembled with \`have\` + \`hn_auto\` (it closes sub-goals by \`assumption\`), lists of stories with \`all_nodesList_map\`, and the page-level facts come from \`all_commonP\`.

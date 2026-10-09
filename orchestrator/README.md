@@ -166,7 +166,7 @@ Prints month-to-date spend from `runs/spend-YYYY-MM.json`.
 | `ANTHROPIC_MOCK` | – | `1` = canned model output from `test/mock/*.json` (no network) |
 | `ANTHROPIC_MOCK_CANDIDATE`, `ANTHROPIC_MOCK_JUDGE` | `test/mock/candidate.json`, `test/mock/judge.json` | mock file overrides |
 | `HNFORMAL_MODEL` | `claude-haiku-5-5` | generation and judge |
-| `GENERATE_EFFORT`, `JUDGE_EFFORT` | `medium`, `low` | `output_config.effort` |
+| `GENERATE_EFFORT`, `JUDGE_EFFORT` | `high`, `low` | `output_config.effort` |
 | `GENERATE_MAX_TOKENS` | `32000` | generation `max_tokens` |
 | `CACHE_TTL` | `1h` | `5m` or `1h` cache_control TTL on the prefix |
 | `PREFIX_MAX_TOKENS`, `PREFIX_WARN_TOKENS` | `90000`, `60000` | prefix size guard |

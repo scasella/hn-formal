@@ -189,7 +189,7 @@ export async function generateCandidate(
     max_tokens: GENERATE_MAX_TOKENS,
     system,
     messages,
-    output_config: { format: zodOutputFormat(CandidateOutput), effort: effortFor("GENERATE_EFFORT", "medium") },
+    output_config: { format: zodOutputFormat(CandidateOutput), effort: effortFor("GENERATE_EFFORT", "high") },
   });
   const final = await stream.finalMessage();
   const cost = costOf(final.usage);
