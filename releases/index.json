@@ -1,5 +1,39 @@
 [
   {
+    "id": "20261009-153451-10b7ae6",
+    "runId": "20261009-151930",
+    "specVersion": 2,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 8.51,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 72,
+      "notes": "The front page has a clear hierarchy: a large lead story, bold serif titles, then small-caps metadata, and a tidy two-column grid with consistent rules between entries. The palette is restrained cream with dark green and rust accents, which feels intentional and still reads as a news page. The 375px view stacks cleanly but metadata wraps awkwardly (points and comments split onto a second line) and the lead title is heavy. On the thread page, the green left bars and progressive indentation make nesting depth legible, though the nested indents shrink the measure quickly and deep replies look crowded toward the right edge."
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 0,
+    "costUsd": 0.0111,
+    "previousRelease": "20261009-134625-6643a1d",
+    "diffStat": "+8 -8",
+    "candidate": 1,
+    "brief": "newspaper broadsheet: serif masthead, columns, hairline rules, small caps for metadata",
+    "domChanged": true,
+    "createdAt": 1791560091
+  },
+  {
     "id": "20261009-134625-6643a1d",
     "runId": "20261009-133916",
     "specVersion": 2,
