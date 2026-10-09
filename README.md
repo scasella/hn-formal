@@ -5,13 +5,14 @@
 <!-- generation:start -->
 ## Current generation
 
-[![Front page of generation 20261009-153451-10b7ae6 at 1280px](releases/20261009-153451-10b7ae6/index-1280.png)](https://scasella.github.io/hn-formal/)
+[![Front page of generation 20261009-235900-437def3 at 1280px](releases/20261009-235900-437def3/index-1280.png)](https://scasella.github.io/hn-formal/)
 
-Generation `20261009-153451-10b7ae6` (2026-10-09 15:34 UTC) · brief "newspaper broadsheet: serif masthead, columns, hairline rules, small caps for metadata" · judge 72/100 · spec v2 · new DOM · 0 repair rounds · $0.01 · [report](releases/20261009-153451-10b7ae6/report.json)
+Generation `20261009-235900-437def3` (2026-10-09 23:59 UTC) · brief "pastel soft UI" · judge 72/100 · novelty 74 · spec v2 · new DOM · 1 repair round · $0.04 · [report](releases/20261009-235900-437def3/report.json)
 
 ### Previous generations
 
 <p>
+<a href="releases/20261009-153451-10b7ae6/"><img src="releases/20261009-153451-10b7ae6/index-375.png" width="120" alt="Generation 20261009-153451-10b7ae6, judge 72"></a>
 <a href="releases/20261009-134625-6643a1d/"><img src="releases/20261009-134625-6643a1d/index-375.png" width="120" alt="Generation 20261009-134625-6643a1d, judge 72"></a>
 <a href="releases/20261009-105817-d1c2f42/"><img src="releases/20261009-105817-d1c2f42/index-375.png" width="120" alt="Generation 20261009-105817-d1c2f42, judge 74"></a>
 <a href="releases/20261009-003724-49aa276/"><img src="releases/20261009-003724-49aa276/index-375.png" width="120" alt="Generation 20261009-003724-49aa276, judge 68"></a>

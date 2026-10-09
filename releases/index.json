@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261009-235900-437def3",
+    "runId": "20261009-234422",
+    "specVersion": 2,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 6.46,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 72,
+      "notes": "The front page follows the pastel soft UI brief well: rounded pastel cards with gentle shadows, dark text, and pill-shaped score and comment tags on a three-column masonry grid. The brief's required structure is only partly visible, since the domain sits in a small monospace tag but the comment count is a pill rather than clearly inside a small element, and the thread page's comment nesting is shown only by indentation. At 375px the cards stack cleanly, though the nav pill wraps awkwardly and some comment pills break onto their own lines. Ranking is weaker than it could be because the cards have very uneven heights and large empty bottom areas.",
+      "adherence": 78,
+      "novelty": 74,
+      "craft": 62
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 1,
+    "costUsd": 0.0421,
+    "previousRelease": "20261009-153451-10b7ae6",
+    "diffStat": "+270 -89",
+    "candidate": 1,
+    "brief": "pastel soft UI",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1791590340
+  },
+  {
     "id": "20261009-153451-10b7ae6",
     "runId": "20261009-151930",
     "specVersion": 2,
