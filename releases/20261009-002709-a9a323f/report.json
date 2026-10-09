@@ -1,0 +1,32 @@
+{
+  "id": "20261009-002709-a9a323f",
+  "runId": "20261009-002502",
+  "specVersion": 1,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 6.8,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 62,
+    "notes": "The front page is dense and very compact, with monospace type that reads clearly, but the line height is tight and the metadata sits inline with titles so it competes with them; wrapped meta lines break awkwardly (e.g. 'comments' orphaned on the next line). The thread page shows nesting via indented left rules, which makes depth visible, though the comment text is a long undifferentiated column with little spacing between comments. Palette is restrained cream and brown with a single accent, which feels intentional and news-like. The 375px front page reflows acceptably but gets long and cramped, with metadata wrapping into ragged lines."
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 0,
+  "costUsd": 0.0169,
+  "previousRelease": null,
+  "diffStat": "+78 -78",
+  "candidate": 0,
+  "createdAt": 1791505629
+}
