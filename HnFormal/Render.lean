@@ -30,12 +30,12 @@ def pageHead (titleParts : List String) : Dom :=
     .el "meta" [("name", "viewport"), ("content", "width=device-width, initial-scale=1")] [],
     .el "meta" [("http-equiv", "Content-Security-Policy"), ("content", cspContent)] [],
     .el "title" [] (titleParts.map Dom.text),
-    .el "link" [("rel", "stylesheet"), ("href", "/style.css")] []]
+    .el "link" [("rel", "stylesheet"), ("href", styleHref)] []]
 
 def topNav : Dom :=
   .el "header" [] [
     .el "nav" [] [
-      a "/" "HN, formally", .text " | ",
+      a homeHref "HN, formally", .text " | ",
       a (hnBase ++ "newest") "new", .text " | ",
       a (hnBase ++ "front") "past", .text " | ",
       a (hnBase ++ "newcomments") "comments", .text " | ",
@@ -48,7 +48,7 @@ def footer : Dom :=
   .el "footer" [] [
     .text "Unofficial. Not affiliated with Y Combinator. ",
     a hnBase "The original is at", .text " ", a hnBase "news.ycombinator.com", .text ". ",
-    a "/loop/" "how this works"]
+    a loopHref "how this works"]
 
 /-- Score, author, age, comments. Each optional field appears iff the API
 had it. -/

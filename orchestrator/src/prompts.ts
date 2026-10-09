@@ -117,7 +117,7 @@ Both files are written verbatim. Output the whole file every time, never a diff 
 
 ## Hard requirements for style.css (tier 2, checked in a browser)
 
-- No \`content:\` with text (empty \`content: ""\` is allowed). No \`url(\` except under \`/fonts/\`. No \`@import\`. No external origins of any kind.
+- No \`content:\` with text (empty \`content: ""\` is allowed). No \`url(\` except under \`/hn-formal/fonts/\` (self-hosted fonts only; none exist yet, so in practice no \`url(\` at all). No \`@import\`. No external origins of any kind.
 - Every text node must have contrast >= 4.5:1 against its effective background (3:1 for text >= 24px, or bold >= 18.66px). Avoid text over gradients or images: the checker cannot compute contrast there and fails it.
 - At a 375px viewport the page must not scroll horizontally (document.scrollWidth <= 375). Long words, URLs and code must wrap or be clipped with overflow-wrap / overflow-x on the element.
 - vnu (the W3C validator) must report zero errors; axe-core must report zero serious/critical violations.

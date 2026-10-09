@@ -20,6 +20,25 @@ trusted base; [CONTRACT.md](CONTRACT.md) for how the pieces fit.
 - The loop (`orchestrator/`, `.github/workflows/redesign.yml`) is wired but
   needs an `ANTHROPIC_API_KEY` repository secret before its first run.
 
+## Operating the loop
+
+1. In the Anthropic Console, create a dedicated workspace with a spend limit
+   (a second cap behind the orchestrator's own `RUN_CAP_USD` / `MONTH_CAP_USD`)
+   and an API key in it. Add the key as the repository secret
+   `ANTHROPIC_API_KEY`. Until it exists, the daily `redesign` run records a
+   failed run on the dashboard every day; commit an empty `KILL_SWITCH` file
+   at the repo root to pause every workflow instead.
+2. First real run, before trusting the cron: dispatch `redesign` with
+   `candidates=1`, `rounds=2`, then confirm in the job log that round 2 shows
+   `cache_read_input_tokens > 0` and that the recorded cost matches the
+   Console. No live Claude call has been exercised yet; every Claude path
+   was tested with a mock.
+3. `refresh` runs every 15 minutes and deploys to GitHub Pages
+   (https://scasella.github.io/hn-formal/). `redesign` runs daily at 03:17 UTC.
+   `baseline` is manual only.
+4. Rollback: `npm --prefix orchestrator run cli -- rollback <releaseId>`, then
+   commit the two restored files.
+
 ## Build and run
 
 ```bash

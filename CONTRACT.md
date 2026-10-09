@@ -18,7 +18,7 @@ orchestrator/        TypeScript CLI (fetch, candidates, tier2, judge, release)
 releases/            one dir per release, see below; releases/index.json
 runs/                one JSON per redesign run (passed or failed); runs/index.json
 fixtures/baseline/   manually fetched HN HTML + timestamp, for the baseline check
-.github/workflows/   refresh.yml, redesign.yml, baseline.yml, pages.yml, ci.yml
+.github/workflows/   refresh.yml (fetch, build, deploy Pages), redesign.yml, baseline.yml, ci.yml
 scripts/             css-lint, axiom-check, misc shell
 ```
 
@@ -58,8 +58,9 @@ File produced by `orchestrator fetch`, consumed by `hnformal render`:
 hnformal render <data.json> <outdir>
 ```
 Writes `<outdir>/index.html` and `<outdir>/item/<id>.html` for each of the 30
-top ids. Every page links the stylesheet as `/style.css` (absolute from site
-root) and nothing else external. Exit 0 on success, 2 on malformed data JSON.
+top ids. Every page links the stylesheet as `Spec.styleHref`
+(`/hn-formal/style.css`: root-relative including the Pages prefix
+`Spec.sitePrefix`) and nothing else external. Exit 0 on success, 2 on malformed data JSON.
 
 ```
 hnformal check <data.json>
@@ -82,7 +83,7 @@ begin with `set_option maxHeartbeats 2000000` and `set_option maxRecDepth
 
 1. Write both files into a clean checkout of main.
 2. `scripts/css-lint.sh site/style.css`  (no non-empty `content:`, no `url(`
-   outside `/fonts/`, no `@import`). Exit 1 = fail with reason on stdout.
+   outside `/hn-formal/fonts/`, no `@import`). Exit 1 = fail with reason on stdout.
 3. `lake build` (exit != 0 => tier-1 fail; stderr is the repair signal).
 4. `scripts/axiom-check.sh` runs `lake env lean scripts/Axioms.lean` which
    does `#print axioms HnFormal.Render.render_ok` and fails if the set is not a
@@ -147,13 +148,19 @@ which re-copies that release's two files and commits.
 ## Dashboard
 
 Static files in `dashboard/`, copied to `<site>/loop/`. Reads
-`/loop/releases.json` and `/loop/runs.json` (copies of the two index files
+`releases.json` and `runs.json` relative to itself (copies of the two index files
 made at deploy time) and renders: current release, gallery of all releases
 with screenshots and scores, run history incl. failures, spec version,
 trusted-base list (static text), link to repo.
 
 ## Site layout on Pages
 
+Served under `Spec.sitePrefix` = `/hn-formal` (https://scasella.github.io/hn-formal/):
+
 ```
-/index.html  /item/<id>.html  /style.css  /fonts/*  /loop/*  /spec/Spec.lean (copy)
+/hn-formal/index.html  /hn-formal/item/<id>.html  /hn-formal/style.css
+/hn-formal/fonts/*  /hn-formal/loop/*  /hn-formal/spec/Spec.lean (copy)
 ```
+
+The local tier-2 server serves the site under the same prefix and 404s
+unprefixed paths, so a wrong href fails locally exactly as it would on Pages.

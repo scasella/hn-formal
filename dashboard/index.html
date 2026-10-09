@@ -2,7 +2,10 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <!-- Served under /loop/. No inline script or style anywhere on this page:
+  <!-- Served at <prefix>/loop/index.html (the site lives under a Pages path
+       prefix such as /hn-formal), so every site link and resource here is
+       relative to this document, never root-relative.
+       No inline script or style anywhere on this page:
        script-src/style-src 'self' only. connect-src 'self' is needed for the
        two JSON fetches; the Lean-rendered pages carry a stricter policy. -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'">
@@ -10,17 +13,17 @@
   <meta name="color-scheme" content="light dark">
   <meta name="description" content="Control panel for the hn-formal redesign loop: releases, judge scores, tier-1 axioms, tier-2 checks, and run history.">
   <title>Loop · HN, formally</title>
-  <link rel="stylesheet" href="/loop/loop.css">
+  <link rel="stylesheet" href="loop.css">
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
   <header class="site-header">
     <div class="wrap header-row">
-      <p class="brand"><a href="/">HN, formally</a> <span class="brand-sub">/ loop</span></p>
+      <p class="brand"><a href="../">HN, formally</a> <span class="brand-sub">/ loop</span></p>
       <nav aria-label="Site">
-        <a href="/">Site</a>
+        <a href="../">Site</a>
         <a href="https://github.com/scasella/hn-formal">Repository</a>
-        <a href="/spec/Spec.lean">Spec.lean</a>
+        <a href="../spec/Spec.lean">Spec.lean</a>
         <a href="#runs">Runs</a>
       </nav>
     </div>
@@ -52,7 +55,7 @@
     <section class="panel" aria-labelledby="current-title">
       <div class="panel-head">
         <h2 id="current-title">Current release</h2>
-        <p class="panel-note">The build serving <a href="/">/</a> right now.</p>
+        <p class="panel-note">The build serving <a href="../">the site</a> right now.</p>
       </div>
       <div id="current" class="current">
         <p class="empty" id="current-loading">Loading…</p>
@@ -123,7 +126,8 @@
         </ul>
         <h3 class="mt"><span class="tag tag-trusted">Trusted</span> Not proven, assumed correct</h3>
         <ul>
-          <li>The Lean 4 kernel.</li>
+          <li>The Lean 4 kernel (checks the proof).</li>
+          <li>The Lean compiler and runtime (the proof is about the source; the compiled binary produces the bytes).</li>
           <li>Lean's JSON decoder into the Item type.</li>
           <li>The fetcher (HN Firebase API to data JSON).</li>
           <li>GitHub Actions.</li>
@@ -137,10 +141,10 @@
   <footer class="site-footer">
     <div class="wrap">
       <p>Unofficial. Not affiliated with Y Combinator. The original is at <a href="https://news.ycombinator.com">https://news.ycombinator.com</a>.</p>
-      <p><a href="https://github.com/scasella/hn-formal">github.com/scasella/hn-formal</a> · Apache-2.0 · <a href="/spec/Spec.lean">Spec.lean</a> · <a href="/loop/releases.json">releases.json</a> · <a href="/loop/runs.json">runs.json</a></p>
+      <p><a href="https://github.com/scasella/hn-formal">github.com/scasella/hn-formal</a> · Apache-2.0 · <a href="../spec/Spec.lean">Spec.lean</a> · <a href="releases.json">releases.json</a> · <a href="runs.json">runs.json</a></p>
     </div>
   </footer>
 
-  <script src="/loop/loop.js" defer></script>
+  <script src="loop.js" defer></script>
 </body>
 </html>

@@ -48,7 +48,7 @@
         try {
           const u = new URL(ref, base);
           if (u.origin !== origin) problems.push(`external url() ${u.href} in stylesheet`);
-          else if (!u.pathname.startsWith("/fonts/")) problems.push(`url() outside /fonts/ in stylesheet: ${u.pathname}`);
+          else if (!u.pathname.startsWith("/hn-formal/fonts/")) problems.push(`url() outside /hn-formal/fonts/ in stylesheet: ${u.pathname}`);
         } catch {
           problems.push(`unparseable url() ${ref}`);
         }

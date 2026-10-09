@@ -36,7 +36,7 @@ export function cssLint(css: string): string[] {
   }
   for (const m of stripped.matchAll(/url\(\s*(['"]?)([^'")]*)\1\s*\)/gi)) {
     const ref = m[2]!.trim();
-    if (!ref.startsWith("/fonts/")) problems.push(`url() outside /fonts/ not allowed: ${ref}`);
+    if (!ref.startsWith("/hn-formal/fonts/")) problems.push(`url() outside /hn-formal/fonts/ not allowed: ${ref}`);
   }
   return problems;
 }

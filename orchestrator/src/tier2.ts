@@ -131,7 +131,7 @@ export async function runTier2(opts: Tier2Options): Promise<Tier2Report> {
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 } });
     const narrow = await browser.newContext({ viewport: { width: 375, height: 800 }, isMobile: false });
     for (const rel of sample) {
-      const url = `${server.url}/${rel}`;
+      const url = server.pageUrl(rel);
       const page: Page = await ctx.newPage();
       const resp = await page.goto(url, { waitUntil: "load" });
       if (!resp || !resp.ok()) {

@@ -29,7 +29,9 @@ Two tiers, labeled honestly on the site:
 - **Tier 2, checked per release in a browser:** contrast ratio, reflow at
   375px, vnu validation, axe. Never called "proven".
 
-Trusted base, published on the site: Lean kernel, Lean's JSON decoder into the
+Trusted base, published on the site: the Lean kernel (checks the proof), the
+Lean compiler and runtime (the kernel checks the proof about the source; the
+compiled binary is what produces the bytes), Lean's JSON decoder into the
 Item type, the fetcher, GitHub Actions, the OS. Everything else is proven.
 
 Public fidelity claim: faithful to `topstories[0:30]` and `item/{id}` at render

@@ -81,17 +81,21 @@ jobs:
         if: steps.kill.outputs.paused != 'true'
         run: npm --prefix orchestrator run cli -- fetch --out data/latest.json --cache data/cache
 
-      - name: Commit and push data branch (only if changed)
+      - name: Publish data branch as a single root commit (only if changed)
         if: steps.kill.outputs.paused != 'true'
         run: |
           set -euo pipefail
+          # The data branch is a cache, not a history: every refresh replaces
+          # it with one parentless commit and force-pushes, so the branch
+          # stays constant size instead of growing by ~1 MB every 15 minutes.
           cd data
           git add -A
-          if git diff --cached --quiet; then
-            echo "data unchanged; nothing to commit"
+          if git rev-parse --verify HEAD >/dev/null 2>&1 && git diff --cached --quiet; then
+            echo "data unchanged; nothing to publish"
           else
-            git commit --quiet -m "data: refresh $(date -u +%Y-%m-%dT%H:%M:%SZ) [bot]"
-            git push --quiet origin HEAD:refs/heads/data
+            tree="$(git write-tree)"
+            commit="$(git commit-tree "$tree" -m "data: refresh $(date -u +%Y-%m-%dT%H:%M:%SZ) [bot]")"
+            git push --force --quiet origin "$commit:refs/heads/data"
           fi
 
       - name: Build site

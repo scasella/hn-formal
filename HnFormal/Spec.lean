@@ -10,6 +10,10 @@ renderer must never concatenate strings; it emits adjacent text nodes
 instead (`[.text (displayTitle s), .text " | HN, formally"]`), which
 serialize to the same bytes.
 
+Deployment: `sitePrefix` is the path the site is served under. Changing it is
+a spec version bump (hrefs are part of the claim) and implies a baseline
+re-run.
+
 Markers: the renderer tags each story's container with
 `data-hn-story="<id>"` and each comment's container with
 `data-hn-comment="<id>"`, and tags data-bearing elements inside with
@@ -22,7 +26,17 @@ namespace Spec
 def version : Nat := 1
 
 def hnBase : String := "https://news.ycombinator.com/"
-@[irreducible] def itemHref (id : Nat) : String := "/item/" ++ toString id ++ ".html"
+
+/-- Root-relative path prefix the site is served under (GitHub project
+Pages: `https://scasella.github.io/hn-formal/`). Empty for a root deploy. -/
+def sitePrefix : String := "/hn-formal"
+
+def homeHref : String := sitePrefix ++ "/"
+def styleHref : String := sitePrefix ++ "/style.css"
+def loopHref : String := sitePrefix ++ "/loop/"
+def specHref : String := sitePrefix ++ "/spec/Spec.lean"
+
+@[irreducible] def itemHref (id : Nat) : String := sitePrefix ++ "/item/" ++ toString id ++ ".html"
 @[irreducible] def userHref (u : String) : String := hnBase ++ "user?id=" ++ u
 @[irreducible] def hnItemHref (id : Nat) : String := hnBase ++ "item?id=" ++ toString id
 
@@ -120,7 +134,7 @@ def nodeOk : Dom → Bool
   | .el t a _ => allowedTags.contains t && a.all attrOk
 
 def linkTagOk (l : Dom) : Bool :=
-  l.attr "rel" == some "stylesheet" && l.attr "href" == some "/style.css"
+  l.attr "rel" == some "stylesheet" && l.attr "href" == some styleHref
 
 def anchorNamed (a : Dom) : Bool :=
   !(trimS a.textContent).isEmpty || (a.attr "aria-label").isSome
@@ -147,8 +161,8 @@ def itemBody (i : Item) : List Dom := Sanitize.body (i.text.getD "")
 
 /-- Hrefs the renderer may emit that are not tied to an item. -/
 def fixedHrefs : List String :=
-  ["/", "/index.html", "#main", "#top", "#content", "#stories", "#comments",
-   "/loop/", "/loop/index.html", "/spec/Spec.lean",
+  [homeHref, sitePrefix ++ "/index.html", "#main", "#top", "#content", "#stories", "#comments",
+   loopHref, sitePrefix ++ "/loop/index.html", specHref,
    "https://github.com/scasella/hn-formal",
    hnBase, hnBase ++ "news", hnBase ++ "newest", hnBase ++ "front",
    hnBase ++ "newcomments", hnBase ++ "ask", hnBase ++ "show", hnBase ++ "jobs",

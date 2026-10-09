@@ -28,7 +28,7 @@ export async function takeScreenshots(siteDir: string, shotsDir: string, browser
     const shoot = async (rel: string, width: number, height: number, out: string) => {
       const ctx = await b.newContext({ viewport: { width, height } });
       const page = await ctx.newPage();
-      await page.goto(`${server.url}/${rel}`, { waitUntil: "load" });
+      await page.goto(server.pageUrl(rel), { waitUntil: "load" });
       await page.screenshot({ path: out, fullPage: false });
       await ctx.close();
     };

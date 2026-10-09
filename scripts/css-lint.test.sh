@@ -46,9 +46,9 @@ expect pass content_multiline 'li::before {
   content:
     "";
 }'
-expect pass url_fonts_bare '@font-face { font-family: X; src: url(/fonts/x.woff2) format("woff2"); }'
-expect pass url_fonts_dq '@font-face { src: url("/fonts/x.woff2"); }'
-expect pass url_fonts_sq "@font-face { src: url( '/fonts/x.woff2' ); }"
+expect pass url_fonts_bare '@font-face { font-family: X; src: url(/hn-formal/fonts/x.woff2) format("woff2"); }'
+expect pass url_fonts_dq '@font-face { src: url("/hn-formal/fonts/x.woff2"); }'
+expect pass url_fonts_sq "@font-face { src: url( '/hn-formal/fonts/x.woff2' ); }"
 expect pass comment_with_import '/* @import "evil.css"; content: "hi"; url(https://x) */ body { margin: 0 }'
 expect pass comment_multiline '/* line one
 @import url(https://evil);
@@ -58,7 +58,7 @@ expect pass unterminated_comment_hides_rest 'body { margin: 0 } /* @import "x";'
 
 # ---- failing fixtures -------------------------------------------------------
 expect fail import_plain '@import "other.css";'
-expect fail import_url '@import url(/fonts/x.css);'
+expect fail import_url '@import url(/hn-formal/fonts/x.css);'
 expect fail import_upper '@IMPORT "x.css";'
 expect fail content_word 'a::after { content: "hello"; }'
 expect fail content_single_letter 'a::after { content: "a"; }'
@@ -67,7 +67,7 @@ expect fail content_unquoted_word 'a::after { content: hello; }'
 expect fail content_open_quote 'q::before { content: open-quote; }'
 expect fail content_escape_plus_letter 'q::before { content: "\201C" "x"; }'
 expect fail content_escape_then_letters 'q::before { content: "\201Cfoo"; }'
-expect fail content_url 'a::after { content: url(/fonts/x.png); }'
+expect fail content_url 'a::after { content: url(/hn-formal/fonts/x.png); }'
 expect fail content_empty_unquoted 'a::after { content: ; }'
 expect fail content_counter_then_word 'li::before { content: counter(item) "pts"; }'
 expect fail content_unbalanced_quote 'li::before { content: "; }'
@@ -75,13 +75,14 @@ expect fail url_https '.x { background: url(https://example.com/a.png); }'
 expect fail url_data '.x { background: url(data:image/png;base64,AAAA); }'
 expect fail url_relative '.x { background: url(a.png); }'
 expect fail url_root_not_fonts '.x { background: url(/images/a.png); }'
-expect fail url_fonts_traversal '@font-face { src: url(/fonts/../x.woff2); }'
+expect fail url_fonts_traversal '@font-face { src: url(/hn-formal/fonts/../x.woff2); }'
+expect fail url_fonts_unprefixed '@font-face { src: url(/fonts/x.woff2); }'
 expect fail url_fonts_prefix_trick '@font-face { src: url(/fontsx/x.woff2); }'
 expect fail url_uppercase '.x { background: URL(HTTPS://EXAMPLE.COM/A.PNG); }'
-expect fail url_unterminated '.x { background: url(/fonts/x.woff2 ; }'
+expect fail url_unterminated '.x { background: url(/hn-formal/fonts/x.woff2 ; }'
 expect fail expression '.x { width: expression(document.body.clientWidth); }'
-expect fail behavior '.x { behavior: url(/fonts/x.htc); }'
-expect fail moz_binding '.x { -moz-binding: url(/fonts/x.xml#y); }'
+expect fail behavior '.x { behavior: url(/hn-formal/fonts/x.htc); }'
+expect fail moz_binding '.x { -moz-binding: url(/hn-formal/fonts/x.xml#y); }'
 expect fail escape_outside_content '.x { background: \75rl(https://evil); }'
 expect fail missing_file_arg_handled_elsewhere '@import "x";'
 

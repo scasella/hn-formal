@@ -12,7 +12,7 @@
 #     characters are backslash escapes (e.g. "\201C", "\2014 "). Any letter or
 #     digit outside a `\` escape is rejected, so pseudo-elements cannot inject
 #     copy that bypasses the proven DOM.
-#   - every `url(` argument must start with `/fonts/` (optionally quoted) and
+#   - every `url(` argument must start with `/hn-formal/fonts/` (the site prefix) (optionally quoted) and
 #     must not contain `..`
 #   - no `expression(`, `behavior:`, `-moz-binding`
 #   - no backslash escapes outside `content:` values (an escaped `\75rl(` is
@@ -98,15 +98,15 @@ if printf '%s' "$without_content" | grep -q '\\'; then
   fail "backslash escapes are only allowed inside content: values"
 fi
 
-# 5. url( arguments must start with /fonts/ and contain no '..'.
+# 5. url( arguments must start with /hn-formal/fonts/ and contain no '..'.
 urls="$(printf '%s\n' "$lower" | grep -o 'url([^)]*)' || true)"
 if [ -n "$urls" ]; then
   while IFS= read -r u; do
     [ -z "$u" ] && continue
     arg="$(printf '%s' "$u" | sed -E 's/^url\([[:space:]]*//; s/[[:space:]]*\)$//; s/^["'"'"']//; s/["'"'"']$//; s/[[:space:]]*$//')"
     case "$arg" in
-      /fonts/*) ;;
-      *) fail "url() outside /fonts/ is not allowed: $u" ;;
+      /hn-formal/fonts/*) ;;
+      *) fail "url() outside /hn-formal/fonts/ is not allowed: $u" ;;
     esac
     case "$arg" in
       *..*) fail "url() must not contain '..': $u" ;;

@@ -1,5 +1,7 @@
-/* hn-formal loop dashboard. Reads /loop/releases.json and /loop/runs.json
-   (CONTRACT.md shapes) and fills the static page. All data is inserted with
+/* hn-formal loop dashboard. Served at <prefix>/loop/index.html; reads
+   releases.json and runs.json (CONTRACT.md shapes) from next to this document
+   and fills the static page. Every site URL here is relative to the document,
+   so the Pages path prefix (/hn-formal) needs no configuration. All data is inserted with
    textContent; nothing from the JSON is ever parsed as HTML. */
 (function () {
   'use strict';
@@ -85,7 +87,7 @@
   }
 
   function screenshot(id, file, alt, cls) {
-    var img = el('img', { 'class': cls || 'shot', src: '/loop/releases/' + encodeURIComponent(id) + '/' + file, alt: alt, loading: 'lazy', decoding: 'async' });
+    var img = el('img', { 'class': cls || 'shot', src: 'releases/' + encodeURIComponent(id) + '/' + file, alt: alt, loading: 'lazy', decoding: 'async' });
     img.addEventListener('error', function () {
       var ph = el('div', { 'class': 'shot-missing', text: 'screenshot missing' });
       if (img.parentNode) img.parentNode.replaceChild(ph, img);
@@ -137,9 +139,9 @@
     var right = el('div', null, [meta]);
     if (rel.judge && rel.judge.notes) right.appendChild(el('p', { 'class': 'notes', text: rel.judge.notes }));
     right.appendChild(el('div', { 'class': 'actions' }, [
-      el('a', { href: '/', text: 'Open the site' }),
+      el('a', { href: '../', text: 'Open the site' }),
       el('a', { href: 'https://github.com/scasella/hn-formal/tree/main/releases/' + encodeURIComponent(rel.id), text: 'Release files on GitHub' }),
-      el('a', { href: '/loop/releases/' + encodeURIComponent(rel.id) + '/index-375.png', text: '375px screenshot' })
+      el('a', { href: 'releases/' + encodeURIComponent(rel.id) + '/index-375.png', text: '375px screenshot' })
     ]));
     box.appendChild(left);
     box.appendChild(right);
@@ -265,7 +267,7 @@
     box.appendChild(el('p', { 'class': 'error', text: 'Could not load data: ' + (err && err.message ? err.message : String(err)) }));
   }
 
-  load('/loop/releases.json').then(function (releases) {
+  load('releases.json').then(function (releases) {
     $('stat-releases').textContent = String(releases.length);
     var cur = releases[0] || null;
     $('stat-spec').textContent = cur && isNum(cur.specVersion) ? 'v' + cur.specVersion : '–';
@@ -273,7 +275,7 @@
     renderGallery(releases);
   }).catch(function (e) { fail('current', e); fail('gallery', e); });
 
-  load('/loop/runs.json').then(function (runs) {
+  load('runs.json').then(function (runs) {
     $('stat-runs').textContent = String(runs.length);
     renderRuns(runs);
   }).catch(function (e) {

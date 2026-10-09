@@ -68,8 +68,10 @@ crashed; a failed candidate is a normal result.
 
 ### `tier2 --site out/ --out report.json [--all-pages]`
 
-Playwright + Chromium over a local static server rooted at `--site` (pages
-reference `/style.css`):
+Playwright + Chromium over a local static server rooted at `--site`. The server
+strips the Pages prefix `SITE_PREFIX` (default `/hn-formal`) so root-relative
+links such as `/hn-formal/style.css` resolve, and every page is opened at
+`http://127.0.0.1:<port>/hn-formal/<page>`, exactly as it will be on Pages:
 
 - vnu.jar on every html file (downloaded to `orchestrator/.cache/vnu.jar` on
   first use; `VNU_JAR` to point at an existing jar): zero errors.
@@ -187,6 +189,7 @@ Prints month-to-date spend from `runs/spend-YYYY-MM.json`.
 | `MAX_COMMENTS_PER_STORY`, `MAX_DEPTH` | `400`, `50` | fetch caps |
 | `ITEM_TTL_SECONDS`, `OLD_ITEM_TTL_SECONDS` | `900`, `86400` | item cache TTLs |
 | `FETCH_CONCURRENCY` | `16` | fetch |
+| `SITE_PREFIX` | `/hn-formal` | `tier2`, `judge` (and `candidate`/`redesign` through them): Pages path prefix the local static server strips (`/hn-formal/style.css` -> `<site>/style.css`; unprefixed paths still served) and the pages are opened under; normalized to leading slash, no trailing slash; set to the empty string for a root-served site |
 | `VNU_JAR`, `VNU_URL` | `.cache/vnu.jar`, validator "latest" release | tier2 |
 | `SPEC_VERSION` | `1` | release report |
 

@@ -31,7 +31,7 @@ test("costOf: cache read and the >100K rate card", () => {
 
 test("cssLint mirrors the CONTRACT rules", () => {
   assert.deepEqual(cssLint('a::before { content: ""; } b { content: none }'), []);
-  assert.deepEqual(cssLint("@font-face { src: url(/fonts/x.woff2) }"), []);
+  assert.deepEqual(cssLint("@font-face { src: url(/hn-formal/fonts/x.woff2) }"), []);
   assert.equal(cssLint('a::before { content: "hi" }').length, 1);
   assert.equal(cssLint("a { background: url(https://x.com/i.png) }").length, 1);
   assert.equal(cssLint("a { background: url('/img/i.png') }").length, 1);
@@ -125,4 +125,44 @@ test("validateData enforces the CONTRACT shape", () => {
   validateData({ fetchedAt: 1, top, items });
   assert.throws(() => validateData({ fetchedAt: 1, top: top.slice(0, 29), items }));
   assert.throws(() => validateData({ fetchedAt: 1, top, items: { ...items, "31": { id: 32, type: "story" } } }));
+});
+
+test("SITE_PREFIX normalization and request mapping", async () => {
+  const { normalizePrefix, stripPrefix, serveStatic } = await import("../src/server.js");
+  assert.equal(normalizePrefix(undefined), "/hn-formal");
+  assert.equal(normalizePrefix(""), "");
+  assert.equal(normalizePrefix("/"), "");
+  assert.equal(normalizePrefix("hn-formal"), "/hn-formal");
+  assert.equal(normalizePrefix("/hn-formal/"), "/hn-formal");
+  assert.equal(normalizePrefix("//x//"), "/x");
+  assert.equal(stripPrefix("/hn-formal/style.css", "/hn-formal"), "/style.css");
+  assert.equal(stripPrefix("/hn-formal/", "/hn-formal"), "/");
+  assert.equal(stripPrefix("/hn-formal", "/hn-formal"), "/");
+  assert.equal(stripPrefix("/hn-formalx/a", "/hn-formal"), null);
+  assert.equal(stripPrefix("/style.css", "/hn-formal"), null); // outside the prefix: 404 like Pages
+  assert.equal(stripPrefix("/hn-formal/style.css", ""), "/hn-formal/style.css");
+
+  const site = new URL("./fixture-site", import.meta.url).pathname;
+  const server = await serveStatic(site, "/hn-formal");
+  try {
+    assert.equal(server.pageUrl("index.html"), `${server.url}/hn-formal/index.html`);
+    const get = async (p: string) => (await fetch(server.url + p)).status;
+    assert.equal(await get("/hn-formal/index.html"), 200);
+    assert.equal(await get("/hn-formal/style.css"), 200);
+    assert.equal(await get("/hn-formal/item/1.html"), 200);
+    assert.equal(await get("/hn-formal/"), 200);
+    assert.equal(await get("/hn-formal"), 200);
+    assert.equal(await get("/style.css"), 404); // unprefixed 404s, as on Pages
+    assert.equal(await get("/hn-formal/nope.html"), 404);
+    assert.equal(await get("/hn-formal/../../etc/passwd"), 404);
+  } finally {
+    await server.close();
+  }
+  const bare = await serveStatic(site, "");
+  try {
+    assert.equal(bare.pageUrl("index.html"), `${bare.url}/index.html`);
+    assert.equal((await fetch(bare.url + "/style.css")).status, 200);
+  } finally {
+    await bare.close();
+  }
 });
