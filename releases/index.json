@@ -1,5 +1,37 @@
 [
   {
+    "id": "20261009-003724-49aa276",
+    "runId": "20261009-003214",
+    "specVersion": 1,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 8.51,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 68,
+      "notes": "The front page uses a warm cream background with a serif face, bold titles, and small-caps metadata that stays visibly quieter than titles, giving a distinct newspaper-like point of view. Two columns with a rule divider and numbered entries make 30 stories skimmable at 1280px, though the page ends at about 1300px leaving a large empty area below. At 375px the single column works but metadata wraps awkwardly ('com-ments' breaks, orphaned words), and the nav wraps onto a second line. The thread page has clear nesting via left rules and indentation, but the depth lines are faint and the body text is long-measure at full width, reducing comfort."
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 0,
+    "costUsd": 0.0137,
+    "previousRelease": "20261009-002709-a9a323f",
+    "diffStat": "+136 -88",
+    "candidate": 1,
+    "createdAt": 1791506244
+  },
+  {
     "id": "20261009-002709-a9a323f",
     "runId": "20261009-002502",
     "specVersion": 1,

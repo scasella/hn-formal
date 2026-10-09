@@ -1,0 +1,30 @@
+{
+  "runId": "20261009-003214",
+  "startedAt": 1791505986,
+  "finishedAt": 1791506244,
+  "candidates": 2,
+  "passedTier1": 2,
+  "passedTier2": 2,
+  "released": "20261009-003724-49aa276",
+  "costUsd": 0.0313,
+  "calls": 4,
+  "stopReason": "released",
+  "perCandidate": [
+    {
+      "n": 0,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 62,
+      "lastError": ""
+    },
+    {
+      "n": 1,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 68,
+      "lastError": ""
+    }
+  ]
+}
