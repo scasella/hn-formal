@@ -4,6 +4,7 @@
 # Exit 1 if the diff base..head touches any path other than the LLM-editable
 # and record paths (CONTRACT.md "The only paths a candidate may change"):
 #   HnFormal/Render.lean   site/style.css   releases/**   runs/**   data/**
+#   README.md (its generation section is rewritten by the release step)
 # unless the head commit's message contains "[human]".
 #
 # Used by ci.yml on pushes to main by github-actions[bot], and by redesign.yml
@@ -32,7 +33,7 @@ if ! git rev-parse --verify --quiet "$base^{commit}" >/dev/null; then
 fi
 
 changed="$(git diff --name-only "$base" "$head")"
-bad="$(printf '%s\n' "$changed" | grep -v -E '^(HnFormal/Render\.lean|site/style\.css|releases/.+|runs/.+|data/.+)$' | grep -v '^$' || true)"
+bad="$(printf '%s\n' "$changed" | grep -v -E '^(HnFormal/Render\.lean|site/style\.css|README\.md|releases/.+|runs/.+|data/.+)$' | grep -v '^$' || true)"
 if [ -n "$bad" ]; then
   echo "path-guard: FAIL: diff $base..$head touches paths outside the allowed set:"
   printf '  %s\n' $bad

@@ -2,6 +2,7 @@ import fsp from "node:fs/promises";
 import path from "node:path";
 import type { CandidateRecord, ReleaseReport } from "./types.js";
 import { EDITABLE_FILES, fromRepo, repoRoot } from "./paths.js";
+import { updateReadme } from "./readme.js";
 import { diffStat, ensureDir, envInt, exists, gitShortSha, log, nowSec, readJson, readJsonOr, sha1Short, stamp, writeFileAtomic, writeJsonAtomic } from "./util.js";
 
 /** `def version : Nat := N` in HnFormal/Spec.lean; SPEC_VERSION overrides. */
@@ -68,6 +69,7 @@ export async function releaseFromCandidate(cand: CandidateRecord): Promise<{ rep
     previousRelease: index[0]?.id ?? null,
     diffStat: stat,
     candidate: cand.n,
+    brief: cand.brief,
     ...(cand.domChanged !== undefined ? { domChanged: cand.domChanged } : {}),
     createdAt: nowSec(),
   };
@@ -97,6 +99,7 @@ export async function releaseFromCandidate(cand: CandidateRecord): Promise<{ rep
   index.unshift(report);
   await writeJsonAtomic(releasesIndexPath(), index);
   written.push(releasesIndexPath());
+  if (await updateReadme(index)) written.push(fromRepo("README.md"));
   return { report, dir, paths: written };
 }
 
@@ -119,6 +122,9 @@ export async function cmdRollback(releaseId: string): Promise<string[]> {
   await ensureDir(path.dirname(dst2));
   await fsp.copyFile(src1, dst1);
   await fsp.copyFile(src2, dst2);
-  process.stdout.write(`rollback to ${releaseId}\n  ${dst1}\n  ${dst2}\n`);
-  return [dst1, dst2];
+  const out = [dst1, dst2];
+  // The README shows the generation in place, which is now this one.
+  if (await updateReadme(await readReleasesIndex(), { currentId: releaseId })) out.push(fromRepo("README.md"));
+  process.stdout.write(`rollback to ${releaseId}\n${out.map((p) => `  ${p}`).join("\n")}\n`);
+  return out;
 }

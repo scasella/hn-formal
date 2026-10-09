@@ -23,6 +23,13 @@ scripts/             css-lint, axiom-check, misc shell
 ```
 
 The only paths a candidate may change: `HnFormal/Render.lean`, `site/style.css`.
+The release step also rewrites the generation section of `README.md`
+(between `<!-- generation:start -->` and `<!-- generation:end -->`) from
+`releases/index.json`: the current release's screenshot linking to the live
+site, its id, brief, score, spec version and cost, and thumbnails of the
+previous six. That text is orchestrator-generated; model output (judge
+notes) never goes in. `npm run cli -- readme` regenerates it; `rollback`
+updates it too.
 CI (`ci.yml`) fails any PR or bot commit whose diff touches other paths unless
 the commit is tagged `[human]` in its message or authored by a human.
 

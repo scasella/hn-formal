@@ -218,3 +218,31 @@ test("specVersion comes from Spec.lean", async () => {
   const { specVersion } = await import("../src/release.js");
   assert.ok((await specVersion()) >= 2);
 });
+
+test("README generation section: current screenshot, previous thumbnails, no judge notes", async () => {
+  const { renderGenerationSection, updateReadme, README_START, README_END } = await import("../src/readme.js");
+  const rel = (id: string, score: number | null, extra: Record<string, unknown> = {}) =>
+    ({ id, runId: "R", specVersion: 2, tier1: { lakeBuild: "ok", axioms: [], selftest: "ok" }, tier2: { vnu: 0, axe: 0, contrastMin: 5, reflowWidth: 375, csp: "ok" },
+      judge: { score, notes: "SECRET-NOTES" }, model: "m", repairRounds: 1, costUsd: 0.0312, previousRelease: null, diffStat: "+1 -1", ...extra }) as any;
+  const reports = [rel("20261009-134625-aaaaaaa", 72, { brief: "cards <b>", domChanged: true }), rel("20261009-105817-bbbbbbb", 74), rel("20261009-003724-ccccccc", null)];
+  const sec = renderGenerationSection(reports);
+  assert.ok(sec.startsWith(README_START) && sec.endsWith(README_END));
+  assert.ok(sec.includes("releases/20261009-134625-aaaaaaa/index-1280.png"));
+  assert.ok(sec.includes('brief "cards b"') && sec.includes("judge 72/100") && sec.includes("new DOM") && sec.includes("1 repair round ·"));
+  assert.ok(sec.includes("releases/20261009-105817-bbbbbbb/index-375.png") && sec.includes("releases/20261009-003724-ccccccc/index-375.png"));
+  assert.ok(!sec.includes("SECRET-NOTES"));
+  // rollback target becomes current
+  assert.ok(renderGenerationSection(reports, "20261009-105817-bbbbbbb").includes("releases/20261009-105817-bbbbbbb/index-1280.png"));
+  const fs = await import("node:fs/promises");
+  const os = await import("node:os");
+  const path = await import("node:path");
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "hn-readme-"));
+  const p = path.join(dir, "README.md");
+  await fs.writeFile(p, `# x\n\n${README_START}\n${README_END}\n\nrest\n`);
+  assert.equal(await updateReadme(reports, { readmePath: p }), true);
+  assert.equal(await updateReadme(reports, { readmePath: p }), false);
+  const text = await fs.readFile(p, "utf8");
+  assert.ok(text.startsWith("# x\n\n") && text.endsWith("\n\nrest\n") && text.includes("## Current generation"));
+  await fs.writeFile(p, "# no markers\n");
+  assert.equal(await updateReadme(reports, { readmePath: p }), false);
+});

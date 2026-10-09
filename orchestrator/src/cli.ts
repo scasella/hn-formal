@@ -11,6 +11,7 @@ const USAGE = `usage: npm run cli -- <command> [options]
   aggregate  --run <runId> [--dir runs/<runId>/] [--no-release]
   release    --from runs/<runId>/cand-<i>.json
   rollback   <releaseId>
+  readme     (rewrite the generation section of README.md from releases/index.json)
   redesign   [--run <runId>] [--candidates 16] [--rounds 10] [--parallel 1] [--data data/latest.json]
   spend      [--month [YYYY-MM]]
 
@@ -101,6 +102,13 @@ async function main(argv: string[]): Promise<number> {
       if (!values.from) throw new Error("release: --from is required");
       const { cmdRelease } = await import("./release.js");
       await cmdRelease({ from: values.from });
+      return 0;
+    }
+    case "readme": {
+      const { readReleasesIndex } = await import("./release.js");
+      const { updateReadme } = await import("./readme.js");
+      const changed = await updateReadme(await readReleasesIndex());
+      process.stdout.write(changed ? "README.md generation section updated\n" : "README.md unchanged\n");
       return 0;
     }
     case "rollback": {

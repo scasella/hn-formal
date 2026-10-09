@@ -275,7 +275,7 @@ jobs:
           # intermediates stay in the artifacts, not in git.
           git add runs/*.json
           if [ -n "$released" ]; then
-            git add HnFormal/Render.lean site/style.css releases/
+            git add HnFormal/Render.lean site/style.css releases/ README.md
             msg="release: $released [bot]"
           else
             msg="run: $RUN_ID failed [bot]"

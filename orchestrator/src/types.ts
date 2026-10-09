@@ -157,6 +157,8 @@ export interface ReleaseReport {
   previousRelease: string | null;
   diffStat: string;
   candidate?: number;
+  /** The design brief the candidate was given (from the fixed list in prompts.ts). */
+  brief?: string;
   domChanged?: boolean;
   createdAt?: number;
 }
