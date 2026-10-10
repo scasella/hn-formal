@@ -1,7 +1,7 @@
 {
   "month": "2026-10",
-  "totalUsd": 0.787693,
-  "calls": 95,
+  "totalUsd": 1.042767,
+  "calls": 102,
   "runs": {
     "20261009-002502": {
       "costUsd": 0.016895,
@@ -194,7 +194,21 @@
           "calls": 2
         }
       }
+    },
+    "20261010-000025": {
+      "costUsd": 0.255074,
+      "calls": 7,
+      "perCandidate": {
+        "0": {
+          "costUsd": 0.157561,
+          "calls": 4
+        },
+        "1": {
+          "costUsd": 0.097513,
+          "calls": 3
+        }
+      }
     }
   },
-  "updatedAt": 1791590340
+  "updatedAt": 1791591957
 }

@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261010-002557-56bd5f6",
+    "runId": "20261010-000025",
+    "specVersion": 2,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 5.53,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 52,
+      "notes": "The pastel soft-card direction is clearly realized: rounded pastel cards with gentle shadows and dark text on the front page, and a soft card header on the thread page. However, the brief asks for pill-shaped tags for domain and comment count, and the comment count and domain do appear as pills, which is good, but the card layout is a single vertical stack rather than a distinctly soft-UI app surface, and avatar-like spacing is not evident. Novelty is limited because the page is still a single-column list of the same story rows as the live site, only restacked and recolored. At 375px the layout reflows cleanly with no overflow, though the metadata wraps awkwardly and the nav pills wrap onto two rows.",
+      "adherence": 62,
+      "novelty": 30,
+      "craft": 60
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 2,
+    "costUsd": 0.1576,
+    "previousRelease": "20261009-235900-437def3",
+    "diffStat": "+166 -208",
+    "candidate": 0,
+    "brief": "pastel soft UI",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1791591957
+  },
+  {
     "id": "20261009-235900-437def3",
     "runId": "20261009-234422",
     "specVersion": 2,
