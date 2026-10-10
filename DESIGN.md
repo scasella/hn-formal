@@ -169,7 +169,13 @@ with one URL per page).
 Consequence: `Render.lean` in every release before v3 does not prove under
 v3, so `rollback` to one of them breaks the build; `rollback` warns when the
 target's `specVersion` is older than the current spec. The baseline check
-(`baseline.yml`, manual) should be re-run once against the v3 renderer.
+(`baseline.yml`, manual; CONTRACT "Baseline check") was run once for v3 on
+2026-10-10 (fixture `fixtures/baseline/20261010-110651`): 30 stories and 30
+threads, no FAIL; every title, author and comment parent matched. The only
+systematic difference is `Spec.domainOf`, which keeps the host where HN
+strips subdomains (`news.vt.edu` -> `vt.edu`) and appends a path on
+multi-user hosts (`twitter.com/user`); left as is, since HN's rule needs a
+host list and the spec's rule is stated and proven.
 Like v2, this went to main directly as a `[human]` commit with the full
 local check (both renderers build, selftest, axiom check).
 

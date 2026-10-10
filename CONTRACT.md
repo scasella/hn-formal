@@ -17,7 +17,7 @@ dashboard/           fixed human-designed loop dashboard (static HTML+JS, reads 
 orchestrator/        TypeScript CLI (fetch, candidates, tier2, judge, release)
 releases/            one dir per release, see below; releases/index.json
 runs/                one JSON per redesign run (passed or failed); runs/index.json
-fixtures/baseline/   manually fetched HN HTML + timestamp, for the baseline check
+fixtures/baseline/   manually fetched HN HTML + timestamp + report.json, the baseline check
 .github/workflows/   refresh.yml (fetch, build, deploy Pages), redesign.yml, baseline.yml, ci.yml
 scripts/             css-lint, axiom-check, misc shell
 ```
@@ -216,3 +216,21 @@ control.
 
 The local tier-2 server serves the site under the same prefix and 404s
 unprefixed paths, so a wrong href fails locally exactly as it would on Pages.
+
+## Baseline check
+
+`npm run cli -- baseline --fixtures fixtures/baseline/<ts> [--out report.json]`
+(`orchestrator/src/baseline.ts`, run by `baseline.yml` once per spec
+version): fetches the fixture's 30 story ids and their comment trees from
+the API now, renders them with the proven binary, and compares against the
+fixture HTML. Only what is stable across the time gap is a FAIL: title and
+author text, the presence of a comments link (jobs have none), each common
+comment's parent, a page that parses to nothing, a missing story. WARN:
+HN's site string (HN strips subdomains and appends a path on multi-user
+hosts; `Spec.domainOf` keeps the host), an id the API no longer has,
+comments HN shows that we lack (deleted since, or the per-story cap). INFO:
+comments we have that HN lacks, sibling order (HN ranks by votes), and the
+fixture's overlap with the live top 30. Scores, counts, ages and hrefs are
+not compared. `report.json` is committed with the fixture; the command
+exits 1 on any FAIL.
+

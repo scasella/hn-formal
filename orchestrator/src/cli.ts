@@ -15,6 +15,7 @@ const USAGE = `usage: npm run cli -- <command> [options]
   rollback   <releaseId>
   readme     (rewrite the generation section of README.md from releases/index.json)
   site-extras --out out/   (feed.xml, sitemap.xml, preview.png next to the rendered site)
+  baseline   --fixtures fixtures/baseline/<ts> [--data d.json] [--site dir] [--out report.json]   (exit 1 on FAIL)
   redesign   [--run <runId>] [--candidates 16] [--rounds 10] [--parallel 1] [--data data/latest.json]
   spend      [--month [YYYY-MM]]
 
@@ -113,6 +114,13 @@ async function main(argv: string[]): Promise<number> {
       const changed = await updateReadme(await readReleasesIndex());
       process.stdout.write(changed ? "README.md generation section updated\n" : "README.md unchanged\n");
       return 0;
+    }
+    case "baseline": {
+      const { values } = parseArgs({ args: rest, options: { fixtures: { type: "string" }, data: { type: "string" }, site: { type: "string" }, out: { type: "string" } } });
+      if (!values.fixtures) throw new Error("baseline: --fixtures is required");
+      const { cmdBaseline } = await import("./baseline.js");
+      const report = await cmdBaseline({ fixtures: values.fixtures, data: values.data, site: values.site, out: values.out });
+      return report.ok ? 0 : 1;
     }
     case "site-extras": {
       const { values } = parseArgs({ args: rest, options: { out: { type: "string" } } });

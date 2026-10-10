@@ -369,3 +369,65 @@ test("site-extras: feed and sitemap are deterministic, escaped, and the preview 
   assert.equal(await fs.readFile(path.join(out, "preview.png"), "utf8"), "cropped");
   await fs.rm(tmp, { recursive: true, force: true });
 });
+
+test("baseline: HN and our parsers, and the verdict classes", async () => {
+  const { parseHnFront, parseHnItem, parseOurFront, parseOurComments, compareFront, compareThread, decodeEntities } = await import("../src/baseline.js");
+  const hnRow = (id: number, title: string, site: string | null, by: string | null, comments: string | null) =>
+    `<tr class="athing submission" id="${id}"><td class="title"><span class="titleline"><a href="https://x.test/${id}">${title}</a>` +
+    (site ? `<span class="sitebit comhead"> (<a href="from?site=${site}"><span class="sitestr">${site}</span></a>)</span>` : "") +
+    `</span></td></tr><tr><td class="subtext"><span class="subline">` +
+    (by ? `<span class="score" id="score_${id}">10 points</span> by <a href="user?id=${by}" class="hnuser">${by}</a> ` : "") +
+    `<span class="age"><a href="item?id=${id}">1 hour ago</a></span> | <a href="hide?id=${id}&amp;goto=news">hide</a>` +
+    (comments ? ` | <a href="item?id=${id}">${comments}</a>` : "") +
+    `</span></td></tr><tr class="spacer" style="height:5px"></tr>`;
+  const front = `<table>${hnRow(1, "`123456&#x27; password &amp; more", "cphpost.dk", "alice", "57&nbsp;comments")}${hnRow(2, "Hiring (YC W26)", "jobs.test", null, null)}${hnRow(3, "Ask HN: x", null, "bob", "discuss")}<tr class="morespace"></tr></table>`;
+  const hn = parseHnFront(front);
+  assert.deepEqual(hn, [
+    { id: 1, title: "`123456' password & more", site: "cphpost.dk", by: "alice", hasCommentsLink: true },
+    { id: 2, title: "Hiring (YC W26)", site: "jobs.test", by: null, hasCommentsLink: false },
+    { id: 3, title: "Ask HN: x", site: null, by: "bob", hasCommentsLink: true },
+  ]);
+  assert.equal(decodeEntities("a&nbsp;b&#39;c&#x27;d&quot;"), "a b'c'd\"");
+
+  const comtr = (id: number, indent: number) =>
+    `<tr class="athing comtr" id="${id}"><td><table><tr><td class="ind" indent="${indent}"><img src="s.gif"></td><td class="default"><span class="comhead"><a href="user?id=u" class="hnuser">u</a></span></td></tr></table></td></tr>`;
+  const item = parseHnItem(`${hnRow(1, "T", "s.test", "alice", "3&nbsp;comments")}<table class="comment-tree">${comtr(10, 0)}${comtr(11, 1)}${comtr(12, 0)}</table>`);
+  assert.equal(item.story?.id, 1);
+  assert.deepEqual(item.comments, [{ id: 10, indent: 0 }, { id: 11, indent: 1 }, { id: 12, indent: 0 }]);
+
+  const ours = `<html><head><meta charset="utf-8"><link rel="stylesheet" href="/x.css"></head><body><main><table><tbody>` +
+    `<tr data-hn-story="1"><td><a href="https://x.test/1" data-hn="title">\`123456&#39; password &amp; more</a><span data-hn="domain">cphpost.dk</span></td><td><a href="u" data-hn="by">alice</a><a href="/item/1.html" data-hn="comments">comments</a></td></tr>` +
+    `<tr data-hn-story="2"><td><a href="https://x.test/2" data-hn="title">Hiring (YC W26)</a><span data-hn="domain">jobs.test</span></td><td><a href="u" data-hn="by">corp</a></td></tr>` +
+    `<tr data-hn-story="3"><td><a href="/item/3.html" data-hn="title">Ask HN: x</a></td><td><a href="u" data-hn="by">bob</a><a href="/item/3.html" data-hn="comments">comments</a></td></tr>` +
+    `</tbody></table></main></body></html>`;
+  const of = parseOurFront(ours);
+  assert.equal(of.length, 3);
+  assert.equal(of[0]!.title, "`123456' password & more");
+  assert.equal(of[1]!.hasCommentsLink, false);
+  assert.equal(of[2]!.domain, null);
+  const ff = compareFront(hn, of);
+  assert.deepEqual(ff.map((f) => `${f.level}:${f.check}:${f.id}`), ["warn:by:2"]);
+
+  // Verdicts: title differs (fail), multi-user host (warn), comments link (fail), missing story (fail).
+  const hn2 = [
+    { id: 1, title: "Other", site: "github.com/alice", by: "alice", hasCommentsLink: false },
+    { id: 9, title: "Gone", site: null, by: "z", hasCommentsLink: true },
+  ];
+  const of2 = [{ id: 1, title: "Title", domain: "github.com", by: "alice", hasCommentsLink: true }];
+  assert.deepEqual(compareFront(hn2, of2).map((f) => `${f.level}:${f.check}`), ["fail:title", "fail:comments-link", "warn:domain-path", "fail:present"]);
+  const hn3 = [{ id: 1, title: "T", site: "vt.edu", by: "a", hasCommentsLink: true }, { id: 2, title: "U", site: "other.org", by: "a", hasCommentsLink: true }];
+  const of3 = [{ id: 1, title: "T", domain: "news.vt.edu", by: "a", hasCommentsLink: true }, { id: 2, title: "U", domain: "x.test", by: "a", hasCommentsLink: true }];
+  assert.deepEqual(compareFront(hn3, of3).map((f) => `${f.level}:${f.check}:${f.id}`), ["warn:domain-subdomain:1", "fail:domain:2"]);
+
+  const ourItem = `<html><head><meta charset="utf-8"></head><body><main><ol><li data-hn-comment="10"><p data-hn="text">a<br>b</p><ol><li data-hn-comment="11"><p data-hn="text"></p></li></ol></li><li data-hn-comment="12"><hr><ol><li data-hn-comment="13"></li></ol></li></ol></main></body></html>`;
+  const oc = parseOurComments(ourItem);
+  assert.deepEqual(oc, [{ id: 10, indent: 0 }, { id: 11, indent: 1 }, { id: 12, indent: 0 }, { id: 13, indent: 1 }]);
+  // HN lacks 13 (posted since): info. HN has 14 we lack: warn. Common ids agree.
+  const t1 = compareThread(1, [{ id: 10, indent: 0 }, { id: 11, indent: 1 }, { id: 12, indent: 0 }, { id: 14, indent: 1 }], oc);
+  assert.deepEqual(t1.map((f) => `${f.level}:${f.check}`), ["warn:comments-missing", "info:comments-extra"]);
+  // A comment under a different parent fails; sibling reordering is only informational.
+  assert.deepEqual(compareThread(1, [{ id: 10, indent: 0 }, { id: 11, indent: 0 }], oc).map((f) => `${f.level}:${f.check}`), ["info:comments-extra", "fail:comment-parent", "info:comment-order"]);
+  assert.deepEqual(compareThread(1, [{ id: 12, indent: 0 }, { id: 13, indent: 1 }, { id: 10, indent: 0 }, { id: 11, indent: 1 }], oc).map((f) => `${f.level}:${f.check}`), ["info:comment-order"]);
+  const { parentsOf } = await import("../src/baseline.js");
+  assert.deepEqual([...parentsOf([{ id: 1, indent: 0 }, { id: 2, indent: 1 }, { id: 3, indent: 2 }, { id: 4, indent: 1 }, { id: 5, indent: 0 }])], [[1, null], [2, 1], [3, 2], [4, 1], [5, null]]);
+});

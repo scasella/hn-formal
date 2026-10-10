@@ -5,8 +5,12 @@
 # HTML exactly once per spec version so the renderer's structural claims can
 # be compared against the original; a human dispatches this workflow, it makes
 # 31 requests (front page + 30 item pages) with a 2 s pause between them and a
-# descriptive User-Agent, commits the HTML as a timestamped fixture, and opens
-# a PR for review. All automated workflows use the public Firebase API only.
+# descriptive User-Agent, runs the baseline comparison (orchestrator
+# `baseline`: the fixture vs the proven renderer on the same items fetched
+# from the API; report.json lands in the fixture dir), commits the HTML and
+# the report as a timestamped fixture, and opens a PR for review. The job
+# fails after the PR is open if the comparison found a FAIL. All automated
+# workflows use the public Firebase API only.
 #
 # Requires the repo setting "Allow GitHub Actions to create and approve pull
 # requests" (Settings > Actions > General > Workflow permissions).
@@ -84,6 +88,16 @@ jobs:
             > "$dir/meta.json"
           find "$dir" -type f | sort | head -50
 
+      - name: Lean toolchain and build (cached .lake)
+        if: steps.kill.outputs.paused != 'true'
+        uses: leanprover/lean-action@v1
+        with:
+          auto-config: false
+          build: true
+          test: false
+          lint: false
+          use-github-cache: true
+
       - uses: actions/setup-node@v4
         if: steps.kill.outputs.paused != 'true'
         with:
@@ -93,16 +107,18 @@ jobs:
       - if: steps.kill.outputs.paused != 'true'
         run: npm --prefix orchestrator ci
 
-      - name: Baseline comparison (orchestrator `baseline`; may not exist yet)
+      - name: Baseline comparison (fixture vs the proven renderer on the same items from the API)
+        id: compare
         if: steps.kill.outputs.paused != 'true'
         continue-on-error: true
-        run: npm --prefix orchestrator run cli -- baseline --fixtures "${{ steps.fetch.outputs.dir }}"
+        run: npm --prefix orchestrator run cli -- baseline --fixtures "${{ steps.fetch.outputs.dir }}" --out "${{ steps.fetch.outputs.dir }}/report.json"
 
       - name: Commit fixtures on a branch and open a PR
         if: steps.kill.outputs.paused != 'true'
         run: |
           set -euo pipefail
           ts="${{ steps.fetch.outputs.ts }}"
+          dir="${{ steps.fetch.outputs.dir }}"
           branch="baseline/$ts"
           # Authored by the human who dispatched the run (not the bot), and
           # tagged [human] since fixtures/ is outside the bot-editable paths.
@@ -112,6 +128,13 @@ jobs:
           git add fixtures/baseline
           git commit -m "baseline: HN fixtures $ts [human]" -m "Manual one-time fetch dispatched by @${{ github.actor }}. See .github/workflows/baseline.yml."
           git push origin "$branch"
+          summary="$(jq -r '"Comparison: \(if .ok then "ok" else "FAIL" end) (spec v\(.specVersion), \(.stories) stories, \(.threads) threads; fail=\(.counts.fail) warn=\(.counts.warn) info=\(.counts.info)). See report.json in the fixture dir."' "$dir/report.json" 2>/dev/null || echo "Comparison step outcome: ${{ steps.compare.outcome }} (no report.json).")"
           gh pr create --base main --head "$branch" \
             --title "baseline: HN fixtures $ts" \
-            --body "Manual baseline fetch of https://news.ycombinator.com/ (front page + 30 item pages, 2 s apart) dispatched by @${{ github.actor }}. One fetch per spec version; review and merge."
+            --body "$(printf '%s\n\n%s' "Manual baseline fetch of https://news.ycombinator.com/ (front page + 30 item pages, 2 s apart) dispatched by @${{ github.actor }}. One fetch per spec version; review and merge." "$summary")"
+
+      - name: Fail the job if the comparison found a FAIL (the PR is already open)
+        if: steps.kill.outputs.paused != 'true' && steps.compare.outcome == 'failure'
+        run: |
+          echo "baseline comparison failed; see the PR's report.json"
+          exit 1
