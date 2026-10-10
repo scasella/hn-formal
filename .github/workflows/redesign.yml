@@ -179,7 +179,7 @@ jobs:
       - run: npm --prefix orchestrator ci
       - name: Chromium for tier 2 (Playwright)
         run: cd orchestrator && npx playwright install --with-deps chromium
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: data
           path: data/
@@ -227,12 +227,12 @@ jobs:
           cache: npm
           cache-dependency-path: orchestrator/package-lock.json
       - run: npm --prefix orchestrator ci
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: data
           path: data/
       - name: Download all candidate artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           pattern: cand-*
           path: runs/${{ needs.prepare.outputs.runId }}/
