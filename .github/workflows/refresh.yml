@@ -102,7 +102,7 @@ jobs:
         if: steps.kill.outputs.paused != 'true'
         run: scripts/build-site.sh data/latest.json out/
 
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
         if: steps.kill.outputs.paused != 'true'
       - uses: actions/upload-pages-artifact@v3
         if: steps.kill.outputs.paused != 'true'
