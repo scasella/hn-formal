@@ -153,3 +153,23 @@ element marked `data-hn="about"`, placement free:
 > human review.
 
 Requested by the user; made a spec requirement so no redesign can drop it.
+
+## Spec version 3 (2026-10-10)
+
+Every page carries three fixed metas so a shared link unfurls and a search
+result has a description: `meta[name=description]` with the about sentence,
+`meta[property=og:image]` with `Spec.previewHref` (a fixed absolute URL that
+`build-site.sh` serves the current release's 1280x670 screenshot at), and
+`meta[name=twitter:card]` = `summary_large_image`. Attribute values were
+already free, so the metas were always allowed; v3 makes them required so
+no redesign can drop them. No link rules changed: no canonical link (it
+would need a per-page href and real proof work for little gain on a site
+with one URL per page).
+
+Consequence: `Render.lean` in every release before v3 does not prove under
+v3, so `rollback` to one of them breaks the build; `rollback` warns when the
+target's `specVersion` is older than the current spec. The baseline check
+(`baseline.yml`, manual) should be re-run once against the v3 renderer.
+Like v2, this went to main directly as a `[human]` commit with the full
+local check (both renderers build, selftest, axiom check).
+

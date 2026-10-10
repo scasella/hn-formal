@@ -318,3 +318,54 @@ test("effort steps down one level after a max_tokens hit and stops at low", asyn
   assert.equal(stepDownEffort("high"), "medium");
   assert.equal(stepDownEffort("low"), "low");
 });
+
+test("site-extras: feed and sitemap are deterministic, escaped, and the preview falls back", async () => {
+  const fs = await import("node:fs/promises");
+  const os = await import("node:os");
+  const path = await import("node:path");
+  const { renderFeed, renderSitemap, releaseSummary, writeSiteExtras } = await import("../src/siteExtras.js");
+  const mk = (id: string, extra: Record<string, unknown> = {}) =>
+    ({
+      id,
+      runId: "r",
+      specVersion: 3,
+      tier1: {} as never,
+      tier2: {} as never,
+      judge: { score: 80, notes: "MODEL OUTPUT <b>", adherence: 85, novelty: 70, craft: 75 },
+      model: "m",
+      repairRounds: 1,
+      costUsd: 0.1234,
+      previousRelease: null,
+      diffStat: "+1 -1",
+      candidate: 0,
+      brief: "cards & grids",
+      domChanged: true,
+      createdAt: 1760092800,
+      ...extra,
+    }) as never;
+  const reports = [mk("20261010-103156-c4ed73e"), mk("20261009-235900-437def3", { createdAt: 1760050800, brief: undefined })];
+  const feed = renderFeed(reports, "https://example.test/hn/");
+  assert.equal(feed, renderFeed(reports, "https://example.test/hn/"));
+  assert.ok(feed.includes("<updated>2025-10-10T10:40:00Z</updated>"));
+  assert.ok(feed.includes("Generation 20261010-103156-c4ed73e: cards &amp; grids"));
+  assert.ok(feed.includes("<title>Generation 20261009-235900-437def3</title>"));
+  assert.ok(!feed.includes("MODEL OUTPUT"), "judge notes never enter the feed");
+  assert.ok(feed.includes("https://example.test/hn/loop/releases/20261010-103156-c4ed73e/index-1280.png"));
+  assert.equal(releaseSummary(reports[0]!), 'Brief "cards & grids". Judge 80/100, novelty 70. Spec v3. New DOM. 1 repair round, $0.12.');
+  const map = renderSitemap("https://example.test/hn/");
+  assert.ok(map.includes("<loc>https://example.test/hn/</loc>") && map.includes("<loc>https://example.test/hn/loop/</loc>"));
+  assert.ok(!map.includes("item/"), "item pages are not in the sitemap");
+
+  const tmp = await fs.mkdtemp(path.join(os.tmpdir(), "hn-extras-"));
+  const rel = path.join(tmp, "releases", "20261010-103156-c4ed73e");
+  await fs.mkdir(rel, { recursive: true });
+  await fs.writeFile(path.join(rel, "index-1280.png"), "fallback");
+  const out = path.join(tmp, "out");
+  const written = await writeSiteExtras(out, reports, { siteUrl: "https://example.test/hn/", releasesDir: path.join(tmp, "releases") });
+  assert.deepEqual(written.map((p) => path.basename(p)), ["feed.xml", "sitemap.xml", "preview.png"]);
+  assert.equal(await fs.readFile(path.join(out, "preview.png"), "utf8"), "fallback");
+  await fs.writeFile(path.join(rel, "preview.png"), "cropped");
+  await writeSiteExtras(out, reports, { siteUrl: "https://example.test/hn/", releasesDir: path.join(tmp, "releases") });
+  assert.equal(await fs.readFile(path.join(out, "preview.png"), "utf8"), "cropped");
+  await fs.rm(tmp, { recursive: true, force: true });
+});

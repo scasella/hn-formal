@@ -477,7 +477,7 @@ export async function cmdCandidate(args: CandidateArgs): Promise<CandidateRecord
         // Stored relative to the repo root so the record survives moving to
         // another runner (the aggregate job downloads cand-<n>/** as artifacts).
         const rel = (p: string) => path.relative(repoRoot(), p);
-        pass.screenshots = { index1280: rel(shots.index1280), index375: rel(shots.index375), item1280: rel(shots.item1280) };
+        pass.screenshots = { index1280: rel(shots.index1280), index375: rel(shots.index375), item1280: rel(shots.item1280), ...(shots.preview ? { preview: rel(shots.preview) } : {}) };
         const j = await judgeSite(shots, budget, { brief, currentSitePng });
         pass.judge = j.score;
         if (j.detail) pass.judgeDetail = j.detail;

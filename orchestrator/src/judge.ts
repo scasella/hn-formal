@@ -10,7 +10,8 @@ import { listHtml } from "./tier2.js";
 import { ensureDir, envInt, log, writeJsonAtomic } from "./util.js";
 
 /**
- * CONTRACT screenshots: index at 1280 and 375, one item page at 1280.
+ * CONTRACT screenshots: index at 1280 and 375, one item page at 1280, and the
+ * 1280x670 social-card crop of index.
  * Clipped to the viewport (not fullPage): a 400-comment thread would exceed
  * the API's image limits.
  */
@@ -24,6 +25,7 @@ export async function takeScreenshots(siteDir: string, shotsDir: string, browser
     index1280: path.join(shotsDir, "index-1280.png"),
     index375: path.join(shotsDir, "index-375.png"),
     item1280: path.join(shotsDir, "item-1280.png"),
+    preview: path.join(shotsDir, "preview.png"),
   };
   try {
     const shoot = async (rel: string, width: number, height: number, out: string) => {
@@ -36,6 +38,9 @@ export async function takeScreenshots(siteDir: string, shotsDir: string, browser
     await shoot("index.html", 1280, 2000, shots.index1280);
     await shoot("index.html", 375, 2400, shots.index375);
     await shoot(item ?? "index.html", 1280, 2000, shots.item1280);
+    // Social-card crop (og:image is 1.91:1): the front page laid out in a
+    // 1280x670 viewport, served as /preview.png by build-site.sh.
+    await shoot("index.html", 1280, 670, shots.preview!);
   } finally {
     if (!browser) await b.close();
     await server.close();

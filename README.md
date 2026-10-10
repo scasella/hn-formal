@@ -1,6 +1,6 @@
 # hn-formal
 
-**Live: [scasella.github.io/hn-formal](https://scasella.github.io/hn-formal/)**. The Hacker News front page, redesigned every night by an AI and proven in Lean 4 to render the data correctly before it ships, with no human review. Run history: [loop dashboard](https://scasella.github.io/hn-formal/loop/).
+**Live: [scasella.github.io/hn-formal](https://scasella.github.io/hn-formal/)**. The Hacker News front page, redesigned every night by an AI and proven in Lean 4 to render the data correctly before it ships, with no human review. How it works and every generation: [the loop page](https://scasella.github.io/hn-formal/loop/). New generations: [Atom feed](https://scasella.github.io/hn-formal/feed.xml).
 
 <!-- generation:start -->
 ## Current generation

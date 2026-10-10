@@ -169,7 +169,7 @@ Prints month-to-date spend from `runs/spend-YYYY-MM.json`.
 | `GENERATE_EFFORT`, `JUDGE_EFFORT` | `xhigh`, `low` | `output_config.effort` (adaptive thinking depth) |
 | `GENERATE_MAX_TOKENS` | `120000` | generation `max_tokens` (thinking counts against it) |
 | `STRUCTURE_ROUNDS` | `2` (`0` in mock mode) | rounds during which an unchanged DOM or a missing brief move is a soft failure (CONTRACT steps 7-8); `0` disables |
-| `SITE_URL` | `https://scasella.github.io/hn-formal/` | README generation section links |
+| `SITE_URL` | `https://scasella.github.io/hn-formal/` | README generation section links; feed and sitemap URLs (`site-extras`) |
 | `CACHE_TTL` | `1h` | `5m` or `1h` cache_control TTL on the prefix |
 | `PREFIX_MAX_TOKENS`, `PREFIX_WARN_TOKENS` | `90000`, `60000` | prefix size guard |
 | `ALLOW_OVER_100K` | – | `1` sends rounds estimated above the price cliff |

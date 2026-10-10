@@ -77,6 +77,8 @@ export interface Screenshots {
   index1280: string;
   index375: string;
   item1280: string;
+  /** Front page at 1280x670, the social-card crop (releases before 2026-10-10 lack it). */
+  preview?: string;
 }
 
 export type CandidateStopReason = "passed" | "failed" | "cap-hit" | "killed" | "error";

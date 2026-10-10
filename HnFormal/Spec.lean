@@ -1,6 +1,6 @@
 import HnFormal.Sanitize
 /-!
-# The specification (version 2)
+# The specification (version 3)
 
 Human-authored. The loop may not edit this file. `Spec p d` is what
 `Render.render_ok` proves for every page `p`.
@@ -23,7 +23,7 @@ else about the DOM is free, subject to the structural rules below.
 namespace HnFormal
 namespace Spec
 
-def version : Nat := 2
+def version : Nat := 3
 
 def hnBase : String := "https://news.ycombinator.com/"
 
@@ -35,6 +35,12 @@ def aboutText : String :=
 /-- Root-relative path prefix the site is served under (GitHub project
 Pages: `https://scasella.github.io/hn-formal/`). Empty for a root deploy. -/
 def sitePrefix : String := "/hn-formal"
+
+/-- Absolute origin of the deployed site. `og:image` has to be an absolute
+URL, so the social-card image is a fixed URL under it; `build-site.sh`
+serves the current release's screenshot there. -/
+def siteOrigin : String := "https://scasella.github.io"
+def previewHref : String := siteOrigin ++ sitePrefix ++ "/preview.png"
 
 def homeHref : String := sitePrefix ++ "/"
 def styleHref : String := sitePrefix ++ "/style.css"
@@ -150,15 +156,32 @@ def isAbout (n : Dom) : Bool :=
 def isCspMeta (m : Dom) : Bool :=
   m.attr "http-equiv" == some "Content-Security-Policy" && m.attr "content" == some cspContent
 
+/-- Version 3: the three metas a link preview or search result needs. Every
+page describes itself with the about sentence and points `og:image` at the
+fixed preview URL; a redesign cannot drop them. Other metas (`og:title`,
+`og:description`, `og:type`) are free, like every attribute value. -/
+def isDescriptionMeta (m : Dom) : Bool :=
+  m.attr "name" == some "description" && m.attr "content" == some aboutText
+
+def isPreviewMeta (m : Dom) : Bool :=
+  m.attr "property" == some "og:image" && m.attr "content" == some previewHref
+
+def isCardMeta (m : Dom) : Bool :=
+  m.attr "name" == some "twitter:card" && m.attr "content" == some "summary_large_image"
+
 /-- Page-level structure: an `html[lang]` root, a `main`, a non-empty
-`title`, the CSP meta, the about sentence, every anchor named, only allowed
-elements and attributes, only the one stylesheet. -/
+`title`, the CSP meta, the description/preview/card metas, the about
+sentence, every anchor named, only allowed elements and attributes, only the
+one stylesheet. -/
 def Structure (d : Dom) : Prop :=
   d.tag = some "html" ∧
   d.attr "lang" = some "en" ∧
   (d.nodes.any (Dom.isEl "main")) = true ∧
   (d.nodes.any fun n => n.isEl "title" && decide (0 < n.textContent.length)) = true ∧
   (d.nodes.any isCspMeta) = true ∧
+  (d.nodes.any isDescriptionMeta) = true ∧
+  (d.nodes.any isPreviewMeta) = true ∧
+  (d.nodes.any isCardMeta) = true ∧
   (d.nodes.any isAbout) = true ∧
   (d.nodes.all nodeOk) = true ∧
   ((d.byTag "a").all anchorNamed) = true ∧

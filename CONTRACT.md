@@ -135,7 +135,8 @@ Tier 2 (orchestrator, Playwright + Chromium):
 Judge (orchestrator): `claude-haiku-5-5` with the candidate's brief, a
 screenshot of the current live site (the novelty reference), and the
 candidate's screenshots (1280px and 375px of index.html, 1280px of one item
-page). Returns `{ adherence, novelty, craft: 0-100, notes }`; the composite
+page; a fourth, index.html in a 1280x670 viewport, is the social-card crop
+and is not shown to the judge). Returns `{ adherence, novelty, craft: 0-100, notes }`; the composite
 `score` is `round(0.4 adherence + 0.3 novelty + 0.3 craft)`. Never blocks.
 The winner among passers is the highest score; ties go to higher novelty,
 then `domChanged: true`, then the lowest `n`.
@@ -144,11 +145,12 @@ then `domChanged: true`, then the lowest `n`.
 
 `releases/<YYYYMMDD-HHMMSS>-<shortsha>/`:
 ```
-Render.lean  style.css  report.json  index-1280.png  index-375.png  item-1280.png
+Render.lean  style.css  report.json  index-1280.png  index-375.png  item-1280.png  preview.png
 ```
+(`preview.png`, the 1280x670 social-card crop, exists from 2026-10-10 on.)
 `report.json`:
 ```json
-{ "id": "20261009-031500-ab12cd3", "runId": "...", "specVersion": 1,
+{ "id": "20261009-031500-ab12cd3", "runId": "...", "specVersion": 3,
   "tier1": { "lakeBuild": "ok", "axioms": ["propext","Classical.choice","Quot.sound"], "selftest": "ok" },
   "tier2": { "vnu": 0, "axe": 0, "contrastMin": 4.7, "reflowWidth": 375, "csp": "ok" },
   "judge": { "score": 71, "adherence": 80, "novelty": 65, "craft": 66, "notes": "..." },
@@ -197,7 +199,18 @@ Served under `Spec.sitePrefix` = `/hn-formal` (https://scasella.github.io/hn-for
 ```
 /hn-formal/index.html  /hn-formal/item/<id>.html  /hn-formal/style.css
 /hn-formal/fonts/*  /hn-formal/loop/*  /hn-formal/spec/Spec.lean (copy)
+/hn-formal/feed.xml  /hn-formal/sitemap.xml  /hn-formal/preview.png
 ```
+
+The last three are discoverability files written by `cli site-extras` at
+build time (`orchestrator/src/siteExtras.ts`): an Atom feed with one entry
+per release (orchestrator-generated text only, like the README section),
+a sitemap listing the front page and `/loop/` only (item pages churn every
+15 minutes and mirror HN comments), and the current release's `preview.png`
+(falling back to `index-1280.png`), which is the fixed `Spec.previewHref`
+every rendered page's `og:image` points at. There is no `robots.txt`:
+crawlers read it only at the host root, which a project Pages site does not
+control.
 
 The local tier-2 server serves the site under the same prefix and 404s
 unprefixed paths, so a wrong href fails locally exactly as it would on Pages.

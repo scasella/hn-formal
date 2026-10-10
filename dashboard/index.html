@@ -11,9 +11,15 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; font-src 'self'; base-uri 'none'; form-action 'none'">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <meta name="description" content="Control panel for the hn-formal redesign loop: releases, judge scores, tier-1 axioms, tier-2 checks, and run history.">
-  <title>Loop · HN, formally</title>
+  <meta name="description" content="How HN, formally works: an AI redesigns the Hacker News front page every night, each design is proven in Lean 4 before it ships, and every generation is here with its screenshots, scores and cost.">
+  <meta property="og:title" content="How HN, formally works">
+  <meta property="og:description" content="An AI redesigns the Hacker News front page every night. Each design is proven in Lean 4 to render the data correctly before it ships, with no human review. Every generation, with screenshots, scores and cost.">
+  <meta property="og:image" content="https://scasella.github.io/hn-formal/preview.png">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>How it works · HN, formally</title>
   <link rel="stylesheet" href="loop.css">
+  <link rel="alternate" type="application/atom+xml" href="../feed.xml" title="HN, formally: generations">
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
@@ -24,6 +30,7 @@
         <a href="../">Site</a>
         <a href="https://github.com/scasella/hn-formal">Repository</a>
         <a href="../spec/Spec.lean">Spec.lean</a>
+        <a href="../feed.xml">Feed</a>
         <a href="#runs">Runs</a>
       </nav>
     </div>
@@ -31,18 +38,21 @@
 
   <main id="main" class="wrap">
     <section class="hero" aria-labelledby="hero-title">
-      <h1 id="hero-title">HN, formally</h1>
+      <h1 id="hero-title">How HN, formally works</h1>
       <p class="lede">
-        An unofficial, read-only rendering of the Hacker News front page and its
-        thirty discussion threads. The renderer is written in Lean 4 and comes
-        with a machine-checked theorem that, for every possible API input, the
-        bytes it emits encode a page with the right structure, the right data,
-        and no injected content; that theorem, and nothing beyond it, is what
-        "proven" means here. Each release is additionally checked in a browser
-        for contrast, reflow at 375px, HTML validity, and accessibility
-        violations; those checks are run per release, never proven. A language
-        model redesigns the renderer and stylesheet every day; whatever passes
-        both tiers ships without human review.
+        Every night a language model redesigns <a href="../">the front page</a>
+        from a design brief: sixteen candidates in parallel, each a new renderer
+        and stylesheet. A candidate ships only if the Lean 4 kernel accepts its
+        proof that, for every possible Hacker News API input, the bytes it
+        emits encode a page with the right structure, the right data, and no
+        injected content; that theorem, and nothing beyond it, is what "proven"
+        means here. Each passer is then checked in a browser for contrast,
+        reflow at 375px, HTML validity and accessibility violations (run per
+        release, never proven), and a vision model ranks what is left on
+        adherence to the brief, novelty against the live site, and craft. The
+        winner ships without human review. Every generation is below, with its
+        proof, screenshots, scores and cost; new ones appear in the
+        <a href="../feed.xml">Atom feed</a>.
       </p>
       <dl class="stats" id="stats" aria-label="Loop status">
         <div><dt>Releases</dt><dd id="stat-releases">–</dd></div>

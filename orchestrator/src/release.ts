@@ -82,8 +82,10 @@ export async function releaseFromCandidate(cand: CandidateRecord): Promise<{ rep
       ["index1280", "index-1280.png"],
       ["index375", "index-375.png"],
       ["item1280", "item-1280.png"],
+      ["preview", "preview.png"],
     ] as const) {
       const raw = cand.screenshots[key];
+      if (!raw) continue;
       const src = path.isAbsolute(raw) ? raw : fromRepo(raw);
       if (exists(src)) {
         await fsp.copyFile(src, path.join(dir, name));
@@ -117,6 +119,12 @@ export async function cmdRollback(releaseId: string): Promise<string[]> {
   const src1 = path.join(dir, "Render.lean");
   const src2 = path.join(dir, "style.css");
   if (!exists(src1) || !exists(src2)) throw new Error(`release ${releaseId} not found or incomplete at ${dir}`);
+  const reportPath = path.join(dir, "report.json");
+  if (exists(reportPath)) {
+    const r = await readJson<ReleaseReport>(reportPath);
+    const cur = await specVersion();
+    if (r.specVersion < cur) log(`warning: release ${releaseId} was proven under spec v${r.specVersion}; the spec is now v${cur}, so its Render.lean will not build until it is updated`);
+  }
   const dst1 = fromRepo(EDITABLE_FILES.renderLean);
   const dst2 = fromRepo(EDITABLE_FILES.styleCss);
   await ensureDir(path.dirname(dst1));

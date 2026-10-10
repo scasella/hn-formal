@@ -9,6 +9,9 @@
 #   /loop/runs.json               copy of runs/index.json      ([] if missing)
 #   /loop/releases/<id>/*.png     each release's screenshots
 #   /spec/Spec.lean               copy of HnFormal/Spec.lean
+#   /feed.xml /sitemap.xml        written by `cli site-extras` from releases/index.json
+#   /preview.png                  the current release's social-card screenshot
+#                                 (Spec.previewHref; og:image on every page)
 #
 # Content-Security-Policy: GitHub Pages cannot send response headers (no
 # `_headers` support), so the policy is delivered as a <meta http-equiv>
@@ -98,6 +101,13 @@ if [ -d releases ]; then
     mkdir -p "$out/loop/releases/$id"
     cp "${pngs[@]}" "$out/loop/releases/$id/"
   done
+fi
+
+# --- feed, sitemap, social-card image (orchestrator/src/siteExtras.ts)
+if [ -d orchestrator/node_modules ]; then
+  npm --prefix orchestrator run --silent cli -- site-extras --out "$out"
+else
+  echo "build-site: WARNING: orchestrator/node_modules missing; feed.xml, sitemap.xml and preview.png not written" >&2
 fi
 
 # --- spec copy

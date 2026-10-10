@@ -22,6 +22,12 @@ def pageHead (titleParts : List String) : Dom :=
     .el "meta" [("charset", "utf-8")] [],
     .el "meta" [("name", "viewport"), ("content", "width=device-width, initial-scale=1")] [],
     .el "meta" [("http-equiv", "Content-Security-Policy"), ("content", cspContent)] [],
+    .el "meta" [("name", "description"), ("content", aboutText)] [],
+    .el "meta" [("property", "og:title"), ("content", "HN, formally")] [],
+    .el "meta" [("property", "og:description"), ("content", aboutText)] [],
+    .el "meta" [("property", "og:image"), ("content", previewHref)] [],
+    .el "meta" [("property", "og:type"), ("content", "website")] [],
+    .el "meta" [("name", "twitter:card"), ("content", "summary_large_image")] [],
     .el "title" [] (titleParts.map Dom.text),
     .el "link" [("rel", "stylesheet"), ("href", styleHref)] []]
 
@@ -269,11 +275,14 @@ theorem front_ok (f : Front) : FrontOk f (renderFront f) := by
   have hall : (nodes (renderFront f)).all (commonP (.front f)) = true := by
     unfold renderFront headRow a; hn_auto
   obtain ⟨hnodes, hlinks, hnamed, hlinkTags, htexts⟩ := all_commonP _ _ hall
-  refine ⟨⟨⟨rfl, rfl, ?_, ?_, ?_, ?_, hnodes, hnamed, hlinkTags⟩, hlinks, htexts⟩, ?_⟩
+  refine ⟨⟨⟨rfl, rfl, ?_, ?_, ?_, ?_, ?_, ?_, ?_, hnodes, hnamed, hlinkTags⟩, hlinks, htexts⟩, ?_⟩
   · simp [renderFront, pageHead, topNav, nodes, nodesList, isEl]
   · simp [renderFront, pageHead, nodes, nodesList, isEl, textContent, texts, textsList, concat]
     left; decide +kernel
   · simp [renderFront, pageHead, nodes, nodesList, isCspMeta, List.lookup]
+  · simp [renderFront, pageHead, nodes, nodesList, isDescriptionMeta, List.lookup]
+  · simp [renderFront, pageHead, nodes, nodesList, isPreviewMeta, List.lookup]
+  · simp [renderFront, pageHead, nodes, nodesList, isCardMeta, List.lookup]
   · simp [renderFront, pageHead, topNav, footer, a, nodes, nodesList, isAbout, hasAttr, List.lookup,
       textContent, texts, textsList, concat]
   · have hrow : ∀ s, storyMarkers (storyRow f.fetchedAt s) = [storyRow f.fetchedAt s] := by
@@ -306,11 +315,14 @@ theorem thread_ok (t : Thread) : ThreadOk t (renderThread t) := by
     (wrapShape t.fetchedAt) (fun c ds _ hds => wrap_noStory _ c ds hds) t.comments (fun _ _ => trivial)
   have htrees := CTree.treesOk_of_wrap t.fetchedAt (wrapShape t.fetchedAt) (wrap_tree t.fetchedAt)
     (wrap_fidelity t.fetchedAt) (wrap_marker t.fetchedAt) t.comments
-  refine ⟨⟨⟨rfl, rfl, ?_, ?_, ?_, ?_, hnodes, hnamed, hlinkTags⟩, hlinks, htexts⟩, ?_, ?_⟩
+  refine ⟨⟨⟨rfl, rfl, ?_, ?_, ?_, ?_, ?_, ?_, ?_, hnodes, hnamed, hlinkTags⟩, hlinks, htexts⟩, ?_, ?_⟩
   · simp [renderThread, pageHead, topNav, nodes, nodesList, isEl]
   · simp [renderThread, pageHead, nodes, nodesList, isEl, textContent, texts, textsList, concat]
     left; apply Nat.lt_add_left; decide +kernel
   · simp [renderThread, pageHead, nodes, nodesList, isCspMeta, List.lookup]
+  · simp [renderThread, pageHead, nodes, nodesList, isDescriptionMeta, List.lookup]
+  · simp [renderThread, pageHead, nodes, nodesList, isPreviewMeta, List.lookup]
+  · simp [renderThread, pageHead, nodes, nodesList, isCardMeta, List.lookup]
   · simp [renderThread, pageHead, topNav, footer, a, nodes, nodesList, isAbout, hasAttr, List.lookup,
       textContent, texts, textsList, concat]
   · have : storyMarkers (renderThread t) = [storyHeader t.fetchedAt t.story] := by

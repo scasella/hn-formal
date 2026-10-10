@@ -12,6 +12,7 @@ const USAGE = `usage: npm run cli -- <command> [options]
   release    --from runs/<runId>/cand-<i>.json
   rollback   <releaseId>
   readme     (rewrite the generation section of README.md from releases/index.json)
+  site-extras --out out/   (feed.xml, sitemap.xml, preview.png next to the rendered site)
   redesign   [--run <runId>] [--candidates 16] [--rounds 10] [--parallel 1] [--data data/latest.json]
   spend      [--month [YYYY-MM]]
 
@@ -109,6 +110,15 @@ async function main(argv: string[]): Promise<number> {
       const { updateReadme } = await import("./readme.js");
       const changed = await updateReadme(await readReleasesIndex());
       process.stdout.write(changed ? "README.md generation section updated\n" : "README.md unchanged\n");
+      return 0;
+    }
+    case "site-extras": {
+      const { values } = parseArgs({ args: rest, options: { out: { type: "string" } } });
+      if (!values.out) throw new Error("site-extras: --out is required");
+      const { readReleasesIndex } = await import("./release.js");
+      const { writeSiteExtras } = await import("./siteExtras.js");
+      const written = await writeSiteExtras(values.out, await readReleasesIndex());
+      process.stdout.write(`site-extras\n${written.map((p) => `  ${p}`).join("\n")}\n`);
       return 0;
     }
     case "rollback": {
