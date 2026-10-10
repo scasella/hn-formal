@@ -431,3 +431,14 @@ test("baseline: HN and our parsers, and the verdict classes", async () => {
   const { parentsOf } = await import("../src/baseline.js");
   assert.deepEqual([...parentsOf([{ id: 1, indent: 0 }, { id: 2, indent: 1 }, { id: 3, indent: 2 }, { id: 4, indent: 1 }, { id: 5, indent: 0 }])], [[1, null], [2, 1], [3, 2], [4, 1], [5, null]]);
 });
+
+test("commentTtl: comments under a day refresh often, 1-7 days every few hours, older rarely", async () => {
+  const { commentTtl } = await import("../src/hn.js");
+  const opts = { itemTtlSeconds: 900, agedItemTtlSeconds: 14_400, oldItemTtlSeconds: 86_400 };
+  const now = 2_000_000;
+  assert.equal(commentTtl({ id: 1, type: "comment", time: now - 3600 }, now, opts), 900);
+  assert.equal(commentTtl({ id: 1, type: "comment", time: now - 2 * 86_400 }, now, opts), 14_400);
+  assert.equal(commentTtl({ id: 1, type: "comment", time: now - 8 * 86_400 }, now, opts), 86_400);
+  assert.equal(commentTtl({ id: 1, type: "story", time: now - 8 * 86_400 }, now, opts), 900);
+  assert.equal(commentTtl({ id: 1, type: "comment" }, now, opts), 900);
+});

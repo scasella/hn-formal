@@ -189,7 +189,7 @@ Prints month-to-date spend from `runs/spend-YYYY-MM.json`.
 | `COPY_LAKE` | – | `1` copies `.lake` into the scratch dir |
 | `KEEP_WORKDIR` | – | `1` keeps the temp scratch dir |
 | `MAX_COMMENTS_PER_STORY`, `MAX_DEPTH` | `400`, `50` | fetch caps |
-| `ITEM_TTL_SECONDS`, `OLD_ITEM_TTL_SECONDS` | `900`, `86400` | item cache TTLs |
+| `ITEM_TTL_SECONDS`, `AGED_ITEM_TTL_SECONDS`, `OLD_ITEM_TTL_SECONDS` | `900`, `14400`, `86400` | item cache TTLs: items and comments under a day old; comments 1-7 days old (replies still arrive); older comments |
 | `FETCH_CONCURRENCY` | `16` | fetch |
 | `SITE_PREFIX` | `/hn-formal` | `tier2`, `judge` (and `candidate`/`redesign` through them): Pages path prefix the local static server strips (`/hn-formal/style.css` -> `<site>/style.css`; unprefixed paths still served) and the pages are opened under; normalized to leading slash, no trailing slash; set to the empty string for a root-served site |
 | `VNU_JAR`, `VNU_URL` | `.cache/vnu.jar`, validator "latest" release | tier2 |

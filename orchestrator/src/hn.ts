@@ -13,6 +13,9 @@ export interface FetchOptions {
   maxCommentsPerStory: number;
   maxDepth: number;
   itemTtlSeconds: number;
+  /** TTL for comments 1-7 days old (replies still arrive; bounded lag). */
+  agedItemTtlSeconds: number;
+  /** TTL for comments older than 7 days. */
   oldItemTtlSeconds: number;
   concurrency: number;
 }
@@ -24,9 +27,24 @@ export function fetchOptionsFromEnv(cache?: string): FetchOptions {
     maxCommentsPerStory: envInt("MAX_COMMENTS_PER_STORY", 400),
     maxDepth: envInt("MAX_DEPTH", 50),
     itemTtlSeconds: envInt("ITEM_TTL_SECONDS", 900),
+    agedItemTtlSeconds: envInt("AGED_ITEM_TTL_SECONDS", 4 * 3600),
     oldItemTtlSeconds: envInt("OLD_ITEM_TTL_SECONDS", 86_400),
     concurrency: envInt("FETCH_CONCURRENCY", 16),
   };
+}
+
+/**
+ * Cache TTL for a non-top item. Comments keep receiving replies for a day
+ * or two (the baseline check of 2026-10-10 found eight live replies hidden
+ * by a 24h TTL on day-old comments), so: under 24h old, the short TTL;
+ * 1-7 days, the aged TTL (4h by default); older, the long TTL.
+ */
+export function commentTtl(it: HnItem, now: number, opts: Pick<FetchOptions, "itemTtlSeconds" | "agedItemTtlSeconds" | "oldItemTtlSeconds">): number {
+  if (it.type !== "comment" || typeof it.time !== "number") return opts.itemTtlSeconds;
+  const age = now - it.time;
+  if (age > 7 * 86_400) return opts.oldItemTtlSeconds;
+  if (age > 86_400) return opts.agedItemTtlSeconds;
+  return opts.itemTtlSeconds;
 }
 
 interface CacheEntry {
@@ -82,9 +100,7 @@ export class HnClient {
   private ttlFor(entry: CacheEntry, now: number, isTop: boolean): number {
     const it = entry.item;
     if (isTop || !it) return this.opts.itemTtlSeconds;
-    // Comments older than 24h rarely change; use the long TTL.
-    if (it.type === "comment" && typeof it.time === "number" && now - it.time > 86_400) return this.opts.oldItemTtlSeconds;
-    return this.opts.itemTtlSeconds;
+    return commentTtl(it, now, this.opts);
   }
 
   /** Fetch one item, through the disk cache. Null when the API has no item. */
