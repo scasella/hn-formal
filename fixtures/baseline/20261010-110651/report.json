@@ -1,0 +1,380 @@
+{
+  "fixtures": "fixtures/baseline/20261010-110651",
+  "comparedAt": 1791632395,
+  "specVersion": 3,
+  "stories": 30,
+  "threads": 30,
+  "findings": [
+    {
+      "level": "info",
+      "check": "live-order",
+      "message": "29/30 fixture stories are in the live top 30 now (order is not compared; it drifts)"
+    },
+    {
+      "level": "warn",
+      "check": "domain-subdomain",
+      "id": 50022292,
+      "message": "HN site \"mikelacher.com\" strips the subdomain of our domain \"minesweeper.mikelacher.com\""
+    },
+    {
+      "level": "warn",
+      "check": "domain-subdomain",
+      "id": 50029830,
+      "message": "HN site \"vt.edu\" strips the subdomain of our domain \"news.vt.edu\""
+    },
+    {
+      "level": "warn",
+      "check": "domain-subdomain",
+      "id": 50029982,
+      "message": "HN site \"cateat.fish\" strips the subdomain of our domain \"wiki.cateat.fish\""
+    },
+    {
+      "level": "warn",
+      "check": "domain-subdomain",
+      "id": 50021410,
+      "message": "HN site \"janestreet.com\" strips the subdomain of our domain \"blog.janestreet.com\""
+    },
+    {
+      "level": "warn",
+      "check": "domain-subdomain",
+      "id": 50003545,
+      "message": "HN site \"lsantos.dev\" strips the subdomain of our domain \"oss.lsantos.dev\""
+    },
+    {
+      "level": "warn",
+      "check": "domain-path",
+      "id": 50023995,
+      "message": "HN site \"twitter.com/wallstreetapes\" extends our domain \"twitter.com\" (multi-user host)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50031269,
+      "message": "23 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 50031269,
+      "message": "2 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50028275,
+      "message": "16 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 50028275,
+      "message": "2 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50029123,
+      "message": "10 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 50029123,
+      "message": "2 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "warn",
+      "check": "comments-missing",
+      "id": 50019911,
+      "message": "247 comment(s) HN shows that we lack (deleted since, or the per-story cap)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50019911,
+      "message": "43 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 50019911,
+      "message": "3 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50022292,
+      "message": "13 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 50022292,
+      "message": "1 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 49998801,
+      "message": "11 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 49998801,
+      "message": "2 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 49997481,
+      "message": "10 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 49997481,
+      "message": "1 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50029830,
+      "message": "12 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 50029830,
+      "message": "1 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50029982,
+      "message": "19 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 50029982,
+      "message": "5 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50021410,
+      "message": "8 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 50021410,
+      "message": "3 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50024499,
+      "message": "3 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 50024499,
+      "message": "1 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50027853,
+      "message": "4 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 49981508,
+      "message": "3 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 49981264,
+      "message": "4 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 49981264,
+      "message": "1 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50023450,
+      "message": "19 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 50023450,
+      "message": "1 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 49998350,
+      "message": "6 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 49998350,
+      "message": "1 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50028027,
+      "message": "3 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50019056,
+      "message": "20 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50024090,
+      "message": "9 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 50024090,
+      "message": "3 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50003545,
+      "message": "5 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 50003545,
+      "message": "1 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50023995,
+      "message": "11 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 50023995,
+      "message": "1 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 49984854,
+      "message": "8 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 49984854,
+      "message": "1 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50020533,
+      "message": "1 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50020014,
+      "message": "30 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 50020014,
+      "message": "1 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50026555,
+      "message": "30 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 50026555,
+      "message": "1 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "warn",
+      "check": "comments-missing",
+      "id": 50018088,
+      "message": "8 comment(s) HN shows that we lack (deleted since, or the per-story cap)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50018088,
+      "message": "17 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 50018088,
+      "message": "3 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50006734,
+      "message": "1 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50024055,
+      "message": "8 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 50024055,
+      "message": "1 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    },
+    {
+      "level": "info",
+      "check": "comments-extra",
+      "id": 50019499,
+      "message": "6 comment(s) we have that HN lacks (posted since, or hidden by HN)"
+    },
+    {
+      "level": "info",
+      "check": "comment-order",
+      "id": 50019499,
+      "message": "2 sibling group(s) in a different order (vote ranking drifted since the fetch)"
+    }
+  ],
+  "counts": {
+    "fail": 0,
+    "warn": 8,
+    "info": 53
+  },
+  "ok": true
+}
