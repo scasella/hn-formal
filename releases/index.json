@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261010-103156-c4ed73e",
+    "runId": "20261010-095814",
+    "specVersion": 2,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 6.07,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 83,
+      "notes": "The front page is a true data grid with a visible th header row, thin cell borders, right-aligned numeric columns for score and comments, and only the lead row highlighted in yellow, which matches the brief closely. At 375px the table keeps all columns but squeezes them, so the age and comments columns are clipped off the right edge and the title column wraps heavily, which hurts scannability. Numbers are not clearly monospace or tabular-figure styled, and the thread page reuses the table header well but leaves a large empty area below the comments.",
+      "adherence": 88,
+      "novelty": 85,
+      "craft": 74
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 0,
+    "costUsd": 0.0608,
+    "previousRelease": "20261010-002557-56bd5f6",
+    "diffStat": "+262 -241",
+    "candidate": 4,
+    "brief": "spreadsheet",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1791628316
+  },
+  {
     "id": "20261010-002557-56bd5f6",
     "runId": "20261010-000025",
     "specVersion": 2,

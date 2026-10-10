@@ -1,7 +1,7 @@
 {
   "month": "2026-10",
-  "totalUsd": 1.042767,
-  "calls": 102,
+  "totalUsd": 2.732275,
+  "calls": 150,
   "runs": {
     "20261009-002502": {
       "costUsd": 0.016895,
@@ -208,7 +208,77 @@
           "calls": 3
         }
       }
+    },
+    "20261010-095814": {
+      "costUsd": 1.689508,
+      "calls": 48,
+      "perCandidate": {
+        "0": {
+          "costUsd": 0.111457,
+          "calls": 3
+        },
+        "1": {
+          "costUsd": 0.11198,
+          "calls": 3
+        },
+        "2": {
+          "costUsd": 0.105012,
+          "calls": 4
+        },
+        "3": {
+          "costUsd": 0.189716,
+          "calls": 5
+        },
+        "4": {
+          "costUsd": 0.060798,
+          "calls": 2
+        },
+        "5": {
+          "costUsd": 0.127724,
+          "calls": 3
+        },
+        "6": {
+          "costUsd": 0.046088,
+          "calls": 2
+        },
+        "7": {
+          "costUsd": 0.243342,
+          "calls": 5
+        },
+        "8": {
+          "costUsd": 0.110922,
+          "calls": 3
+        },
+        "9": {
+          "costUsd": 0.051729,
+          "calls": 2
+        },
+        "10": {
+          "costUsd": 0.101663,
+          "calls": 3
+        },
+        "11": {
+          "costUsd": 0.056785,
+          "calls": 2
+        },
+        "12": {
+          "costUsd": 0.042864,
+          "calls": 2
+        },
+        "13": {
+          "costUsd": 0.125617,
+          "calls": 3
+        },
+        "14": {
+          "costUsd": 0.104831,
+          "calls": 3
+        },
+        "15": {
+          "costUsd": 0.09898,
+          "calls": 3
+        }
+      }
     }
   },
-  "updatedAt": 1791591957
+  "updatedAt": 1791628316
 }
