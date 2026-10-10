@@ -98,7 +98,7 @@ jobs:
           lint: false
           use-github-cache: true
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: steps.kill.outputs.paused != 'true'
         with:
           node-version: 22
