@@ -22,6 +22,11 @@ def a (href label : String) : Dom := .el "a" [("href", href)] [.text label]
 
 def field (name txt : String) : Dom := .el "span" [("data-hn", name)] [.text txt]
 
+/-- The front page's title, assembled from `Spec.fixedText` strings as
+adjacent text nodes (the content gate checks each node). -/
+def frontTitle : List String :=
+  ["HN, formally", " | ", "Hacker News", " ", "front page", ". ", "Every page is proven in Lean 4"]
+
 /-- `titleParts` are separate text nodes: the content gate checks each
 text node on its own, so renderers never concatenate strings. -/
 def pageHead (titleParts : List String) : Dom :=
@@ -30,9 +35,11 @@ def pageHead (titleParts : List String) : Dom :=
     .el "meta" [("name", "viewport"), ("content", "width=device-width, initial-scale=1")] [],
     .el "meta" [("http-equiv", "Content-Security-Policy"), ("content", cspContent)] [],
     .el "meta" [("name", "description"), ("content", aboutText)] [],
-    .el "meta" [("property", "og:title"), ("content", "HN, formally")] [],
+    .el "meta" [("property", "og:title"), ("content", "HN, formally: the Hacker News front page, redesigned nightly by an AI and proven in Lean 4")] [],
     .el "meta" [("property", "og:description"), ("content", aboutText)] [],
     .el "meta" [("property", "og:image"), ("content", previewHref)] [],
+    .el "meta" [("property", "og:image:width"), ("content", "1280")] [],
+    .el "meta" [("property", "og:image:height"), ("content", "670")] [],
     .el "meta" [("property", "og:type"), ("content", "website")] [],
     .el "meta" [("name", "twitter:card"), ("content", "summary_large_image")] [],
     .el "title" [] (titleParts.map Dom.text),
@@ -81,7 +88,7 @@ def storyRow (now : Nat) (s : Item) : Dom :=
 
 def renderFront (f : Front) : Dom :=
   .el "html" [("lang", "en")] [
-    pageHead ["HN, formally"],
+    pageHead frontTitle,
     .el "body" [] [
       topNav,
       .el "main" [] [
@@ -249,25 +256,28 @@ theorem front_ok (f : Front) : FrontOk f (renderFront f) := by
     all_nodesList_map _ _ _ fun s hs => storyRow_ok (.front f) f.fetchedAt s hs rfl
   have hnav := topNav_ok (.front f)
   have hfoot := footer_ok (.front f)
-  have hhead : (nodes (pageHead ["HN, formally"])).all (commonP (.front f)) = true :=
-    pageHead_ok _ _ (by simp only [List.all_cons, List.all_nil, Bool.and_true]; apply textOk_fixed; hn_decide)
+  have hhead : (nodes (pageHead frontTitle)).all (commonP (.front f)) = true :=
+    pageHead_ok _ _ (by
+      unfold frontTitle
+      simp only [List.all_cons, List.all_nil, Bool.and_true, Bool.and_eq_true]
+      refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> first | (apply textOk_fixed; hn_decide) | (apply textOk_empty; hn_decide))
   have hall : (nodes (renderFront f)).all (commonP (.front f)) = true := by
     unfold renderFront a; hn_auto
   obtain ⟨hnodes, hlinks, hnamed, hlinkTags, htexts⟩ := all_commonP _ _ hall
   refine ⟨⟨⟨rfl, rfl, ?_, ?_, ?_, ?_, ?_, ?_, ?_, hnodes, hnamed, hlinkTags⟩, hlinks, htexts⟩, ?_⟩
-  · simp [renderFront, pageHead, topNav, nodes, nodesList, isEl]
-  · simp [renderFront, pageHead, nodes, nodesList, isEl, textContent, texts, textsList, concat]
+  · simp [renderFront, pageHead, frontTitle, topNav, nodes, nodesList, isEl]
+  · simp [renderFront, pageHead, frontTitle, nodes, nodesList, isEl, textContent, texts, textsList, concat]
     left; decide +kernel
-  · simp [renderFront, pageHead, nodes, nodesList, isCspMeta, List.lookup]
-  · simp [renderFront, pageHead, nodes, nodesList, isDescriptionMeta, List.lookup]
-  · simp [renderFront, pageHead, nodes, nodesList, isPreviewMeta, List.lookup]
-  · simp [renderFront, pageHead, nodes, nodesList, isCardMeta, List.lookup]
-  · simp [renderFront, pageHead, topNav, footer, a, nodes, nodesList, isAbout, hasAttr, List.lookup,
+  · simp [renderFront, pageHead, frontTitle, nodes, nodesList, isCspMeta, List.lookup]
+  · simp [renderFront, pageHead, frontTitle, nodes, nodesList, isDescriptionMeta, List.lookup]
+  · simp [renderFront, pageHead, frontTitle, nodes, nodesList, isPreviewMeta, List.lookup]
+  · simp [renderFront, pageHead, frontTitle, nodes, nodesList, isCardMeta, List.lookup]
+  · simp [renderFront, pageHead, frontTitle, topNav, footer, a, nodes, nodesList, isAbout, hasAttr, List.lookup,
       textContent, texts, textsList, concat]
   · have hrow : ∀ s, storyMarkers (storyRow f.fetchedAt s) = [storyRow f.fetchedAt s] := by
       intro s; simp [storyRow, storyMarkers, List.lookup]
     have : storyMarkers (renderFront f) = f.stories.map (storyRow f.fetchedAt) := by
-      simp [renderFront, pageHead, topNav, footer, a, storyMarkers, storyMarkersList, List.lookup,
+      simp [renderFront, pageHead, frontTitle, topNav, footer, a, storyMarkers, storyMarkersList, List.lookup,
         storyMarkersList_map, hrow, flatMap_singleton_eq_map]
     rw [this]
     exact storiesOk_map _ _ _ _ fun s _ => storyRow_fidelity f.fetchedAt s

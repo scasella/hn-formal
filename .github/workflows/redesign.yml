@@ -296,3 +296,35 @@ jobs:
             # so kick the refresh/deploy explicitly.
             gh workflow run refresh.yml --ref main
           fi
+
+      - name: GitHub Release for the generation (watchers' feeds; "Watch, releases only")
+        if: always() && steps.agg.outcome != 'skipped'
+        continue-on-error: true
+        run: |
+          set -euo pipefail
+          record="runs/$RUN_ID.json"
+          released="$(jq -r '.released // empty' "$record" 2>/dev/null || true)"
+          [ -n "$released" ] || { echo "no release this run"; exit 0; }
+          report="releases/$released/report.json"
+          [ -f "$report" ] || { echo "no $report"; exit 0; }
+          # Orchestrator-generated facts only (ids, numbers, the fixed brief);
+          # judge notes are model output and stay out, as in the README.
+          title="$(jq -r '"Generation \(.id)" + (if .brief then ": " + .brief else "" end)' "$report")"
+          notes="$(jq -r '
+            "Live: https://scasella.github.io/hn-formal/\n\n" +
+            "Brief: " + (.brief // "none") + "\n" +
+            "Judge: " + ((.judge.score // "n/a") | tostring) + "/100" +
+              (if .judge.novelty != null then ", novelty " + (.judge.novelty | tostring) else "" end) + "\n" +
+            "Spec: v" + (.specVersion | tostring) + " · " +
+              (if .domChanged == true then "new DOM" elif .domChanged == false then "CSS-only" else "DOM unknown" end) +
+              " · " + (.repairRounds | tostring) + " repair round(s) · $" + (.costUsd | tostring) + "\n\n" +
+            "Proof, stylesheet, report and screenshots: https://github.com/scasella/hn-formal/tree/main/releases/" + .id + "\n" +
+            "How this works: https://scasella.github.io/hn-formal/loop/"' "$report")"
+          shot="releases/$released/preview.png"
+          [ -f "$shot" ] || shot="releases/$released/index-1280.png"
+          if [ -f "$shot" ]; then
+            gh release create "$released" --target main --title "$title" --notes "$notes" "$shot#Front page"
+          else
+            gh release create "$released" --target main --title "$title" --notes "$notes"
+          fi
+          echo "release created: $released"

@@ -160,7 +160,10 @@ Render.lean  style.css  report.json  index-1280.png  index-375.png  item-1280.pn
 ```
 `releases/index.json` is the array of all report.json, newest first.
 A release = one commit to main by the bot that replaces the two editable
-files and adds the release dir. Rollback = `orchestrator rollback <id>`
+files and adds the release dir, plus a GitHub Release tagged with the id
+(title "Generation <id>: <brief>", the same orchestrator-generated facts
+as the README section, `preview.png` attached) so watchers can subscribe
+to releases only. Rollback = `orchestrator rollback <id>`
 which re-copies that release's two files and commits.
 
 ## Run record
