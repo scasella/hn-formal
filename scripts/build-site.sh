@@ -12,6 +12,8 @@
 #   /feed.xml /sitemap.xml        written by `cli site-extras` from releases/index.json
 #   /preview.png                  the current release's social-card screenshot
 #                                 (Spec.previewHref; og:image on every page)
+#   /google*.html etc.            site/verify/*.html, ownership-verification
+#                                 files (Search Console), copied as-is
 #
 # Content-Security-Policy: GitHub Pages cannot send response headers (no
 # `_headers` support), so the policy is delivered as a <meta http-equiv>
@@ -79,6 +81,16 @@ cp site/style.css "$out/style.css"
 if [ -d site/fonts ]; then
   mkdir -p "$out/fonts"
   cp -R site/fonts/. "$out/fonts/"
+fi
+
+# --- ownership-verification files (Google Search Console wants a file at the
+# property's root; the renderer cannot carry a verification meta because a
+# redesign would drop it).
+if [ -d site/verify ]; then
+  for f in site/verify/*.html; do
+    [ -f "$f" ] || continue
+    cp "$f" "$out/$(basename "$f")"
+  done
 fi
 
 # --- dashboard

@@ -208,7 +208,9 @@ per release (orchestrator-generated text only, like the README section),
 a sitemap listing the front page and `/loop/` only (item pages churn every
 15 minutes and mirror HN comments), and the current release's `preview.png`
 (falling back to `index-1280.png`), which is the fixed `Spec.previewHref`
-every rendered page's `og:image` points at. There is no `robots.txt`:
+every rendered page's `og:image` points at. Files in `site/verify/*.html`
+(search-engine ownership verification) are copied to the root as-is; they
+are human-committed and outside the bot-editable paths. There is no `robots.txt`:
 crawlers read it only at the host root, which a project Pages site does not
 control.
 
