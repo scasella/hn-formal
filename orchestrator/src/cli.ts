@@ -1,3 +1,5 @@
+import path from "node:path";
+import { fromRepo } from "./paths.js";
 import { parseArgs } from "node:util";
 import { checkKillSwitchOrExit, redact } from "./guardrails.js";
 import { envInt, log } from "./util.js";
@@ -117,7 +119,9 @@ async function main(argv: string[]): Promise<number> {
       if (!values.out) throw new Error("site-extras: --out is required");
       const { readReleasesIndex } = await import("./release.js");
       const { writeSiteExtras } = await import("./siteExtras.js");
-      const written = await writeSiteExtras(values.out, await readReleasesIndex());
+      // npm run sets cwd to orchestrator/; build-site.sh passes a repo-relative out dir.
+      const outDir = path.isAbsolute(values.out) ? values.out : fromRepo(values.out);
+      const written = await writeSiteExtras(outDir, await readReleasesIndex());
       process.stdout.write(`site-extras\n${written.map((p) => `  ${p}`).join("\n")}\n`);
       return 0;
     }
