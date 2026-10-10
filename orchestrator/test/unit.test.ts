@@ -311,3 +311,10 @@ test("prompt estimate counts an image as a flat budget, not its base64 length", 
   assert.ok(withImage < IMAGE_TOKEN_ESTIMATE + 100, `got ${withImage}`);
   assert.equal(estimateMessageTokens([{ role: "user", content: "x".repeat(300) }]), 100);
 });
+
+test("effort steps down one level after a max_tokens hit and stops at low", async () => {
+  const { stepDownEffort } = await import("../src/anthropic.js");
+  assert.equal(stepDownEffort("xhigh"), "high");
+  assert.equal(stepDownEffort("high"), "medium");
+  assert.equal(stepDownEffort("low"), "low");
+});

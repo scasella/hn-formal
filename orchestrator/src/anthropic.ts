@@ -195,10 +195,30 @@ function roughTokens(parts: Array<string | { length: number }>): number {
  * failures (refusal, max_tokens, unparseable); throws for transport errors
  * after SDK retries, and for caps (via Budget).
  */
+export type Effort = "low" | "medium" | "high" | "xhigh" | "max";
+const EFFORT_LADDER: Effort[] = ["low", "medium", "high", "xhigh", "max"];
+
+/** The configured generation effort (GENERATE_EFFORT, default xhigh). */
+export function generateEffort(): Effort {
+  return effortFor("GENERATE_EFFORT", "xhigh");
+}
+
+/**
+ * One step down the effort ladder. At xhigh a round-1 call with the live
+ * site's screenshot spent the whole 120K output budget thinking three times
+ * out of four (runs 20261009-234422 and 20261010-000025); a candidate that
+ * hits max_tokens retries its next round one level lower.
+ */
+export function stepDownEffort(e: Effort): Effort {
+  const i = EFFORT_LADDER.indexOf(e);
+  return EFFORT_LADDER[Math.max(0, i - 1)]!;
+}
+
 export async function generateCandidate(
   system: SystemBlocks,
   messages: Anthropic.MessageParam[],
   budget: Budget,
+  effort: Effort = generateEffort(),
 ): Promise<CallResult<CandidateOutput>> {
   budget.beforeCall();
   if (MOCK) return mockCandidate(budget);
@@ -221,7 +241,7 @@ export async function generateCandidate(
     max_tokens: GENERATE_MAX_TOKENS,
     system,
     messages,
-    output_config: { format: plainFormat(CandidateOutput), effort: effortFor("GENERATE_EFFORT", "xhigh") },
+    output_config: { format: plainFormat(CandidateOutput), effort },
   });
   const final = await stream.finalMessage();
   const cost = costOf(final.usage);
@@ -275,7 +295,7 @@ function parseTextJson<T>(msg: Anthropic.Message, schema: z.ZodType<T>): T | nul
   }
 }
 
-function effortFor(envName: string, def: "low" | "medium" | "high" | "xhigh"): "low" | "medium" | "high" | "xhigh" | "max" {
+function effortFor(envName: string, def: Effort): Effort {
   const v = process.env[envName];
   if (v === "low" || v === "medium" || v === "high" || v === "xhigh" || v === "max") return v;
   return def;

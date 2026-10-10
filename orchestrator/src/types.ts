@@ -91,6 +91,8 @@ export interface RoundLog {
   stopReason?: string | null;
   /** Output tokens (thinking included) of the generation call, when one was made. */
   outputTokens?: number;
+  /** Effort the generation call ran at (steps down after a max_tokens hit). */
+  effort?: string;
   errorTail?: string;
   durationMs: number;
 }

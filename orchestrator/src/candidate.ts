@@ -3,7 +3,7 @@ import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import type { CandidateRecord, JudgeDetail, RoundLog, Screenshots, Tier1Record, Tier2Report } from "./types.js";
-import { MOCK, MODEL, countPrefixTokens, generateCandidate, type CandidateOutput } from "./anthropic.js";
+import { MOCK, MODEL, countPrefixTokens, generateCandidate, generateEffort, stepDownEffort, type CandidateOutput, type Effort } from "./anthropic.js";
 import { Budget, CapHit, killSwitchPresent, recordCandidateSpend, redact } from "./guardrails.js";
 import { judgeSite, takeScreenshots } from "./judge.js";
 import { EDITABLE_FILES, fromRepo, repoRoot } from "./paths.js";
@@ -368,6 +368,7 @@ export async function cmdCandidate(args: CandidateArgs): Promise<CandidateRecord
 
   let previous: CandidateOutput | undefined;
   let failure: RoundContext["failure"];
+  let effort: Effort = generateEffort();
 
   try {
     for (let round = 1; round <= args.rounds; round++) {
@@ -384,11 +385,13 @@ export async function cmdCandidate(args: CandidateArgs): Promise<CandidateRecord
       const costBefore = budget.costUsd;
 
       let gen: Awaited<ReturnType<typeof generateCandidate>>;
+      roundLog.effort = effort;
       try {
         gen = await generateCandidate(
           [...system, briefBlock(brief, recent)],
           roundMessages({ round, maxRounds: args.rounds, previous, failure, ...(round === 1 && currentSiteB64 ? { currentSitePng: currentSiteB64 } : {}) }),
           budget,
+          effort,
         );
       } catch (e) {
         // Transport/API errors after the SDK's retries cost one round, not the candidate.
@@ -406,6 +409,10 @@ export async function cmdCandidate(args: CandidateArgs): Promise<CandidateRecord
       roundLog.costUsd = budget.costUsd - costBefore;
       roundLog.stopReason = gen.stopReason;
       if (gen.usage.output_tokens) roundLog.outputTokens = gen.usage.output_tokens;
+      if (gen.stopReason === "max_tokens" && stepDownEffort(effort) !== effort) {
+        log(`cand-${args.n} round ${round}: hit max_tokens at effort ${effort}; next round at ${stepDownEffort(effort)}`);
+        effort = stepDownEffort(effort);
+      }
       rec.costUsd = budget.costUsd;
       rec.calls = budget.calls;
 
