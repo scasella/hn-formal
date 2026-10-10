@@ -217,9 +217,13 @@ export function compareThread(id: number, hn: HnComment[], ours: HnComment[]): F
   const f: Finding[] = [];
   const ourIds = new Set(ours.map((c) => c.id));
   const hnIds = new Set(hn.map((c) => c.id));
-  const missing = hn.filter((c) => !ourIds.has(c.id)).length;
+  const missingIds = hn.filter((c) => !ourIds.has(c.id)).map((c) => c.id);
+  const missing = missingIds.length;
   const extra = ours.filter((c) => !hnIds.has(c.id)).length;
-  if (missing) f.push({ level: "warn", check: "comments-missing", id, message: `${missing} comment(s) HN shows that we lack (deleted since, or the per-story cap)` });
+  if (missing) {
+    const sample = missingIds.slice(0, 3).join(", ") + (missing > 3 ? ", ..." : "");
+    f.push({ level: "warn", check: "comments-missing", id, message: `${missing} comment(s) HN shows that we lack (deleted since, or the per-story cap): ${sample}` });
+  }
   if (extra) f.push({ level: "info", check: "comments-extra", id, message: `${extra} comment(s) we have that HN lacks (posted since, or hidden by HN)` });
   // Tree shape on the common ids: same parent (or the parent is a comment one side lacks, already counted).
   const ph = parentsOf(hn);
@@ -367,6 +371,6 @@ export async function cmdBaseline(args: BaselineArgs): Promise<Report> {
   await writeJsonAtomic(out, report);
   for (const f of findings.filter((x) => x.level !== "info")) log(`${f.level.toUpperCase()} ${f.check}${f.id ? ` ${f.id}` : ""}: ${f.message}`);
   log(`baseline: ${report.ok ? "ok" : "FAIL"} stories=${report.stories} threads=${threads} fail=${counts.fail} warn=${counts.warn} info=${counts.info} -> ${out}`);
-  if (!args.data) await fsp.rm(tmp, { recursive: true, force: true });
+  await fsp.rm(tmp, { recursive: true, force: true });
   return report;
 }

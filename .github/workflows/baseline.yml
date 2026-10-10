@@ -31,7 +31,7 @@ jobs:
   fetch:
     name: Fetch HN HTML once and open a PR
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 90
     env:
       GH_TOKEN: ${{ github.token }}
       UA: 'hn-formal-baseline/1.0 (+https://github.com/scasella/hn-formal; one manual fetch per spec version; contact via repo issues)'
