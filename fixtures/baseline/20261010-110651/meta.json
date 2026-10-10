@@ -1,0 +1,8 @@
+{
+  "fetchedAt": "20261010-110651",
+  "userAgent": "hn-formal-baseline/1.0 (+https://github.com/scasella/hn-formal; one manual fetch per spec version; contact via repo issues)",
+  "dispatchedBy": "scasella",
+  "items": 30,
+  "source": "https://news.ycombinator.com/",
+  "note": "manual baseline fetch, one per spec version"
+}
