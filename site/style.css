@@ -1,199 +1,120 @@
-/* hn-formal v2: a spreadsheet grid. One story per row, one field per column, a frozen header row, numbers right-aligned, one highlighted lead row. Styles the DOM from HnFormal/Render.lean. */
-
+/* hn-formal v2 reader: one column of serif prose on warm paper, italic metadata, no rules or borders. */
 :root {
-  --sheet: #ffffff;
-  --paper: #eef0f3;
-  --head: #e3e7ec;
-  --band: #f5f7f9;
-  --lead: #fff1a8;
-  --hover: #e6f0ff;
-  --ink: #1b1d21;
-  --muted: #444a53;
-  --line: #c3c8cf;
-  --link: #0b4fb3;
-  --visited: #5a2d82;
-  --accent: #0b6e4f;
+  --paper: #f6f1e7;
+  --ink: #2b2620;
+  --soft: #665d50;
+  --link: #8a3b12;
+  --code: #ece5d6;
 }
-
 * { box-sizing: border-box; }
-
 html {
   background: var(--paper);
   color: var(--ink);
-  font: 13px/1.4 "Segoe UI", system-ui, Arial, Helvetica, sans-serif;
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
+  font-size: 18px;
+  line-height: 1.65;
   -webkit-text-size-adjust: 100%;
 }
-
 body {
   margin: 0;
   min-height: 100vh;
   background: var(--paper);
   overflow-wrap: anywhere;
 }
-
-body > * { max-width: 100%; }
-
-a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
-a:visited { color: var(--visited); }
+a { color: var(--link); text-decoration: underline; text-underline-offset: 0.15em; }
 a:hover { text-decoration-thickness: 2px; }
-a:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
-
-/* Formula bar: the row above the sheet. */
+a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 header {
-  background: var(--head);
-  border-bottom: 1px solid var(--line);
-}
-header nav {
-  max-width: 76rem;
+  max-width: 38rem;
   margin: 0 auto;
-  padding: 0.35rem 0.5rem;
-  font-size: 12px;
-  white-space: normal;
+  padding: 1.25rem 1.25rem 0;
+  color: var(--soft);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.8rem;
+  line-height: 1.6;
 }
-header nav a { color: var(--ink); font-weight: 600; }
-header nav a:visited { color: var(--ink); }
-
-/* The sheet. */
+header nav a { color: var(--ink); font-weight: 700; text-decoration: none; }
+header nav a:hover { text-decoration: underline; }
 main {
-  max-width: 76rem;
+  max-width: 38rem;
   margin: 0 auto;
-  padding: 0.5rem;
-  min-height: 70vh;
-  background: var(--sheet);
-  border-left: 1px solid var(--line);
-  border-right: 1px solid var(--line);
+  padding: 3rem 1.25rem 2rem;
 }
-main > h1 {
-  margin: 0 0 0.4rem;
-  padding: 0.3rem 0.5rem;
-  font-size: 13px;
+div.stories { margin: 0; }
+article[data-hn-story] { margin: 0 0 3.5rem; }
+main > article[data-hn-story] { margin-bottom: 2.5rem; }
+.titleline { margin: 0; }
+.titleline h2 {
+  display: inline;
+  margin: 0;
+  font-size: 1.22rem;
+  line-height: 1.35;
   font-weight: 700;
-  color: var(--ink);
-  background: var(--head);
-  border: 1px solid var(--line);
 }
-
-table.grid {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-  font-variant-numeric: tabular-nums;
+main > article[data-hn-story] .titleline h2 { font-size: 1.6rem; }
+.titleline a[data-hn="title"] { color: var(--ink); text-decoration: none; }
+.titleline a[data-hn="title"]:hover { text-decoration: underline; }
+.titleline span[data-hn="domain"] {
+  margin-left: 0.5rem;
+  color: var(--soft);
+  font-size: 0.82rem;
+  font-style: italic;
 }
-table.grid th,
-table.grid td {
-  padding: 0.25rem 0.4rem;
-  border: 1px solid var(--line);
-  text-align: left;
-  vertical-align: top;
-  overflow-wrap: anywhere;
+p.meta {
+  margin: 0.35rem 0 0;
+  color: var(--soft);
+  font-size: 0.84rem;
+  font-style: italic;
+  line-height: 1.6;
 }
-table.grid thead th {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background: var(--head);
-  color: var(--ink);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+p.meta a { color: var(--link); text-decoration: underline; }
+div.comments { margin-top: 1rem; }
+div[data-hn-comment] { margin: 1.75rem 0 0; }
+div.kids div[data-hn-comment] { margin-top: 1.2rem; }
+div.kids { margin: 0 0 0 0.9rem; padding: 0; }
+div.kids div.kids div.kids div.kids div.kids { margin-left: 0; }
+.chead {
+  color: var(--soft);
+  font-size: 0.82rem;
+  font-style: italic;
+  line-height: 1.5;
 }
-
-/* Column widths sum to 100 percent. Numbers sit right. */
-table.grid .c-title { width: 40%; }
-table.grid .c-domain { width: 15%; }
-table.grid .c-num { width: 9%; text-align: right; white-space: nowrap; }
-table.grid .c-by { width: 15%; }
-table.grid .c-age { width: 12%; }
-
-table.grid tbody tr:nth-child(even) td { background: var(--band); }
-table.grid tbody tr:first-child td { background: var(--lead); }
-table.grid tbody tr:hover td { background: var(--hover); }
-
-table.grid td.c-title a[data-hn="title"] { color: var(--ink); font-weight: 600; }
-table.grid td.c-title a[data-hn="title"]:visited { color: var(--visited); }
-table.grid td.c-by a { font-size: 12px; }
-table.grid td.c-num a { font-weight: 700; }
-[data-hn="domain"], [data-hn="age"] { color: var(--muted); font-size: 12px; }
-[data-hn="descendants"] { font-weight: 700; }
-
-article[data-hn-story] { margin-bottom: 0.75rem; }
-
-[data-hn="text"] {
-  padding: 0.4rem 0.5rem;
-  border: 1px solid var(--line);
-  border-top: 0;
-  background: var(--sheet);
-  overflow-wrap: anywhere;
-}
-[data-hn="text"] p { margin: 0.35rem 0; }
-[data-hn="text"] p:first-child { margin-top: 0; }
-
+.chead a { color: var(--soft); text-decoration: underline; }
+[data-hn="text"] { margin: 0.5rem 0 0; overflow-wrap: anywhere; }
+[data-hn="text"] p { margin: 0 0 0.85rem; }
+[data-hn="text"] a { color: var(--link); text-decoration: underline; }
 code, pre {
-  font-family: ui-monospace, Consolas, Menlo, "Liberation Mono", monospace;
-  font-size: 12px;
-  background: #eceef1;
-  color: var(--ink);
+  font-family: ui-monospace, Menlo, Consolas, "Courier New", monospace;
+  font-size: 0.85em;
 }
-code { padding: 0 0.2em; }
+code { background: var(--code); padding: 0 0.2em; }
 pre {
-  margin: 0.35rem 0;
-  padding: 0.35rem 0.5rem;
+  margin: 0.6rem 0 0.85rem;
+  padding: 0.6rem 0.8rem;
+  background: var(--code);
   max-width: 100%;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
-pre code { padding: 0; background: none; }
-
-ol.comments, ol.kids { list-style: none; margin: 0; padding: 0; }
-ol.comments { margin-top: 0.5rem; }
-ol.comments > li, ol.kids > li {
-  margin-top: 0.3rem;
-  border: 1px solid var(--line);
-  background: var(--sheet);
-}
-ol.kids {
-  margin: 0.3rem 0 0 0.5rem;
-  padding-left: 0.5rem;
-  border-left: 2px solid var(--line);
-}
-ol.kids:empty { display: none; }
-ol.kids ol.kids ol.kids ol.kids { margin-left: 0; padding-left: 0; border-left: 0; }
-
-.chead {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.2rem 0.75rem;
-  padding: 0.25rem 0.5rem;
-  background: var(--head);
-  border-bottom: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 12px;
-}
-.chead a { color: var(--ink); font-weight: 600; }
-.chead a:visited { color: var(--ink); }
-
-.more { padding: 0.5rem 0.25rem; font-size: 12px; border-top: 1px solid var(--line); }
-.more a { font-weight: 700; }
-
+pre code { background: none; padding: 0; }
+div.more { margin-top: 0.5rem; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 0.85rem; }
+div.more a { color: var(--ink); font-weight: 700; }
 footer {
-  max-width: 76rem;
+  max-width: 38rem;
   margin: 0 auto;
-  padding: 0.5rem;
-  background: var(--head);
-  border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 12px;
+  padding: 2rem 1.25rem 3rem;
+  color: var(--soft);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 0.8rem;
+  line-height: 1.6;
   overflow-wrap: anywhere;
 }
-footer p { margin: 0 0 0.35rem; }
-footer a { color: var(--link); }
-footer a:visited { color: var(--visited); }
-
-@media (max-width: 40rem) {
-  main { padding: 0.25rem; overflow-x: auto; }
-  table.grid { table-layout: auto; min-width: 38rem; }
-  table.grid th, table.grid td { padding: 0.2rem 0.3rem; }
-  table.grid .c-title { width: auto; min-width: 12rem; }
-  ol.kids { margin-left: 0.25rem; padding-left: 0.4rem; }
+footer p { margin: 0 0 0.75rem; }
+footer p[data-hn="about"] {
+  color: var(--ink);
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
+  font-size: 0.98rem;
+  font-style: italic;
+  line-height: 1.6;
 }
+footer a { color: var(--ink); text-decoration: underline; }

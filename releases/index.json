@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261011-102555-55b9036",
+    "runId": "20261011-100758",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 5.75,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 77,
+      "notes": "The front page is a true prose-block reading view: each story is a title, a small domain note, and a metadata line in a single measure, with no list, borders, rules, or gutter numbers, and warm cream neutrals with serif type. Hierarchy relies on size and weight as the brief asks, and the 375px view reflows cleanly with no overflow. The brief's required section/article structure is not visible in the screenshots, and the metadata lines are slightly louder than needed in their orange-brown link color. The thread page nests comments with indentation and keeps comfortable line length, though the deep nesting narrows the text noticeably by the third level.",
+      "adherence": 82,
+      "novelty": 74,
+      "craft": 72
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 0,
+    "costUsd": 0.0418,
+    "previousRelease": "20261010-103156-c4ed73e",
+    "diffStat": "+166 -270",
+    "candidate": 10,
+    "brief": "minimal reader",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1791714355
+  },
+  {
     "id": "20261010-103156-c4ed73e",
     "runId": "20261010-095814",
     "specVersion": 2,

@@ -1,0 +1,190 @@
+{
+  "runId": "20261011-100758",
+  "startedAt": 1791713325,
+  "finishedAt": 1791714355,
+  "candidates": 16,
+  "passedTier1": 16,
+  "passedTier2": 16,
+  "released": "20261011-102555-55b9036",
+  "costUsd": 1.158,
+  "calls": 41,
+  "stopReason": "released",
+  "perCandidate": [
+    {
+      "n": 0,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 35,
+      "novelty": 38,
+      "briefOk": true,
+      "domChanged": true,
+      "lastError": ""
+    },
+    {
+      "n": 1,
+      "rounds": 2,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 60,
+      "novelty": 58,
+      "briefOk": true,
+      "domChanged": true,
+      "lastError": ""
+    },
+    {
+      "n": 2,
+      "rounds": 2,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 53,
+      "novelty": 35,
+      "briefOk": true,
+      "domChanged": true,
+      "lastError": ""
+    },
+    {
+      "n": 3,
+      "rounds": 2,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 62,
+      "novelty": 62,
+      "briefOk": true,
+      "domChanged": true,
+      "lastError": ""
+    },
+    {
+      "n": 4,
+      "rounds": 2,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 51,
+      "novelty": 40,
+      "briefOk": true,
+      "domChanged": true,
+      "lastError": ""
+    },
+    {
+      "n": 5,
+      "rounds": 2,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 76,
+      "novelty": 78,
+      "briefOk": true,
+      "domChanged": true,
+      "lastError": ""
+    },
+    {
+      "n": 6,
+      "rounds": 2,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 59,
+      "novelty": 55,
+      "briefOk": true,
+      "domChanged": true,
+      "lastError": ""
+    },
+    {
+      "n": 7,
+      "rounds": 2,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 75,
+      "novelty": 72,
+      "briefOk": true,
+      "domChanged": true,
+      "lastError": ""
+    },
+    {
+      "n": 8,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 53,
+      "novelty": 35,
+      "briefOk": true,
+      "domChanged": true,
+      "lastError": ""
+    },
+    {
+      "n": 9,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 68,
+      "novelty": 70,
+      "briefOk": true,
+      "domChanged": true,
+      "lastError": ""
+    },
+    {
+      "n": 10,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 77,
+      "novelty": 74,
+      "briefOk": true,
+      "domChanged": true,
+      "lastError": ""
+    },
+    {
+      "n": 11,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 63,
+      "novelty": 45,
+      "briefOk": true,
+      "domChanged": true,
+      "lastError": ""
+    },
+    {
+      "n": 12,
+      "rounds": 2,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 73,
+      "novelty": 72,
+      "briefOk": true,
+      "domChanged": true,
+      "lastError": ""
+    },
+    {
+      "n": 13,
+      "rounds": 2,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 62,
+      "novelty": 45,
+      "briefOk": true,
+      "domChanged": true,
+      "lastError": ""
+    },
+    {
+      "n": 14,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 74,
+      "novelty": 62,
+      "briefOk": true,
+      "domChanged": true,
+      "lastError": ""
+    },
+    {
+      "n": 15,
+      "rounds": 1,
+      "tier1": "ok",
+      "tier2": "ok",
+      "judge": 60,
+      "novelty": 45,
+      "briefOk": true,
+      "domChanged": true,
+      "lastError": ""
+    }
+  ]
+}
