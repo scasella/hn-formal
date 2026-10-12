@@ -1,120 +1,203 @@
-/* hn-formal v2 reader: one column of serif prose on warm paper, italic metadata, no rules or borders. */
+/* hn-formal: library catalog. Index cards, labelled fields, one rubber-stamp red. */
+
 :root {
-  --paper: #f6f1e7;
-  --ink: #2b2620;
-  --soft: #665d50;
-  --link: #8a3b12;
-  --code: #ece5d6;
+  --manila: #ebdcb2;
+  --card: #f7f0da;
+  --drawer: #d8c58f;
+  --ink: #201b13;
+  --muted: #4b4232;
+  --stamp: #9b1c17;
+  --rule: #8b7645;
+  --shadow: #c7b182;
 }
+
 * { box-sizing: border-box; }
+
 html {
-  background: var(--paper);
+  background: var(--manila);
   color: var(--ink);
-  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
-  font-size: 18px;
-  line-height: 1.65;
+  font: 14px/1.45 "Courier New", Courier, ui-monospace, monospace;
   -webkit-text-size-adjust: 100%;
 }
+
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--paper);
+  background: var(--manila);
   overflow-wrap: anywhere;
 }
-a { color: var(--link); text-decoration: underline; text-underline-offset: 0.15em; }
+
+body > * { max-width: 100%; }
+
+a { color: var(--ink); text-decoration: underline; }
+a:visited { color: #4a2c26; }
 a:hover { text-decoration-thickness: 2px; }
-a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-header {
-  max-width: 38rem;
-  margin: 0 auto;
-  padding: 1.25rem 1.25rem 0;
-  color: var(--soft);
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 0.8rem;
-  line-height: 1.6;
+a:focus-visible { outline: 2px solid var(--stamp); outline-offset: 2px; }
+
+body > header {
+  background: var(--drawer);
+  border-bottom: 3px double var(--rule);
 }
-header nav a { color: var(--ink); font-weight: 700; text-decoration: none; }
-header nav a:hover { text-decoration: underline; }
+body > header nav {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.6rem;
+  font: bold 12px/1.7 Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+body > header nav a { text-decoration: none; }
+body > header nav a:hover { text-decoration: underline; }
+
 main {
-  max-width: 38rem;
+  max-width: 64rem;
   margin: 0 auto;
-  padding: 3rem 1.25rem 2rem;
+  padding: 1rem 0.75rem 1.5rem;
 }
-div.stories { margin: 0; }
-article[data-hn-story] { margin: 0 0 3.5rem; }
-main > article[data-hn-story] { margin-bottom: 2.5rem; }
-.titleline { margin: 0; }
-.titleline h2 {
-  display: inline;
+
+/* The catalog drawer: a grid of index cards. */
+ol.stories {
+  list-style: none;
   margin: 0;
-  font-size: 1.22rem;
-  line-height: 1.35;
-  font-weight: 700;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  gap: 1rem;
 }
-main > article[data-hn-story] .titleline h2 { font-size: 1.6rem; }
-.titleline a[data-hn="title"] { color: var(--ink); text-decoration: none; }
-.titleline a[data-hn="title"]:hover { text-decoration: underline; }
-.titleline span[data-hn="domain"] {
-  margin-left: 0.5rem;
-  color: var(--soft);
-  font-size: 0.82rem;
-  font-style: italic;
+ol.stories > li {
+  position: relative;
+  min-width: 0;
+  padding: 1.1rem 0.85rem 0.7rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  box-shadow: 4px 4px 0 var(--shadow);
 }
-p.meta {
-  margin: 0.35rem 0 0;
-  color: var(--soft);
-  font-size: 0.84rem;
-  font-style: italic;
-  line-height: 1.6;
+/* The punched hole at the top of each card. */
+ol.stories > li::before {
+  content: "";
+  position: absolute;
+  top: 0.45rem;
+  left: 50%;
+  width: 0.7rem;
+  height: 0.7rem;
+  margin-left: -0.35rem;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: var(--manila);
 }
-p.meta a { color: var(--link); text-decoration: underline; }
-div.comments { margin-top: 1rem; }
-div[data-hn-comment] { margin: 1.75rem 0 0; }
-div.kids div[data-hn-comment] { margin-top: 1.2rem; }
-div.kids { margin: 0 0 0 0.9rem; padding: 0; }
-div.kids div.kids div.kids div.kids div.kids { margin-left: 0; }
+
+.titleline {
+  margin: 0.4rem 0 0.6rem;
+  font: bold 1.05rem/1.25 Georgia, "Times New Roman", serif;
+}
+a[data-hn="title"] { color: var(--ink); text-decoration: none; }
+a[data-hn="title"]:hover { text-decoration: underline; }
+
+dl.meta {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.15rem 0.75rem;
+  margin: 0;
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--rule);
+  font-size: 0.85rem;
+}
+dl.meta dt {
+  font: bold 0.66rem/2 Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+dl.meta dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+dl.meta dd a { font-weight: bold; }
+
+.actions { margin-top: 0.7rem; }
+.actions a[data-hn="comments"] {
+  display: inline-block;
+  padding: 0.3rem 0.5rem;
+  border: 2px solid var(--stamp);
+  color: var(--stamp);
+  font: bold 0.7rem/1 Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+  transform: rotate(-2deg);
+}
+.actions a[data-hn="comments"]:hover { background: var(--stamp); color: var(--card); }
+
+.more { padding-top: 1rem; }
+.more a { font-weight: bold; }
+
+/* Thread page: the story is one large card with a red spine. */
+article[data-hn-story] {
+  padding: 1rem 1rem 0.8rem;
+  margin-bottom: 1.25rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-left: 6px solid var(--stamp);
+  box-shadow: 4px 4px 0 var(--shadow);
+}
+article[data-hn-story] a[data-hn="title"] { font-size: 1.3rem; }
+article [data-hn="text"] { margin: 0.6rem 0 0; overflow-wrap: anywhere; }
+article [data-hn="text"] p { margin: 0.4rem 0; }
+
+/* Comments: slips filed under the story, nested kids indented until depth four. */
+ol.comments, ol.kids { list-style: none; margin: 0; padding: 0; }
+li[data-hn-comment] {
+  margin-top: 0.6rem;
+  padding: 0.5rem 0.6rem 0.4rem;
+  background: var(--card);
+  border-left: 3px solid var(--rule);
+}
+ol.kids {
+  margin-top: 0.4rem;
+  padding-left: 0.6rem;
+  border-left: 1px dotted var(--rule);
+}
+ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
+ol.kids ol.kids ol.kids ol.kids li[data-hn-comment] {
+  padding-left: 0;
+  padding-right: 0;
+  border-left: 0;
+  background: none;
+}
+
 .chead {
-  color: var(--soft);
-  font-size: 0.82rem;
-  font-style: italic;
-  line-height: 1.5;
+  font: 0.72rem/1.5 Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
 }
-.chead a { color: var(--soft); text-decoration: underline; }
-[data-hn="text"] { margin: 0.5rem 0 0; overflow-wrap: anywhere; }
-[data-hn="text"] p { margin: 0 0 0.85rem; }
-[data-hn="text"] a { color: var(--link); text-decoration: underline; }
+.chead a { color: var(--muted); text-decoration: none; }
+.chead a:hover { text-decoration: underline; }
+li[data-hn-comment] > [data-hn="text"] { margin: 0.35rem 0; overflow-wrap: anywhere; }
+li[data-hn-comment] p { margin: 0.35rem 0; }
+
 code, pre {
-  font-family: ui-monospace, Menlo, Consolas, "Courier New", monospace;
-  font-size: 0.85em;
+  font-family: "Courier New", Courier, ui-monospace, monospace;
+  font-size: 12px;
+  background: var(--manila);
 }
-code { background: var(--code); padding: 0 0.2em; }
+code { padding: 0 0.2em; }
 pre {
-  margin: 0.6rem 0 0.85rem;
-  padding: 0.6rem 0.8rem;
-  background: var(--code);
+  margin: 0.4rem 0;
+  padding: 0.4rem 0.5rem;
   max-width: 100%;
+  border: 1px solid var(--rule);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
-pre code { background: none; padding: 0; }
-div.more { margin-top: 0.5rem; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 0.85rem; }
-div.more a { color: var(--ink); font-weight: 700; }
-footer {
-  max-width: 38rem;
+
+body > footer {
+  max-width: 64rem;
   margin: 0 auto;
-  padding: 2rem 1.25rem 3rem;
-  color: var(--soft);
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 0.8rem;
-  line-height: 1.6;
+  padding: 0.9rem 0.75rem 1.5rem;
+  border-top: 3px double var(--rule);
+  font-size: 12px;
+  color: var(--muted);
   overflow-wrap: anywhere;
 }
-footer p { margin: 0 0 0.75rem; }
-footer p[data-hn="about"] {
-  color: var(--ink);
-  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, "Times New Roman", serif;
-  font-size: 0.98rem;
-  font-style: italic;
-  line-height: 1.6;
-}
-footer a { color: var(--ink); text-decoration: underline; }
+body > footer p { margin: 0 0 0.5rem; }

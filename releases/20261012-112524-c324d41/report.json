@@ -1,0 +1,38 @@
+{
+  "id": "20261012-112524-c324d41",
+  "runId": "20261012-110225",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 7.17,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 82,
+    "notes": "The front page reads clearly as index cards: manila fill, dashed rule under each title, uppercase sans labels (DOMAIN, POINTS, BY, AGE, COMMENTS) with typewriter values, and a single rubber-stamp red DISCUSS button, matching the brief closely. The grid of three cards at 1280px is a genuinely different page shape from the live list, though the card stack at 375px becomes a long single column that makes scanning 30 stories slow. The thread page keeps the red-stamped card header, but the comment nesting is only a thin left rule and the code blocks dominate, so the thread hierarchy is weaker than the front page. Palette is coherent and restrained, with the red reserved for stamps and the header accent.",
+    "adherence": 88,
+    "novelty": 82,
+    "craft": 74
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 1,
+  "costUsd": 0.0855,
+  "previousRelease": "20261011-102555-55b9036",
+  "diffStat": "+214 -141",
+  "candidate": 6,
+  "brief": "library catalog",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1791804324
+}
