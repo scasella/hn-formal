@@ -1,0 +1,190 @@
+{
+  "runId": "20261013-104550",
+  "startedAt": 1791888400,
+  "finishedAt": 1791890046,
+  "candidates": 16,
+  "passedTier1": 16,
+  "passedTier2": 0,
+  "released": null,
+  "costUsd": 2.6288,
+  "calls": 160,
+  "stopReason": "no-passer",
+  "perCandidate": [
+    {
+      "n": 0,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":6.28,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50065692.html: Bad value “https://1234.5” for attribute “href” on element “a”: Invalid host: IPv4 address part out of range. (line 3)"
+    },
+    {
+      "n": 1,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":6.13,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50065692.html: Bad value “https://1234.5” for attribute “href” on element “a”: Invalid host: IPv4 address part out of range. (line 3)"
+    },
+    {
+      "n": 2,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":7.18,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50065692.html: Bad value “https://1234.5” for attribute “href” on element “a”: Invalid host: IPv4 address part out of range. (line 3)"
+    },
+    {
+      "n": 3,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":10.04,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50065692.html: Bad value “https://1234.5” for attribute “href” on element “a”: Invalid host: IPv4 address part out of range. (line 3)"
+    },
+    {
+      "n": 4,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":6.68,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50065692.html: Bad value “https://1234.5” for attribute “href” on element “a”: Invalid host: IPv4 address part out of range. (line 3)"
+    },
+    {
+      "n": 5,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":5.93,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50065692.html: Bad value “https://1234.5” for attribute “href” on element “a”: Invalid host: IPv4 address part out of range. (line 3)"
+    },
+    {
+      "n": 6,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":8.18,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50065692.html: Bad value “https://1234.5” for attribute “href” on element “a”: Invalid host: IPv4 address part out of range. (line 3)"
+    },
+    {
+      "n": 7,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":5.58,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50065692.html: Bad value “https://1234.5” for attribute “href” on element “a”: Invalid host: IPv4 address part out of range. (line 3)"
+    },
+    {
+      "n": 8,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":6.48,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50065692.html: Bad value “https://1234.5” for attribute “href” on element “a”: Invalid host: IPv4 address part out of range. (line 3)"
+    },
+    {
+      "n": 9,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":4.98,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50065692.html: Bad value “https://1234.5” for attribute “href” on element “a”: Invalid host: IPv4 address part out of range. (line 3)"
+    },
+    {
+      "n": 10,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":6.82,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50065692.html: Bad value “https://1234.5” for attribute “href” on element “a”: Invalid host: IPv4 address part out of range. (line 3)"
+    },
+    {
+      "n": 11,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":7.55,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50065692.html: Bad value “https://1234.5” for attribute “href” on element “a”: Invalid host: IPv4 address part out of range. (line 3)"
+    },
+    {
+      "n": 12,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":6.75,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50065692.html: Bad value “https://1234.5” for attribute “href” on element “a”: Invalid host: IPv4 address part out of range. (line 3)"
+    },
+    {
+      "n": 13,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":21,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50065692.html: Bad value “https://1234.5” for attribute “href” on element “a”: Invalid host: IPv4 address part out of range. (line 3)"
+    },
+    {
+      "n": 14,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":12.91,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50065692.html: Bad value “https://1234.5” for attribute “href” on element “a”: Invalid host: IPv4 address part out of range. (line 3)"
+    },
+    {
+      "n": 15,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":7.12,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50065692.html: Bad value “https://1234.5” for attribute “href” on element “a”: Invalid host: IPv4 address part out of range. (line 3)"
+    }
+  ]
+}
