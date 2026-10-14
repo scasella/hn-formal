@@ -1,0 +1,38 @@
+{
+  "id": "20261014-090859-dedb9cc",
+  "runId": "20261014-085031",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 6.47,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 76,
+    "notes": "The front page reads as a true vertical timeline: a spine with orange node circles, ages set as the most prominent metadata on the left, and titles branching off the spine, with the age element sitting left of each node. The thread page nests comments on a secondary spine with smaller nodes, which matches the brief. Missing pieces: the brief's age-on-spine idea is only partly realized on the thread page where the story age is not prominent, and the 375px front page wraps ages awkwardly ('16 hours / ago') and the age column squeezes titles. The thread page has a large empty area at the bottom and the nested comment nodes are small but legible.",
+    "adherence": 82,
+    "novelty": 74,
+    "craft": 70
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 1,
+  "costUsd": 0.0964,
+  "previousRelease": "20261012-112524-c324d41",
+  "diffStat": "+190 -199",
+  "candidate": 9,
+  "brief": "timeline",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1791968939
+}
