@@ -1,0 +1,38 @@
+{
+  "id": "20261015-084434-ad078f4",
+  "runId": "20261015-082539",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 21,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 77,
+    "notes": "The front page clearly delivers the brutalist brief: heavy black bordered blocks with hard offset shadows, huge point numbers, system sans fonts, no rounded corners, and a black header with boxed nav. The brief asked for metadata in plain black, which is met, but the numbers and titles compete for attention and the stories are very tall, so only about ten fit per screen. The 375px view reflows cleanly, though titles wrap heavily. The thread page is sparse, with one story and one comment, and the <hr> separators between stories were not verified as present at the required count from the screenshots alone.",
+    "adherence": 82,
+    "novelty": 80,
+    "craft": 68
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 0,
+  "costUsd": 0.0528,
+  "previousRelease": "20261014-090859-dedb9cc",
+  "diffStat": "+198 -199",
+  "candidate": 11,
+  "brief": "brutalist",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1792053874
+}
