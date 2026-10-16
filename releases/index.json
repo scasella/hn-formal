@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261016-084302-5fb92f2",
+    "runId": "20261016-081804",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 6.25,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 78,
+      "notes": "The front page reads clearly as a vertical timeline: a continuous spine with orange node markers, ages right-aligned on the spine and titles branching off it, and the age is the most saturated metadata. The thread page uses nested spines for comments as the brief asked. Craft is held back at 375px where the ages and titles wrap heavily and the spine sits tight against text, and on the front page the metadata lines are small and the title-to-meta gap is tight. The brief's required <time> elements cannot be verified from screenshots, and the thread page leaves a large empty area below the footer.",
+      "adherence": 84,
+      "novelty": 82,
+      "craft": 66
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 1,
+    "costUsd": 0.0996,
+    "previousRelease": "20261015-084434-ad078f4",
+    "diffStat": "+247 -214",
+    "candidate": 7,
+    "brief": "timeline",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1792140182
+  },
+  {
     "id": "20261015-084434-ad078f4",
     "runId": "20261015-082539",
     "specVersion": 3,
