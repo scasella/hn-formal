@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261017-081535-9c6c081",
+    "runId": "20261017-075422",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 6.03,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 77,
+      "notes": "The front page reads as index cards: manila fill, dark top rule, rubber-stamp red circle, uppercase sans labels with typewriter values, and a card grid that differs strongly from the live timeline. The brief's dl/dt/dd structure is plausibly implemented since labels sit beside values, though labels are small and light, and the palette leans slightly yellow rather than muted institutional. At 375px cards stack cleanly with no overflow. The thread page keeps the card for the story header but comments are plain bordered boxes with weak differentiation between nesting levels and a serif body that reads somewhat dense.",
+      "adherence": 82,
+      "novelty": 78,
+      "craft": 68
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 1,
+    "costUsd": 0.0951,
+    "previousRelease": "20261016-084302-5fb92f2",
+    "diffStat": "+166 -238",
+    "candidate": 1,
+    "brief": "library catalog",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1792224935
+  },
+  {
     "id": "20261016-084302-5fb92f2",
     "runId": "20261016-081804",
     "specVersion": 3,

@@ -1,205 +1,158 @@
-/* hn-formal: a vertical timeline. Stories hang off a spine; the age is the stamp. */
+/* hn-formal v2: index-card catalog. Manila stock, ink, one rubber-stamp red. No url(), no @import. */
 :root {
-  --bg: #fbf8f1;
-  --ink: #1c1b19;
-  --muted: #5c5950;
-  --link: #7b2d00;
-  --visited: #5e3a80;
-  --spine: #c9bfa9;
-  --stamp: #a33a0a;
-  --dot: #d9480f;
-  --code: #efe9dc;
-  --rule: #ddd5c2;
-  --col: 7rem;
-  --mid: 7.6rem;
+  --paper: #efe3c4;
+  --card: #f8f1dd;
+  --ink: #1d1b17;
+  --muted: #5a5245;
+  --rule: #9c8c66;
+  --stamp: #a3261c;
+  --code: #e6d9b5;
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #14161a;
-    --ink: #e4e2dc;
-    --muted: #a7a59c;
-    --link: #ffb37a;
-    --visited: #d1b8f0;
-    --spine: #3a3f47;
-    --stamp: #ff9a5c;
-    --dot: #ff8a4c;
-    --code: #22262c;
-    --rule: #2a2e35;
-  }
-}
-
 * { box-sizing: border-box; }
-
 html {
-  background: var(--bg);
+  background: var(--paper);
   color: var(--ink);
-  font: 14px/1.45 ui-sans-serif, system-ui, -apple-system, Helvetica, Arial, sans-serif;
+  font: 16px/1.45 Georgia, "Times New Roman", serif;
   -webkit-text-size-adjust: 100%;
 }
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: var(--bg);
-  overflow-wrap: anywhere;
-}
-
+body { margin: 0; min-height: 100vh; background: var(--paper); overflow-wrap: anywhere; }
 body > * { max-width: 100%; }
+a { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
+a:visited { color: var(--ink); }
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible { outline: 2px solid var(--stamp); outline-offset: 2px; }
 
-a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
-a:visited { color: var(--visited); }
-a:focus-visible { outline: 2px solid var(--dot); outline-offset: 2px; }
-
-header { border-bottom: 1px solid var(--rule); }
+header { background: var(--paper); border-bottom: 3px double var(--ink); }
 header nav {
-  max-width: 46rem;
+  max-width: 60rem;
   margin: 0 auto;
-  padding: 0.75rem 1rem;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.2rem 0.85rem;
+  padding: 0.5rem 0.75rem;
+  font: 13px/1.7 Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
-header nav a { color: var(--ink); font-weight: 700; text-decoration: none; }
-header nav a:first-child { font-size: 1.1rem; }
+header nav a { font-weight: bold; text-decoration: none; }
 header nav a:hover { text-decoration: underline; }
 
-main {
-  max-width: 46rem;
-  margin: 0 auto;
-  padding: 1.25rem 1rem 2rem;
-}
+main { max-width: 60rem; margin: 0 auto; padding: 1rem 0.75rem 1.5rem; }
 
-/* The spine: a rule down the page, a dot per story. */
-ol.timeline { position: relative; list-style: none; margin: 0; padding: 0; }
-ol.timeline::before {
-  content: "";
-  position: absolute;
-  top: 0.8rem;
-  bottom: 0.8rem;
-  left: var(--mid);
-  width: 2px;
-  background: var(--spine);
-}
-ol.timeline > li {
-  position: relative;
+ol.stories {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: grid;
-  grid-template-columns: var(--col) minmax(0, 1fr);
-  column-gap: 1.25rem;
-  padding: 0.75rem 0;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
 }
-ol.timeline > li::before {
+ol.stories > li, article[data-hn-story] {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-top: 6px solid var(--ink);
+  box-shadow: 2px 3px 0 var(--rule);
+  padding: 0.8rem 0.9rem 0.9rem;
+  min-width: 0;
+}
+ol.stories > li::after, article[data-hn-story]::after {
   content: "";
   position: absolute;
-  top: 1.2rem;
-  left: calc(var(--mid) - 0.4rem);
+  top: 0.7rem;
+  right: 0.7rem;
   width: 0.8rem;
   height: 0.8rem;
   border-radius: 50%;
-  background: var(--bg);
-  border: 2px solid var(--dot);
+  border: 2px solid var(--stamp);
 }
 
-time[data-hn="age"] {
-  color: var(--stamp);
-  font-weight: 700;
-  font-size: 0.85rem;
-  line-height: 1.3;
-  font-variant-numeric: tabular-nums;
+h2 {
+  margin: 0 2.2rem 0.6rem 0;
+  font: bold 1.1rem/1.25 Georgia, "Times New Roman", serif;
+  overflow-wrap: anywhere;
 }
-ol.timeline time { text-align: right; padding-right: 0.2rem; padding-top: 0.15rem; }
+h2 a { color: var(--ink); text-decoration: none; }
+h2 a:hover { text-decoration: underline; }
 
-.titleline { font-size: 1rem; line-height: 1.3; }
-a[data-hn="title"] { color: var(--ink); font-weight: 700; text-decoration: none; }
-a[data-hn="title"]:visited { color: var(--visited); }
-a[data-hn="title"]:hover { text-decoration: underline; }
-[data-hn="domain"] { color: var(--muted); font-size: 0.85rem; }
-
-.subline { color: var(--muted); font-size: 0.85rem; margin-top: 0.2rem; }
-.subline a { color: var(--muted); }
-.subline a:visited { color: var(--muted); }
-.subline a:hover { color: var(--ink); }
-
-.more { margin-left: calc(var(--col) + 1.25rem); margin-top: 0.5rem; font-weight: 700; }
-
-/* Thread head: the age sits above the title, then a rule. */
-article[data-hn-story] {
-  padding-bottom: 1rem;
-  margin-bottom: 1rem;
-  border-bottom: 2px solid var(--spine);
+dl.meta {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.3rem 0.8rem;
+  margin: 0;
+  font: 14px/1.4 "Courier New", Courier, monospace;
 }
-article[data-hn-story] time[data-hn="age"] { display: block; margin-bottom: 0.25rem; }
-article[data-hn-story] a[data-hn="title"] { font-size: 1.3rem; }
-article .subline { margin-top: 0.3rem; }
+dl.meta dt {
+  font: 11px/1.9 Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  padding-top: 0.15rem;
+}
+dl.meta dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+dl.meta dd a { font-weight: bold; }
 
-[data-hn="text"] { margin: 0.4rem 0; overflow-wrap: anywhere; }
+.more { padding: 1rem 0 0; }
+.more a {
+  display: inline-block;
+  border: 2px solid var(--ink);
+  padding: 0.3rem 0.9rem;
+  font: bold 13px Arial, Helvetica, sans-serif;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.more a:hover { background: var(--ink); color: var(--paper); }
+
+article[data-hn-story] { margin-bottom: 1.25rem; padding: 1rem 1rem 1.1rem; }
+article[data-hn-story] h2 { font-size: 1.35rem; }
+[data-hn="text"] { overflow-wrap: anywhere; margin-top: 0.6rem; }
 [data-hn="text"] p { margin: 0.4rem 0; }
-[data-hn="text"] p:first-child { margin-top: 0; }
 
 code, pre {
-  font-family: ui-monospace, Menlo, Consolas, monospace;
-  font-size: 0.85rem;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 13px;
   background: var(--code);
 }
-code { padding: 0 0.25em; border-radius: 3px; }
+code { padding: 0 0.2em; }
 pre {
   margin: 0.4rem 0;
-  padding: 0.5rem 0.6rem;
+  padding: 0.4rem 0.5rem;
   max-width: 100%;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  border-radius: 4px;
 }
 pre code { padding: 0; background: none; }
 
-/* Comments: nested spines with a dot per comment. Depth is capped. */
-ol.comments, ol.kids {
-  list-style: none;
-  margin: 0.4rem 0 0 0.35rem;
-  padding: 0 0 0 0.9rem;
-  border-left: 2px solid var(--spine);
+ol.comments, ol.kids { list-style: none; margin: 0; padding: 0; }
+ol.comments { display: grid; gap: 0.7rem; }
+li[data-hn-comment] {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  padding: 0.55rem 0.7rem;
+  min-width: 0;
 }
-ol.comments > li, ol.kids > li {
-  position: relative;
-  padding: 0.5rem 0 0.1rem;
-}
-ol.comments > li::before, ol.kids > li::before {
-  content: "";
-  position: absolute;
-  top: 0.9rem;
-  left: -1.2rem;
-  width: 0.6rem;
-  height: 0.6rem;
-  border-radius: 50%;
-  background: var(--dot);
+ol.kids {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0.6rem 0 0 0.2rem;
+  padding-left: 0.6rem;
+  border-left: 2px solid var(--rule);
 }
 ol.kids:empty { display: none; }
-ol.kids ol.kids ol.kids ol.kids {
-  margin: 0.4rem 0 0;
-  padding: 0;
-  border-left: 0;
-}
-ol.kids ol.kids ol.kids ol.kids > li::before { display: none; }
-
-.chead { color: var(--muted); font-size: 0.85rem; }
+ol.kids ol.kids ol.kids ol.kids { margin: 0; padding: 0; border: 0; }
+ol.kids ol.kids ol.kids ol.kids li[data-hn-comment] { padding: 0; border: 0; background: none; }
+.chead { font: 12px/1.5 Arial, Helvetica, sans-serif; color: var(--muted); }
 .chead a { color: var(--muted); }
-.chead time[data-hn="age"] { font-size: 0.85rem; }
 
 footer {
-  max-width: 46rem;
+  max-width: 60rem;
   margin: 0 auto;
-  padding: 1rem;
-  border-top: 1px solid var(--rule);
+  padding: 0.75rem;
+  border-top: 3px double var(--ink);
+  font: 12px/1.6 Arial, Helvetica, sans-serif;
   color: var(--muted);
-  font-size: 0.85rem;
+  overflow-wrap: anywhere;
 }
-footer p { margin: 0 0 0.5rem; }
-footer a { color: var(--link); }
+footer a { color: var(--ink); }
 
 @media (min-width: 48rem) {
-  :root { --col: 9rem; --mid: 9.6rem; }
-  ol.comments, ol.kids { padding-left: 1.3rem; }
-  ol.comments > li::before, ol.kids > li::before { left: -1.55rem; }
-  ol.kids ol.kids ol.kids ol.kids { margin: 0.4rem 0 0; padding: 0; border-left: 0; }
+  main { padding-top: 1.5rem; }
+  ol.kids { padding-left: 0.9rem; }
 }

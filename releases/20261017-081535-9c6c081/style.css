@@ -1,0 +1,158 @@
+/* hn-formal v2: index-card catalog. Manila stock, ink, one rubber-stamp red. No url(), no @import. */
+:root {
+  --paper: #efe3c4;
+  --card: #f8f1dd;
+  --ink: #1d1b17;
+  --muted: #5a5245;
+  --rule: #9c8c66;
+  --stamp: #a3261c;
+  --code: #e6d9b5;
+}
+* { box-sizing: border-box; }
+html {
+  background: var(--paper);
+  color: var(--ink);
+  font: 16px/1.45 Georgia, "Times New Roman", serif;
+  -webkit-text-size-adjust: 100%;
+}
+body { margin: 0; min-height: 100vh; background: var(--paper); overflow-wrap: anywhere; }
+body > * { max-width: 100%; }
+a { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
+a:visited { color: var(--ink); }
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible { outline: 2px solid var(--stamp); outline-offset: 2px; }
+
+header { background: var(--paper); border-bottom: 3px double var(--ink); }
+header nav {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 0.5rem 0.75rem;
+  font: 13px/1.7 Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+header nav a { font-weight: bold; text-decoration: none; }
+header nav a:hover { text-decoration: underline; }
+
+main { max-width: 60rem; margin: 0 auto; padding: 1rem 0.75rem 1.5rem; }
+
+ol.stories {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+}
+ol.stories > li, article[data-hn-story] {
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-top: 6px solid var(--ink);
+  box-shadow: 2px 3px 0 var(--rule);
+  padding: 0.8rem 0.9rem 0.9rem;
+  min-width: 0;
+}
+ol.stories > li::after, article[data-hn-story]::after {
+  content: "";
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  border: 2px solid var(--stamp);
+}
+
+h2 {
+  margin: 0 2.2rem 0.6rem 0;
+  font: bold 1.1rem/1.25 Georgia, "Times New Roman", serif;
+  overflow-wrap: anywhere;
+}
+h2 a { color: var(--ink); text-decoration: none; }
+h2 a:hover { text-decoration: underline; }
+
+dl.meta {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.3rem 0.8rem;
+  margin: 0;
+  font: 14px/1.4 "Courier New", Courier, monospace;
+}
+dl.meta dt {
+  font: 11px/1.9 Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  padding-top: 0.15rem;
+}
+dl.meta dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+dl.meta dd a { font-weight: bold; }
+
+.more { padding: 1rem 0 0; }
+.more a {
+  display: inline-block;
+  border: 2px solid var(--ink);
+  padding: 0.3rem 0.9rem;
+  font: bold 13px Arial, Helvetica, sans-serif;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+.more a:hover { background: var(--ink); color: var(--paper); }
+
+article[data-hn-story] { margin-bottom: 1.25rem; padding: 1rem 1rem 1.1rem; }
+article[data-hn-story] h2 { font-size: 1.35rem; }
+[data-hn="text"] { overflow-wrap: anywhere; margin-top: 0.6rem; }
+[data-hn="text"] p { margin: 0.4rem 0; }
+
+code, pre {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 13px;
+  background: var(--code);
+}
+code { padding: 0 0.2em; }
+pre {
+  margin: 0.4rem 0;
+  padding: 0.4rem 0.5rem;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+pre code { padding: 0; background: none; }
+
+ol.comments, ol.kids { list-style: none; margin: 0; padding: 0; }
+ol.comments { display: grid; gap: 0.7rem; }
+li[data-hn-comment] {
+  background: var(--card);
+  border: 1px solid var(--rule);
+  padding: 0.55rem 0.7rem;
+  min-width: 0;
+}
+ol.kids {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0.6rem 0 0 0.2rem;
+  padding-left: 0.6rem;
+  border-left: 2px solid var(--rule);
+}
+ol.kids:empty { display: none; }
+ol.kids ol.kids ol.kids ol.kids { margin: 0; padding: 0; border: 0; }
+ol.kids ol.kids ol.kids ol.kids li[data-hn-comment] { padding: 0; border: 0; background: none; }
+.chead { font: 12px/1.5 Arial, Helvetica, sans-serif; color: var(--muted); }
+.chead a { color: var(--muted); }
+
+footer {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 0.75rem;
+  border-top: 3px double var(--ink);
+  font: 12px/1.6 Arial, Helvetica, sans-serif;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+footer a { color: var(--ink); }
+
+@media (min-width: 48rem) {
+  main { padding-top: 1.5rem; }
+  ol.kids { padding-left: 0.9rem; }
+}
