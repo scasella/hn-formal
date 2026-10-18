@@ -1,0 +1,198 @@
+/* hn-formal: a vertical timeline. Stories sit on a spine; the age is the stamp on it. No @import, no url(), no text in content. */
+:root {
+  --bg: #f7f3ea;
+  --text: #1d1b18;
+  --muted: #5c5750;
+  --accent: #9a3412;
+  --link: #8a2e0e;
+  --visited: #5b2e6b;
+  --spine: #b9ad98;
+  --code: #e6e0d0;
+  --axis: 6rem;
+  --gap: 1.5rem;
+  --dot: 0.7rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15171a;
+    --text: #e8e4da;
+    --muted: #aaa398;
+    --accent: #ffb273;
+    --link: #ffb273;
+    --visited: #d7b8ef;
+    --spine: #3b4048;
+    --code: #262a2e;
+  }
+}
+@media (max-width: 30rem) {
+  :root { --axis: 4.6rem; }
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--bg);
+  color: var(--text);
+  font: 17px/1.5 Georgia, "Iowan Old Style", "Times New Roman", serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  overflow-wrap: anywhere;
+}
+
+a { color: var(--link); text-decoration: underline; text-underline-offset: 0.15em; }
+a:visited { color: var(--visited); }
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+header { border-bottom: 3px double var(--text); }
+header nav {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 0.6rem 0.75rem;
+  font: 700 0.85rem/1.7 ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+}
+header nav a { color: var(--text); }
+
+main { max-width: 44rem; margin: 0 auto; padding: 1rem 0.75rem 1.5rem; }
+
+/* The spine: one rule down the page, one dot per story. */
+ol.timeline { position: relative; list-style: none; margin: 0; padding: 0; }
+ol.timeline::before {
+  content: "";
+  position: absolute;
+  top: 0.5rem;
+  bottom: 0.5rem;
+  left: calc(var(--axis) + var(--gap) / 2);
+  width: 2px;
+  margin-left: -1px;
+  background: var(--spine);
+}
+
+li[data-hn-story], article[data-hn-story] {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--axis) var(--gap) minmax(0, 1fr);
+}
+li[data-hn-story] { padding: 0.7rem 0; }
+article[data-hn-story] { padding-bottom: 1rem; }
+
+li[data-hn-story]::before, article[data-hn-story]::before {
+  content: "";
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: center;
+  align-self: start;
+  width: var(--dot);
+  height: var(--dot);
+  margin-top: 0.5rem;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px var(--bg);
+}
+
+/* The age is the timestamp on the spine: the most prominent metadata. */
+time[data-hn="age"] {
+  font: 700 0.9rem/1.3 ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+  color: var(--accent);
+  letter-spacing: 0.02em;
+}
+li[data-hn-story] > time, article[data-hn-story] > time {
+  grid-column: 1;
+  grid-row: 1;
+  padding: 0.05rem 0.45rem 0 0;
+  text-align: right;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+.body { grid-column: 3; grid-row: 1; min-width: 0; }
+
+.titleline { font-size: 1.2rem; font-weight: 700; line-height: 1.25; }
+article[data-hn-story] .titleline { font-size: 1.6rem; }
+a[data-hn="title"] { color: var(--text); }
+a[data-hn="title"]:visited { color: var(--visited); }
+span[data-hn="domain"] { font-size: 0.85rem; font-weight: 400; color: var(--muted); }
+
+.subline {
+  margin-top: 0.2rem;
+  font: 0.85rem/1.5 ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+  color: var(--muted);
+}
+.subline a { color: var(--muted); }
+
+[data-hn="text"] { margin: 0.5rem 0; overflow-wrap: anywhere; }
+[data-hn="text"] p { margin: 0.5rem 0; }
+
+code, pre {
+  font: 0.85rem/1.4 ui-monospace, Menlo, Consolas, "Courier New", monospace;
+  background: var(--code);
+}
+code { padding: 0 0.2em; }
+pre {
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.6rem;
+  max-width: 100%;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+pre code { padding: 0; background: none; }
+
+/* Comments: nested spines, indentation capped so deep threads stay readable at 375px. */
+ol.comments, ol.kids { list-style: none; margin: 0; padding: 0; }
+ol.comments {
+  margin: 0.5rem 0 0 calc(var(--axis) + var(--gap) / 2);
+  padding-left: 1rem;
+  border-left: 2px solid var(--spine);
+}
+ol.kids {
+  margin-top: 0.4rem;
+  padding-left: 0.9rem;
+  border-left: 2px solid var(--spine);
+}
+ol.kids ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
+
+li[data-hn-comment] { position: relative; padding: 0.5rem 0 0.1rem; }
+li[data-hn-comment]::before {
+  content: "";
+  position: absolute;
+  top: 1rem;
+  left: -1.3rem;
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--spine);
+}
+
+.chead {
+  font: 0.85rem/1.5 ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+  color: var(--muted);
+}
+.chead a { color: var(--muted); font-weight: 700; }
+.chead time[data-hn="age"] { font-size: 0.85rem; font-weight: 400; color: var(--muted); }
+
+.more {
+  margin-left: calc(var(--axis) + var(--gap));
+  padding-top: 0.5rem;
+  font: 700 0.9rem/1.5 ui-sans-serif, system-ui, sans-serif;
+}
+
+footer {
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: 1rem 0.75rem 2rem;
+  border-top: 1px solid var(--spine);
+  font: 0.85rem/1.6 ui-sans-serif, system-ui, "Helvetica Neue", Arial, sans-serif;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+footer p[data-hn="about"] {
+  margin: 0 0 0.75rem;
+  font: italic 1rem/1.5 Georgia, "Times New Roman", serif;
+  color: var(--text);
+}

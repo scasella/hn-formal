@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261018-082808-93ddb04",
+    "runId": "20261018-080844",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 6.46,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 76,
+      "notes": "The front page reads clearly as a vertical timeline: a continuous spine with dot nodes, ages right-aligned in bold red as the most prominent metadata, and titles branching off the spine. The thread page uses nested spines with indented comment nodes, matching the brief. Gaps: the front page at 375px is a long single column with the age labels wrapping awkwardly (e.g. '3 HOURS AGO' split over three lines), and the age text isn't clearly visible as <time> from the screenshot. Titles are set in a heavy serif with underlines, so the hierarchy is clear but the metadata lines are fairly quiet.",
+      "adherence": 82,
+      "novelty": 78,
+      "craft": 66
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 1,
+    "costUsd": 0.1109,
+    "previousRelease": "20261017-081535-9c6c081",
+    "diffStat": "+231 -159",
+    "candidate": 5,
+    "brief": "timeline",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1792312088
+  },
+  {
     "id": "20261017-081535-9c6c081",
     "runId": "20261017-075422",
     "specVersion": 3,
