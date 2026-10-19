@@ -1,5 +1,17 @@
 [
   {
+    "runId": "20261019-090324",
+    "startedAt": 1792400652,
+    "finishedAt": 1792401800,
+    "candidates": 16,
+    "passedTier1": 16,
+    "passedTier2": 16,
+    "released": "20261019-092320-83dca25",
+    "costUsd": 1.2477,
+    "calls": 47,
+    "stopReason": "released"
+  },
+  {
     "runId": "20261018-080844",
     "startedAt": 1792310972,
     "finishedAt": 1792312088,

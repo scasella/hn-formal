@@ -1,0 +1,38 @@
+{
+  "id": "20261019-092320-83dca25",
+  "runId": "20261019-090324",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 9.4,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 76,
+    "notes": "The brutalist brief is clearly realized: heavy black bordered article blocks, huge rank numerals, no rounded corners, and system sans-serif type with metadata in plain black. Thick rules sit between stories, satisfying the hr requirement visually, though the 1280px page shows the numbers and blocks well while the 375px view stacks cleanly with only minor wrapping of metadata. The thread page has nested bordered comment blocks with a thick left rule for depth, but the bottom footer block is small and the lower half of the page is largely empty, and the numbers are not as huge as the brief suggests.",
+    "adherence": 80,
+    "novelty": 78,
+    "craft": 68
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 1,
+  "costUsd": 0.0794,
+  "previousRelease": "20261018-082808-93ddb04",
+  "diffStat": "+87 -257",
+  "candidate": 7,
+  "brief": "brutalist",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1792401800
+}
