@@ -1,0 +1,137 @@
+/* hn-formal v2: a vertical timeline. Stories are nodes on one spine; each age is the timestamp. */
+:root {
+  --bg: #fbf7ef;
+  --text: #1d1b18;
+  --muted: #5c574f;
+  --age: #8a3b12;
+  --link: #7a2e0c;
+  --visited: #5e3a6e;
+  --spine: #cfc4b0;
+  --dot: #b4532a;
+  --rule: #d9cfbd;
+  --code: #efe8da;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15140f;
+    --text: #ece6da;
+    --muted: #aaa398;
+    --age: #f2a66b;
+    --link: #f0b27a;
+    --visited: #d3b8e8;
+    --spine: #3a362d;
+    --dot: #e0874f;
+    --rule: #2e2b24;
+    --code: #24221c;
+  }
+}
+* { box-sizing: border-box; }
+html {
+  background: var(--bg);
+  color: var(--text);
+  font: 17px/1.5 Georgia, "Iowan Old Style", "Times New Roman", serif;
+  -webkit-text-size-adjust: 100%;
+}
+body { margin: 0; min-height: 100vh; background: var(--bg); overflow-wrap: anywhere; }
+body > * { max-width: 100%; }
+a { color: var(--link); text-decoration: underline; text-underline-offset: 0.15em; }
+a:visited { color: var(--visited); }
+a:focus-visible { outline: 2px solid var(--dot); outline-offset: 2px; }
+
+header { border-bottom: 1px solid var(--rule); }
+header nav { max-width: 46rem; margin: 0 auto; padding: 0.6rem 1rem; font-size: 0.9rem; }
+header nav a { color: var(--text); font-weight: bold; }
+header nav a:visited { color: var(--text); }
+
+main { max-width: 46rem; margin: 0 auto; padding: 1.5rem 1rem 2rem; }
+
+ol.timeline, ol.comments, ol.kids { list-style: none; margin: 0; padding: 0; }
+ol.timeline > li, article[data-hn-story] {
+  position: relative;
+  display: grid;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  column-gap: 1.25rem;
+  padding: 0 0 1.5rem;
+}
+ol.timeline > li::before, article[data-hn-story]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(6.5rem + 0.625rem - 1px);
+  width: 2px;
+  background: var(--spine);
+}
+ol.timeline > li::after, article[data-hn-story]::after {
+  content: "";
+  position: absolute;
+  top: 0.4rem;
+  left: calc(6.5rem + 0.625rem - 5px);
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--dot);
+}
+.spine { min-width: 0; }
+[data-hn="age"] {
+  display: block;
+  color: var(--age);
+  font-weight: bold;
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.25;
+  text-align: right;
+  padding-right: 0.25rem;
+}
+.entry { min-width: 0; }
+.titleline { font-size: 1.12rem; line-height: 1.3; }
+article[data-hn-story] .titleline { font-size: 1.3rem; }
+a[data-hn="title"] { color: var(--text); font-weight: bold; }
+a[data-hn="title"]:visited { color: var(--visited); }
+.titleline [data-hn="domain"] { color: var(--muted); font-size: 0.85rem; }
+.subline { margin-top: 0.2rem; color: var(--muted); font-size: 0.85rem; }
+.subline a { color: var(--muted); }
+.subline a:visited { color: var(--muted); }
+.more { padding: 0.25rem 0 0 calc(6.5rem + 1.25rem); font-weight: bold; }
+
+ol.comments { margin-top: 0.75rem; }
+li[data-hn-comment] {
+  position: relative;
+  padding: 0.4rem 0 0.2rem 1.25rem;
+}
+li[data-hn-comment]::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(0.5rem - 1px);
+  width: 2px;
+  background: var(--spine);
+}
+li[data-hn-comment]::after {
+  content: "";
+  position: absolute;
+  top: 0.8rem;
+  left: calc(0.5rem - 4px);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--dot);
+}
+li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] { padding-left: 0; }
+li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment]::before,
+li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment]::after { display: none; }
+.chead { color: var(--muted); font-size: 0.85rem; }
+.chead [data-hn="age"] { display: inline; font-size: 0.85rem; font-style: normal; text-align: left; padding: 0; color: var(--muted); }
+.chead a { color: var(--muted); }
+.chead a:visited { color: var(--muted); }
+[data-hn="text"] { margin: 0.2rem 0; overflow-wrap: anywhere; }
+[data-hn="text"] p { margin: 0.35rem 0; }
+ol.kids { margin-top: 0.2rem; }
+
+code, pre { font-family: ui-monospace, Menlo, Consolas, "Liberation Mono", monospace; font-size: 0.85em; background: var(--code); }
+code { padding: 0 0.2em; }
+pre { margin: 0.35rem 0; padding: 0.4rem 0.5rem; max-width: 100%; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+footer { max-width: 46rem; margin: 0 auto; padding: 1rem; border-top: 1px solid var(--rule); color: var(--muted); font-size: 0.85rem; }
+footer p { margin: 0 0 0.5rem; }

@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261020-091228-e3824d9",
+    "runId": "20261020-084037",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 6.7,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 81,
+      "notes": "The front page delivers a clear vertical spine with age as the most prominent metadata, right-aligned in bold italic rust color, and each title branching off a dot node, matching the brief's grammar. The thread page uses nested spines with comment nodes, though the spine lines and indentation get faint and the nesting depth is only weakly differentiated. At 375px the timeline holds up with the age column and titles readable, but titles wrap heavily and the metadata lines break awkwardly. Overall it reads as a genuinely different page shape from the live site's boxed list.",
+      "adherence": 88,
+      "novelty": 80,
+      "craft": 74
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 3,
+    "costUsd": 0.1218,
+    "previousRelease": "20261019-092320-83dca25",
+    "diffStat": "+186 -108",
+    "candidate": 3,
+    "brief": "timeline",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1792487548
+  },
+  {
     "id": "20261019-092320-83dca25",
     "runId": "20261019-090324",
     "specVersion": 3,
