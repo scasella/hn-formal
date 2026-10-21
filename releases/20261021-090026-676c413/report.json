@@ -1,0 +1,38 @@
+{
+  "id": "20261021-090026-676c413",
+  "runId": "20261021-084148",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 6.36,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 82,
+    "notes": "The front page follows the brief closely: every story is a bordered, shadowed card with a heading, a domain pill, and metadata along the bottom, arranged in a 4-across grid at 1280px that collapses to one column at 375px. Cards have colored top borders and the layout reads clearly as a card grid, a genuinely different shape from the timeline list. Weaknesses: the metadata wraps awkwardly ('| 125 / comments' splits across lines), many cards have large empty lower areas, and the thread page's nested comments use thin left rules rather than clearly distinct nested cards, so the required card-nesting is only partly realized.",
+    "adherence": 84,
+    "novelty": 88,
+    "craft": 72
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 0,
+  "costUsd": 0.0553,
+  "previousRelease": "20261020-091228-e3824d9",
+  "diffStat": "+280 -177",
+  "candidate": 15,
+  "brief": "cards on a grid",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1792573226
+}
