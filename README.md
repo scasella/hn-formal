@@ -46,11 +46,23 @@ trusted base; [CONTRACT.md](CONTRACT.md) for how the pieces fit.
 
 ## Operating the loop
 
-1. The loop needs the repository secret `ANTHROPIC_API_KEY`: a key from a
-   dedicated Anthropic Console workspace with its own spend limit (a second
-   cap behind the orchestrator's `RUN_CAP_USD` / `MONTH_CAP_USD`). Without it
-   the daily `redesign` run records a failure on the dashboard; commit an
-   empty `KILL_SWITCH` file at the repo root to pause every workflow instead.
+1. The loop authenticates with Workload Identity Federation: each job
+   exchanges its GitHub OIDC token for a short-lived Anthropic token, so
+   there is no API key secret. Setup is in the Console's Workload identity
+   page (issuer `https://token.actions.githubusercontent.com`, discovery
+   JWKS; rule `hn-formal-redesign` matching subject
+   `repo:scasella@11952600/hn-formal@1411038814:ref:refs/heads/main` (the
+   repo uses GitHub's immutable, ID-based subject format) plus the `ref`,
+   `repository`, `repository_owner` and `repository_owner_id` claims,
+   targeting service account `hn-formal-ci` in the Default workspace; a
+   workspace spend limit there is a second cap behind the orchestrator's
+   `RUN_CAP_USD` / `MONTH_CAP_USD`). The rule, organization,
+   service account and workspace IDs go in the repository variables
+   `ANTHROPIC_FEDERATION_RULE_ID`, `ANTHROPIC_ORGANIZATION_ID`,
+   `ANTHROPIC_SERVICE_ACCOUNT_ID` and `ANTHROPIC_WORKSPACE_ID`. If
+   authentication fails the daily `redesign` run records a failure on the
+   dashboard; commit an empty `KILL_SWITCH` file at the repo root to pause
+   every workflow instead.
 2. To validate a change to the loop before the cron: dispatch `redesign` with
    small `candidates` and `rounds` inputs. It releases exactly like a
    scheduled run, so the live design changes if a candidate passes.

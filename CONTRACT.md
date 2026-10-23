@@ -185,7 +185,8 @@ which re-copies that release's two files and commits.
   response at Haiku 5.5 list prices; month total persisted in
   `runs/spend-<YYYY-MM>.json`. Exceeding either => stopReason cap-hit.
 - Max calls per run `MAX_CALLS` (default 200).
-- Auth: `ANTHROPIC_API_KEY` secret only. Never logged.
+- Auth: in CI, Workload Identity Federation from the job's GitHub OIDC
+  token (no stored key); locally, the SDK's usual chain. Never logged.
 
 ## Dashboard
 

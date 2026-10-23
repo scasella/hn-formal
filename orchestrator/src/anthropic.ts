@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
+import { oidcFederationProvider } from "@anthropic-ai/sdk/lib/credentials/oidc-federation";
 import fsp from "node:fs/promises";
 import path from "node:path";
 import { z } from "zod";
@@ -81,11 +82,56 @@ export function costOf(u: UsageLike): CostBreakdown {
 
 let client: Anthropic | null = null;
 
+/** Audience the federation rule matches on the GitHub OIDC token. */
+const GITHUB_OIDC_AUDIENCE = "https://api.anthropic.com";
+
+/**
+ * Fresh GitHub Actions OIDC token per call. GitHub tokens live ~5 minutes and
+ * the issuer enforces single-use `jti`, while candidate jobs run for hours, so
+ * every exchange needs a newly minted JWT rather than a file read once.
+ */
+async function githubIdentityToken(): Promise<string> {
+  const url = new URL(process.env.ACTIONS_ID_TOKEN_REQUEST_URL!);
+  url.searchParams.set("audience", GITHUB_OIDC_AUDIENCE);
+  const r = await fetch(url, {
+    headers: { Authorization: `Bearer ${process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN}` },
+  });
+  if (!r.ok) throw new Error(`GitHub OIDC token request failed: HTTP ${r.status}`);
+  const { value } = (await r.json()) as { value?: string };
+  if (!value) throw new Error("GitHub OIDC token response had no value");
+  return value;
+}
+
 export function getClient(): Anthropic {
   if (!client) {
-    // Credentials come from ANTHROPIC_API_KEY / ANTHROPIC_AUTH_TOKEN / an
-    // `ant auth login` profile. Never log them.
-    client = new Anthropic({ maxRetries: 3, timeout: 15 * 60 * 1000 });
+    const opts = { maxRetries: 3, timeout: 15 * 60 * 1000 };
+    const ruleId = process.env.ANTHROPIC_FEDERATION_RULE_ID;
+    const orgId = process.env.ANTHROPIC_ORGANIZATION_ID;
+    if (ruleId && orgId && process.env.ACTIONS_ID_TOKEN_REQUEST_URL) {
+      // CI: Workload Identity Federation with the job's GitHub OIDC token
+      // (needs `id-token: write`). The client caches and refreshes the
+      // short-lived Anthropic token itself.
+      client = new Anthropic({
+        ...opts,
+        // A stray key would otherwise outrank the federated token.
+        apiKey: null,
+        authToken: null,
+        credentials: oidcFederationProvider({
+          identityTokenProvider: githubIdentityToken,
+          federationRuleId: ruleId,
+          organizationId: orgId,
+          serviceAccountId: process.env.ANTHROPIC_SERVICE_ACCOUNT_ID || undefined,
+          workspaceId: process.env.ANTHROPIC_WORKSPACE_ID || undefined,
+          baseURL: process.env.ANTHROPIC_BASE_URL || "https://api.anthropic.com",
+          fetch,
+        }),
+      });
+    } else {
+      // Locally: ANTHROPIC_API_KEY / ANTHROPIC_AUTH_TOKEN / an `ant auth
+      // login` profile / the SDK's own federation env vars.
+      client = new Anthropic(opts);
+    }
+    // Never log credentials.
   }
   return client;
 }
