@@ -234,6 +234,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          # The tip of main, not the commit the run was dispatched at: a run
+          # queued behind another (concurrency group) starts from a stale
+          # SHA, and its record then conflicts with the earlier run's record
+          # in runs/index.json on `git pull --rebase` (run 39943535409).
+          ref: main
           fetch-depth: 0
       - uses: actions/setup-node@v7
         with:
