@@ -150,8 +150,13 @@ Prints month-to-date spend from `runs/spend-YYYY-MM.json`.
 - `stop_reason` is checked on every response: `refusal` and `max_tokens`
   (and unparseable structured output) are failed rounds that still count
   toward spend. There is no server-side fallback on Haiku.
-- The API key is read by the SDK from `ANTHROPIC_API_KEY` and never printed;
-  error output passes through a redactor.
+- In CI the client authenticates with Workload Identity Federation: when
+  `ANTHROPIC_FEDERATION_RULE_ID`, `ANTHROPIC_ORGANIZATION_ID` and the
+  Actions OIDC request variables are present, it mints a fresh GitHub OIDC
+  token (audience `https://api.anthropic.com`) for every exchange. Elsewhere
+  the SDK resolves `ANTHROPIC_API_KEY`, a profile, or its own federation env
+  vars. Credentials are never printed; error output passes through a
+  redactor.
 - Month ledger `runs/spend-YYYY-MM.json` (written atomically):
   `{ month, totalUsd, calls, runs: { <runId>: { costUsd, calls, perCandidate: { <n>: { costUsd, calls } } } }, updatedAt }`.
   Candidates write their own entry (idempotent per run+n); `aggregate`
@@ -163,6 +168,7 @@ Prints month-to-date spend from `runs/spend-YYYY-MM.json`.
 | Variable | Default | Used by |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | – | all model calls (SDK) |
+| `ANTHROPIC_FEDERATION_RULE_ID`, `ANTHROPIC_ORGANIZATION_ID`, `ANTHROPIC_SERVICE_ACCOUNT_ID`, `ANTHROPIC_WORKSPACE_ID` | – | Workload Identity Federation in CI (with `id-token: write`) |
 | `ANTHROPIC_MOCK` | – | `1` = canned model output from `test/mock/*.json` (no network) |
 | `ANTHROPIC_MOCK_CANDIDATE`, `ANTHROPIC_MOCK_JUDGE` | `test/mock/candidate.json`, `test/mock/judge.json` | mock file overrides |
 | `HNFORMAL_MODEL` | `claude-haiku-5-5` | generation and judge |

@@ -62,7 +62,8 @@ time. Not a claim about matching HN's displayed order (it drifts).
   constraint is Lean build time inside the 6-hour job limit, not money.
 - Cadence: one redesign run per day. Spend caps: $25/run, $400/month,
   enforced in the orchestrator and again by a dedicated Console workspace
-  limit. Auth: `ANTHROPIC_API_KEY` as a GitHub Actions secret.
+  limit. Auth: Workload Identity Federation from GitHub Actions OIDC (was
+  an `ANTHROPIC_API_KEY` secret until 2026-10-23).
 - Release: among tier-1 and tier-2 passers, a vision judge
   (`claude-haiku-5-5`, scoring Playwright screenshots from the same tier-2
   run) ranks; the top one ships. The judge never blocks. All passers go in
