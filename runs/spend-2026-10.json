@@ -1058,7 +1058,12 @@
       "costUsd": 0,
       "calls": 0,
       "perCandidate": {}
+    },
+    "20261023-110433": {
+      "costUsd": 0,
+      "calls": 0,
+      "perCandidate": {}
     }
   },
-  "updatedAt": 1792745536
+  "updatedAt": 1792753490
 }
