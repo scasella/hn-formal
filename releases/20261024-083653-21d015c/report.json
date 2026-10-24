@@ -1,0 +1,38 @@
+{
+  "id": "20261024-083653-21d015c",
+  "runId": "20261024-081442",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 5.42,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 75,
+    "notes": "The candidate reads immediately as a library catalog: manila background, ink text, index-card boxes with double top rules, uppercase sans labels, typewriter values, and a single rubber-stamp red THREAD mark, all matching the brief. Its vertical single-column card stack is a genuinely different shape from the live four-column grid. Craft is decent at 375px with no overflow, but the cards are long and repetitive with a lot of vertical scroll, the thread page leaves a large empty area, and the brief's requirement of a dl per story is plausibly met but the value column is wide and sparse; the 'comments' label is visible but cards lack a distinct card-title hierarchy beyond underlined serif titles.",
+    "adherence": 80,
+    "novelty": 78,
+    "craft": 66
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 1,
+  "costUsd": 0.0861,
+  "previousRelease": "20261021-090026-676c413",
+  "diffStat": "+182 -233",
+  "candidate": 14,
+  "brief": "library catalog",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1792831013
+}

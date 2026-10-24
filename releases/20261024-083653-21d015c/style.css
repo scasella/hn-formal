@@ -1,0 +1,188 @@
+:root {
+  --paper: #efe4c8;
+  --desk: #d6c398;
+  --ink: #1d1a16;
+  --ink2: #4f4536;
+  --stamp: #9b1c1c;
+  --rule: #8c7b5c;
+}
+
+html {
+  background: var(--desk);
+  color: var(--ink);
+  font: 15px/1.45 Georgia, "Times New Roman", serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  overflow-wrap: anywhere;
+}
+
+body > * { max-width: 100%; }
+
+a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+a:visited { color: var(--ink2); }
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible { outline: 2px solid var(--stamp); outline-offset: 2px; }
+
+header { background: var(--ink); color: var(--paper); }
+header nav {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 0.55rem 0.75rem;
+  font: 12px/1.8 ui-monospace, Menlo, Consolas, "Courier New", monospace;
+}
+header nav a, header nav a:visited { color: var(--paper); }
+
+main {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 1rem 0.75rem 2rem;
+}
+
+ol.stories {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+ol.stories > li {
+  position: relative;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-top: 5px double var(--ink);
+  box-shadow: 2px 3px 0 var(--rule);
+  padding: 0.8rem 1rem 0.7rem;
+  min-width: 0;
+}
+
+.titleline a[data-hn="title"] {
+  font-size: 19px;
+  font-weight: bold;
+  line-height: 1.25;
+  color: var(--ink);
+}
+.titleline a[data-hn="title"]:visited { color: var(--ink2); }
+
+dl.meta {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.15rem 0.9rem;
+  margin: 0.7rem 0 0;
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--rule);
+  font: 13px/1.6 ui-monospace, Menlo, Consolas, "Courier New", monospace;
+}
+
+dl.meta dt {
+  font: 700 10px/2.2 Helvetica, Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--ink2);
+}
+
+dl.meta dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+dl.meta a[data-hn="comments"] {
+  display: inline-block;
+  padding: 0.1em 0.5em;
+  border: 2px solid var(--stamp);
+  color: var(--stamp);
+  font: 700 11px/1.4 Helvetica, Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  transform: rotate(-3deg);
+}
+dl.meta a[data-hn="comments"]:visited { color: var(--stamp); }
+
+.more { padding: 0.75rem 0 0; }
+.more a { font-weight: bold; }
+
+article[data-hn-story] {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-top: 5px double var(--ink);
+  padding: 0.8rem 1rem;
+  margin-bottom: 1rem;
+}
+article[data-hn-story] .titleline a[data-hn="title"] { font-size: 22px; }
+
+[data-hn="text"] {
+  overflow-wrap: anywhere;
+  margin: 0.35rem 0;
+}
+[data-hn="text"] p { margin: 0.4rem 0; }
+[data-hn="text"] p:first-child { margin-top: 0.1rem; }
+
+code, pre {
+  font-family: ui-monospace, Menlo, Consolas, "Courier New", monospace;
+  font-size: 12.5px;
+  background: #e8dcbc;
+}
+code { padding: 0 0.2em; }
+pre {
+  margin: 0.4rem 0;
+  padding: 0.4rem 0.6rem;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  border-left: 3px solid var(--ink2);
+}
+pre code { padding: 0; background: none; }
+
+ol.comments, ol.kids {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+ol.comments > li {
+  padding: 0.5rem 0 0.25rem;
+  border-top: 1px solid var(--rule);
+}
+ol.comments > li:first-child { border-top: 0; }
+
+ol.kids {
+  margin-top: 0.2rem;
+  padding-left: 0.8rem;
+  border-left: 2px solid var(--rule);
+}
+ol.kids ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
+ol.kids:empty { display: none; }
+
+.chead {
+  font: 12px/1.5 ui-monospace, Menlo, Consolas, "Courier New", monospace;
+  color: var(--ink2);
+  overflow-wrap: anywhere;
+}
+.chead a:visited { color: var(--ink2); }
+
+footer {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 0.7rem 0.75rem 1.5rem;
+  border-top: 3px double var(--ink);
+  color: var(--ink2);
+  font: 12px/1.6 ui-monospace, Menlo, Consolas, "Courier New", monospace;
+  overflow-wrap: anywhere;
+}
+footer p { margin: 0 0 0.5rem; }
+footer a { color: var(--ink); }
+
+@media (min-width: 40rem) {
+  ol.stories > li { padding: 1rem 1.25rem; }
+  dl.meta { font-size: 14px; }
+  ol.kids { padding-left: 1.2rem; }
+}
