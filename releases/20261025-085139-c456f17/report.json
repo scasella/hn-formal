@@ -1,0 +1,38 @@
+{
+  "id": "20261025-085139-c456f17",
+  "runId": "20261025-083243",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 7.25,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 74,
+    "notes": "The front page is a genuine data grid with a thin-celled table, visible TITLE/DOMAIN/POINTS/BY/AGE/COMMENTS headers, right-aligned numerics in monospace, and a single highlighted lead row, so the brief is clearly realized. Novelty is high because the shape is a table rather than the live stacked cards. Craft suffers at 375px: the DOMAIN and BY columns collapse into one-letter-per-line vertical strips, making rows enormously tall and the page nearly unscannable, and the frozen header feel is not evident. The 1280px thread page reuses the table only for the story header and the comments remain prose blocks, which is reasonable but the nesting is shown mainly by indentation. The 'frozen header' and tabular rank column are absent.",
+    "adherence": 82,
+    "novelty": 78,
+    "craft": 58
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 1,
+  "costUsd": 0.1065,
+  "previousRelease": "20261024-083653-21d015c",
+  "diffStat": "+200 -198",
+  "candidate": 9,
+  "brief": "spreadsheet",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1792918299
+}

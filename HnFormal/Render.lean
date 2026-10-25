@@ -1,8 +1,8 @@
 import HnFormal.Lemmas
 /-!
-# Renderer: library catalog
+# Renderer: a spreadsheet grid
 
-Each story is an index card: a title line and a definition list of labelled fields. Comments keep the nested comment tree.
+Stories are rows of one table with column headers (title, domain, points, by, age, comments). The discussion page puts its story in the same table; comments keep the nested list. Each block is proved by a case split on its optional fields and `hn_auto`.
 -/
 set_option maxHeartbeats 2000000
 set_option maxRecDepth 4096
@@ -14,9 +14,6 @@ open Dom Spec
 def a (href label : String) : Dom := .el "a" [("href", href)] [.text label]
 
 def field (name txt : String) : Dom := .el "span" [("data-hn", name)] [.text txt]
-
-/-- A label and its value: one `dt` and one `dd`. -/
-def pair (k : String) (v : List Dom) : List Dom := [.el "dt" [] [.text k], .el "dd" [] v]
 
 def frontTitle : List String :=
   ["HN, formally", " | ", "Hacker News", " ", "front page", ". ", "Every page is proven in Lean 4"]
@@ -56,25 +53,35 @@ def footer : Dom :=
     a hnBase "The original is at", .text " ", a hnBase "news.ycombinator.com", .text ". ",
     a loopHref "how this works"]
 
-/-- Score, author, age, domain, comments: each optional field gets a pair iff the API had it. -/
-def metaList (now : Nat) (s : Item) : Dom :=
-  .el "dl" [("class", "meta")] (
-    (s.score.toList.flatMap fun n => pair "score" [field "score" (toString n)]) ++
-    (s.author.toList.flatMap fun u =>
-      pair "author" [.el "a" [("href", userHref u), ("data-hn", "by")] [.text (displayUser u)]]) ++
-    (s.time.toList.flatMap fun t => pair "age" [field "age" (ageString now t)]) ++
-    (s.url.toList.flatMap fun u => pair "domain" [field "domain" (domainOf u)]) ++
-    (s.descendants.toList.flatMap fun n => pair "comments" [field "descendants" (toString n)]) ++
-    (if s.type = .job then [] else
-      pair "discuss" [.el "a" [("href", itemHref s.id), ("data-hn", "comments")] [.text "thread"]]))
+/-! ## Grid -/
 
-def titleLine (s : Item) : Dom :=
-  .el "div" [("class", "titleline")] [.el "a" [("href", titleHref s), ("data-hn", "title")] [.text (displayTitle s)]]
+def headRow : List Dom :=
+  [.el "th" [("scope", "col")] [.text "title"], .el "th" [("scope", "col")] [.text "domain"],
+   .el "th" [("scope", "col")] [.text "points"], .el "th" [("scope", "col")] [.text "by"],
+   .el "th" [("scope", "col")] [.text "age"], .el "th" [("scope", "col")] [.text "comments"]]
+
+/-- One story as six cells. Optional fields are empty cells when the API lacks them. -/
+def rowCells (now : Nat) (s : Item) : List Dom :=
+  [.el "td" [] [.el "a" [("href", titleHref s), ("data-hn", "title")] [.text (displayTitle s)]],
+   .el "td" [] (s.url.toList.map fun u => field "domain" (domainOf u)),
+   .el "td" [] (s.score.toList.map fun n => field "score" (toString n)),
+   .el "td" [] (s.author.toList.map fun u =>
+     .el "a" [("href", userHref u), ("data-hn", "by")] [.text (displayUser u)]),
+   .el "td" [] (s.time.toList.map fun t => field "age" (ageString now t)),
+   .el "td" [] ((s.descendants.toList.map fun n => field "descendants" (toString n)) ++
+     (if s.type = .job then [] else
+       [.text " ", .el "a" [("href", itemHref s.id), ("data-hn", "comments")] [.text "comments"]]))]
 
 def storyRow (now : Nat) (s : Item) : Dom :=
-  .el "li" [("data-hn-story", toString s.id)] [titleLine s, metaList now s]
+  .el "tr" [("data-hn-story", toString s.id)] (rowCells now s)
 
-/-! ## Front page -/
+/-- The discussion page's story, as the same grid with its body beneath. -/
+def storyTable (now : Nat) (s : Item) : Dom :=
+  .el "table" [("data-hn-story", toString s.id), ("class", "grid")] [
+    .el "thead" [] [.el "tr" [] headRow],
+    .el "tbody" [] (.el "tr" [] (rowCells now s) ::
+      (s.text.toList.map fun t =>
+        .el "tr" [("class", "body")] [.el "td" [("colspan", "6")] [.el "div" [("data-hn", "text")] (Sanitize.body t)]]))]
 
 def renderFront (f : Front) : Dom :=
   .el "html" [("lang", "en")] [
@@ -82,18 +89,15 @@ def renderFront (f : Front) : Dom :=
     .el "body" [] [
       topNav,
       .el "main" [] [
-        .el "ol" [("class", "stories")] (f.stories.map (storyRow f.fetchedAt)),
+        .el "div" [("class", "scroll")] [
+          .el "table" [("class", "grid")] [
+            .el "thead" [] [.el "tr" [] headRow],
+            .el "tbody" [] (f.stories.map (storyRow f.fetchedAt))]],
         .el "div" [("class", "more")] [a (hnBase ++ "news?p=2") "More"]],
       footer]]
 
-/-! ## Thread page -/
+/-! ## Comments (nested list, one marker per comment) -/
 
-def storyHeader (now : Nat) (s : Item) : Dom :=
-  .el "article" [("data-hn-story", toString s.id)]
-    ([titleLine s, metaList now s] ++
-     (s.text.toList.map fun t => .el "div" [("data-hn", "text")] (Sanitize.body t)))
-
-/-- One comment: header, body, nested kids. -/
 def wrap (now : Nat) (c : Item) (kids : List Dom) : Dom :=
   .el "li" [("data-hn-comment", toString c.id)] [
     .el "div" [("class", "chead")]
@@ -117,7 +121,7 @@ def renderThread (t : Thread) : Dom :=
     .el "body" [] [
       topNav,
       .el "main" [] [
-        storyHeader t.fetchedAt t.story,
+        .el "div" [("class", "scroll")] [storyTable t.fetchedAt t.story],
         .el "ol" [("class", "comments")] (renderComments t.fetchedAt t.comments)],
       footer]]
 
@@ -128,35 +132,32 @@ def render : Page → Dom
 
 /-! ## Proof -/
 
-theorem metaList_ok (p : Page) (now : Nat) (s : Item) (hi : s ∈ p.items) (hnow : p.fetchedAt = now) :
-    (nodes (metaList now s)).all (commonP p) = true := by
-  subst hnow
-  unfold metaList pair field
-  cases hsc : s.score <;> cases hau : s.author <;> cases htm : s.time <;> cases hde : s.descendants
-    <;> cases hu : s.url <;> rcases Decidable.em (s.type = .job) with hj | hj
-    <;> simp only [hj, ite_true, ite_false] <;> hn_auto
+/-! ### All-nodes -/
 
-theorem titleLine_ok (p : Page) (s : Item) (hi : s ∈ p.items) :
-    (nodes (titleLine s)).all (commonP p) = true := by
-  unfold titleLine; hn_auto
+theorem rowCells_ok (p : Page) (now : Nat) (s : Item) (hi : s ∈ p.items) (hnow : p.fetchedAt = now) :
+    (nodesList (rowCells now s)).all (commonP p) = true := by
+  subst hnow
+  unfold rowCells field
+  cases hu : s.url <;> cases hsc : s.score <;> cases hau : s.author <;> cases hti : s.time
+    <;> cases hde : s.descendants <;> rcases Decidable.em (s.type = .job) with hj | hj
+    <;> simp only [hj, ite_true, ite_false] <;> hn_auto
 
 theorem storyRow_ok (p : Page) (now : Nat) (s : Item) (hi : s ∈ p.items) (hnow : p.fetchedAt = now) :
     (nodes (storyRow now s)).all (commonP p) = true := by
-  have h1 := titleLine_ok p s hi
-  have h2 := metaList_ok p now s hi hnow
+  have h1 := rowCells_ok p now s hi hnow
   unfold storyRow
   hn_auto
 
-theorem storyHeader_ok (p : Page) (now : Nat) (s : Item) (hi : s ∈ p.items) (hnow : p.fetchedAt = now) :
-    (nodes (storyHeader now s)).all (commonP p) = true := by
-  have h1 := titleLine_ok p s hi
-  have h2 := metaList_ok p now s hi hnow
+theorem storyTable_ok (p : Page) (now : Nat) (s : Item) (hi : s ∈ p.items) (hnow : p.fetchedAt = now) :
+    (nodes (storyTable now s)).all (commonP p) = true := by
+  have h1 := rowCells_ok p now s hi hnow
   have h3 := body_commonP p s hi
-  unfold storyHeader
+  unfold storyTable headRow
   cases ht : s.text with
   | none => hn_auto
   | some x =>
-    have h3' : (nodesList (Sanitize.body x)).all (commonP p) = true := by simpa [itemBody, ht] using h3
+    have h3' : (nodesList (Sanitize.body x)).all (commonP p) = true := by
+      simpa [itemBody, ht] using h3
     hn_auto
 
 theorem topNav_ok (p : Page) : (nodes topNav).all (commonP p) = true := by
@@ -186,23 +187,27 @@ theorem wrap_ok (p : Page) (now : Nat) (c : Item) (ds : List Dom) (hi : c ∈ p.
 theorem wrapShape (now : Nat) : WrapShape (wrap now) (renderComment now) (renderComments now) :=
   ⟨fun _ _ => rfl, rfl, fun _ _ => rfl⟩
 
+/-! ### Fidelity -/
+
 set_option maxHeartbeats 4000000 in
 theorem storyRow_fidelity (now : Nat) (s : Item) : StoryOk false now s (storyRow now s) := by
-  unfold StoryOk storyRow titleLine metaList pair field fieldLink fieldText fieldBy fieldBody commentsExpected
+  unfold StoryOk storyRow rowCells field fieldLink fieldText fieldBy fieldBody commentsExpected
   cases hu : s.url <;> cases hsc : s.score <;> cases hau : s.author <;> cases hti : s.time
-    <;> cases hde : s.descendants <;> rcases Decidable.em (s.type = .job) with hj | hj <;> simp only [hj, ite_true, ite_false]
+    <;> cases hde : s.descendants <;> rcases Decidable.em (s.type = .job) with hj | hj
+    <;> simp only [hj, ite_true, ite_false]
   all_goals
     simp [findOwn, ownNodes, ownNodesList, isMarker, hasAttr, List.lookup, textContent, texts,
       textsList, concat, titleHref, byExpected, *]
 
 set_option maxHeartbeats 4000000 in
-theorem storyHeader_fidelity (now : Nat) (s : Item) : StoryOk true now s (storyHeader now s) := by
-  unfold StoryOk storyHeader titleLine metaList pair field fieldLink fieldText fieldBy fieldBody commentsExpected
-  cases hu : s.url <;> cases hsc : s.score <;> cases hau : s.author <;> cases hti : s.time
-    <;> cases hde : s.descendants <;> cases htx : s.text <;> rcases Decidable.em (s.type = .job) with hj | hj <;> simp only [hj, ite_true, ite_false]
+theorem storyTable_fidelity (now : Nat) (s : Item) : StoryOk true now s (storyTable now s) := by
+  unfold StoryOk storyTable headRow rowCells field fieldLink fieldText fieldBy fieldBody commentsExpected
+  cases ht : s.text <;> cases hu : s.url <;> cases hsc : s.score <;> cases hau : s.author
+    <;> cases hti : s.time <;> cases hde : s.descendants <;> rcases Decidable.em (s.type = .job) with hj | hj
+    <;> simp only [hj, ite_true, ite_false]
   all_goals
-    simp [findOwn, ownNodes, ownNodesList, isMarker, hasAttr, List.lookup,
-      textContent, texts, textsList, concat, titleHref, byExpected, *]
+    simp [findOwn, ownNodes, ownNodesList, isMarker, hasAttr, List.lookup, textContent, texts,
+      textsList, concat, titleHref, byExpected, *]
 
 theorem wrap_fidelity (now : Nat) (c : Item) (ds : List Dom) (hds : ∀ d ∈ ds, isMarker d = true) :
     CommentOk now c (wrap now c ds) := by
@@ -235,6 +240,14 @@ theorem wrap_noStory (now : Nat) (c : Item) (ds : List Dom)
       List.map_nil, List.map_cons, List.flatMap_nil, List.flatMap_cons, Option.isNone_none, and_true]
     simp_all
 
+set_option maxHeartbeats 4000000 in
+theorem storyTable_noComment (now : Nat) (s : Item) : commentTree (storyTable now s) = [] := by
+  unfold storyTable headRow rowCells field
+  cases ht : s.text <;> cases hu : s.url <;> cases hsc : s.score <;> cases hau : s.author
+    <;> cases hti : s.time <;> cases hde : s.descendants <;> rcases Decidable.em (s.type = .job) with hj | hj
+    <;> simp only [hj, ite_true, ite_false]
+  all_goals simp [commentTree, commentTreeList, List.lookup, sbody_commentTree]
+
 /-! ### Pages -/
 
 theorem front_ok (f : Front) : FrontOk f (renderFront f) := by
@@ -248,7 +261,7 @@ theorem front_ok (f : Front) : FrontOk f (renderFront f) := by
       simp only [List.all_cons, List.all_nil, Bool.and_true, Bool.and_eq_true]
       refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩ <;> first | (apply textOk_fixed; hn_decide) | (apply textOk_empty; hn_decide))
   have hall : (nodes (renderFront f)).all (commonP (.front f)) = true := by
-    unfold renderFront a; hn_auto
+    unfold renderFront a headRow; hn_auto
   obtain ⟨hnodes, hlinks, hnamed, hlinkTags, htexts⟩ := all_commonP _ _ hall
   refine ⟨⟨⟨rfl, rfl, ?_, ?_, ?_, ?_, ?_, ?_, ?_, hnodes, hnamed, hlinkTags⟩, hlinks, htexts⟩, ?_⟩
   · simp [renderFront, pageHead, frontTitle, topNav, nodes, nodesList, isEl]
@@ -263,8 +276,8 @@ theorem front_ok (f : Front) : FrontOk f (renderFront f) := by
   · have hrow : ∀ s, storyMarkers (storyRow f.fetchedAt s) = [storyRow f.fetchedAt s] := by
       intro s; simp [storyRow, storyMarkers, List.lookup]
     have : storyMarkers (renderFront f) = f.stories.map (storyRow f.fetchedAt) := by
-      simp [renderFront, pageHead, frontTitle, topNav, footer, a, storyMarkers, storyMarkersList, List.lookup,
-        storyMarkersList_map, hrow, flatMap_singleton_eq_map]
+      simp [renderFront, pageHead, frontTitle, topNav, footer, a, headRow, storyMarkers, storyMarkersList,
+        List.lookup, storyMarkersList_map, hrow, flatMap_singleton_eq_map]
     rw [this]
     exact storiesOk_map _ _ _ _ fun s _ => storyRow_fidelity f.fetchedAt s
 
@@ -281,7 +294,7 @@ theorem thread_ok (t : Thread) : ThreadOk t (renderThread t) := by
     simp only [List.all_cons, List.all_nil, Bool.and_true, Bool.and_eq_true]
     exact ⟨textOk_derived _ _ _ hsmem (derived_displayTitle _ _), by apply textOk_fixed; hn_decide,
       by apply textOk_fixed; hn_decide⟩
-  have hstory := storyHeader_ok (.thread t) t.fetchedAt t.story hsmem rfl
+  have hstory := storyTable_ok (.thread t) t.fetchedAt t.story hsmem rfl
   have hall : (nodes (renderThread t)).all (commonP (.thread t)) = true := by
     unfold renderThread; hn_auto
   obtain ⟨hnodes, hlinks, hnamed, hlinkTags, htexts⟩ := all_commonP _ _ hall
@@ -299,18 +312,14 @@ theorem thread_ok (t : Thread) : ThreadOk t (renderThread t) := by
   · simp [renderThread, pageHead, nodes, nodesList, isCardMeta, List.lookup]
   · simp [renderThread, pageHead, topNav, footer, a, nodes, nodesList, isAbout, hasAttr, List.lookup,
       textContent, texts, textsList, concat]
-  · have : storyMarkers (renderThread t) = [storyHeader t.fetchedAt t.story] := by
+  · have : storyMarkers (renderThread t) = [storyTable t.fetchedAt t.story] := by
       simp [renderThread, pageHead, topNav, footer, a, storyMarkers, storyMarkersList, List.lookup,
-        storyMarkersList_eq_nil _ hnoStory, storyHeader]
+        storyMarkersList_eq_nil _ hnoStory, storyTable]
     rw [this]
-    exact ⟨storyHeader_fidelity _ _, trivial⟩
+    exact ⟨storyTable_fidelity _ _, trivial⟩
   · have : commentTree (renderThread t) = commentTreeList (renderComments t.fetchedAt t.comments) := by
-      unfold renderThread pageHead topNav footer a storyHeader titleLine metaList pair field
-      cases t.story.text <;> cases t.story.url <;> cases t.story.score <;> cases t.story.author
-        <;> cases t.story.time <;> cases t.story.descendants
-        <;> rcases Decidable.em (t.story.type = .job) with hj | hj
-        <;> simp only [hj, ite_true, ite_false]
-      all_goals simp [commentTree, commentTreeList, List.lookup]
+      unfold renderThread pageHead topNav footer a
+      simp [commentTree, commentTreeList, List.lookup, storyTable_noComment]
     rw [this]
     exact htrees.2
 

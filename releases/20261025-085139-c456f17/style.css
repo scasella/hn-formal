@@ -1,0 +1,181 @@
+:root {
+  --bg: #f6f7f4;
+  --panel: #ffffff;
+  --stripe: #f1f4f7;
+  --head: #e3e8ee;
+  --ink: #1b1f24;
+  --soft: #46505a;
+  --link: #0b4a7d;
+  --visited: #5a2d80;
+  --grid: #c3cad3;
+  --lead: #fff1b8;
+  --bar: #223344;
+  --bar-ink: #ffffff;
+  --bar-soft: #d5dde6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1317;
+    --panel: #161c22;
+    --stripe: #1c242c;
+    --head: #242e38;
+    --ink: #e3e8ee;
+    --soft: #b6c0cb;
+    --link: #9fcbff;
+    --visited: #d4bbff;
+    --grid: #3a4551;
+    --lead: #3b3513;
+    --bar: #070a0d;
+    --bar-ink: #ffffff;
+    --bar-soft: #c5cfd9;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+  font: 13px/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  overflow-wrap: anywhere;
+}
+
+body > * { max-width: 100%; }
+
+a { color: var(--link); }
+a:visited { color: var(--visited); }
+a:focus-visible { outline: 2px solid var(--link); outline-offset: 1px; }
+
+header { background: var(--bar); }
+header nav { padding: 0.4rem 0.6rem; color: var(--bar-soft); overflow-wrap: anywhere; }
+header nav a { color: var(--bar-ink); font-weight: bold; text-decoration: none; }
+header nav a:visited { color: var(--bar-ink); }
+header nav a:hover { text-decoration: underline; }
+
+main { padding: 0.6rem; max-width: 84rem; margin: 0 auto; }
+
+.scroll {
+  overflow-x: auto;
+  border: 1px solid var(--grid);
+  background: var(--panel);
+}
+
+table.grid {
+  border-collapse: collapse;
+  width: 100%;
+  min-width: 34rem;
+  font-variant-numeric: tabular-nums;
+}
+
+th, td {
+  border: 1px solid var(--grid);
+  padding: 0.3rem 0.45rem;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--head);
+  color: var(--ink);
+  font-weight: bold;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+th:nth-child(3), th:nth-child(5), th:nth-child(6),
+td:nth-child(3), td:nth-child(5), td:nth-child(6) {
+  text-align: right;
+  white-space: nowrap;
+}
+
+td:nth-child(1) { min-width: 12rem; }
+td:nth-child(2) { color: var(--soft); }
+
+tbody tr:nth-child(even) td { background: var(--stripe); }
+tbody tr:first-child td { background: var(--lead); }
+
+td:nth-child(1) a { font-weight: bold; text-decoration: none; }
+td:nth-child(1) a:hover { text-decoration: underline; }
+td a { text-decoration: none; }
+td a:hover { text-decoration: underline; }
+
+td[colspan] {
+  text-align: left;
+  white-space: normal;
+  background: var(--panel);
+}
+
+[data-hn='text'] { overflow-wrap: anywhere; }
+[data-hn='text'] a { text-decoration: underline; }
+[data-hn='text'] p { margin: 0.3rem 0; }
+[data-hn='text'] p:first-child { margin-top: 0; }
+
+code, pre { font-size: 12px; background: var(--head); }
+code { padding: 0 0.2em; }
+pre {
+  margin: 0.3rem 0;
+  padding: 0.35rem 0.5rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+pre code { padding: 0; background: none; }
+
+.more { padding: 0.6rem 0.2rem; }
+.more a { font-weight: bold; }
+
+ol.comments {
+  list-style: none;
+  margin: 0.6rem 0 0;
+  padding: 0;
+  border: 1px solid var(--grid);
+  background: var(--panel);
+}
+
+ol.comments > li {
+  padding: 0.45rem 0.6rem;
+  border-top: 1px solid var(--grid);
+}
+
+ol.comments > li:first-child { border-top: 0; }
+
+.chead { color: var(--soft); font-size: 12px; margin-bottom: 0.2rem; }
+.chead a { color: var(--soft); }
+
+ol.kids {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0 0 0 0.6rem;
+  border-left: 2px solid var(--grid);
+}
+
+ol.kids:empty { display: none; }
+ol.kids ol.kids ol.kids ol.kids { border-left: 0; padding-left: 0; }
+
+@media (min-width: 48rem) {
+  table.grid { min-width: 0; }
+  td:nth-child(1) { width: 46%; }
+}
+
+footer {
+  margin-top: 0.8rem;
+  padding: 0.5rem 0.6rem;
+  border-top: 2px solid var(--bar);
+  color: var(--soft);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+footer a { color: var(--link); }
