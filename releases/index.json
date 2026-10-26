@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261026-093712-25d81bd",
+    "runId": "20261026-090617",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 5.81,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 79,
+      "notes": "The candidate reads clearly as a library card catalog: manila cards, ink top rules, typewriter values, and rubber-stamp red domain tags, with a card grid that is a genuinely different page shape from the live table. However, the uppercase sans labels are present but the brief's labelled fields are only partly carried through, and the thread page drops the card treatment for plain nested blocks, so the catalog metaphor weakens there. At 375px the cards stack cleanly with no overflow, though the three-column grid leaves the 1280px view dense with small type and the lower cards are cut off in the screenshot.",
+      "adherence": 78,
+      "novelty": 88,
+      "craft": 72
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 1,
+    "costUsd": 0.0926,
+    "previousRelease": "20261025-085139-c456f17",
+    "diffStat": "+215 -225",
+    "candidate": 12,
+    "brief": "library catalog",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1793007432
+  },
+  {
     "id": "20261025-085139-c456f17",
     "runId": "20261025-083243",
     "specVersion": 3,

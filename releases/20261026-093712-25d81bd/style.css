@@ -1,0 +1,187 @@
+/* hn-formal v2: library catalog. Index cards with definition-list facts, manila and ink, one rubber-stamp red. */
+:root {
+  --paper: #e6d8b8;
+  --card: #f6efdc;
+  --ink: #1d1a16;
+  --label: #5a4d3c;
+  --stamp: #8f1d17;
+  --stamp-seen: #6b2a1f;
+  --rule: #b9a77f;
+  --shadow: #cbb98f;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  font: 15px/1.45 'Courier New', Courier, monospace;
+  -webkit-text-size-adjust: 100%;
+}
+
+body { margin: 0; min-height: 100vh; overflow-wrap: anywhere; }
+body > * { max-width: 100%; }
+
+a { color: var(--stamp); text-decoration: underline; text-underline-offset: 2px; }
+a:visited { color: var(--stamp-seen); }
+a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+header {
+  background: var(--paper);
+  border-bottom: 3px double var(--ink);
+}
+header nav {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0.6rem 0.75rem;
+  font: 700 13px/1.6 Helvetica, Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+header nav a { color: var(--ink); text-decoration: none; }
+header nav a:hover { text-decoration: underline; }
+
+main {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 1rem 0.75rem 2rem;
+}
+
+ol.catalog {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr));
+  gap: 1rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+ol.catalog > li { min-width: 0; }
+
+article.card {
+  height: 100%;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-top: 6px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--shadow);
+  padding: 0.75rem 0.85rem 0.85rem;
+}
+article.lead {
+  max-width: 52rem;
+  margin: 0 auto 1.25rem;
+}
+
+h2.ttl {
+  margin: 0 0 0.6rem;
+  font: 700 1.1rem/1.25 Georgia, 'Times New Roman', serif;
+}
+h2.ttl a { color: var(--ink); text-decoration-thickness: 1px; }
+h2.ttl a:hover { color: var(--stamp); }
+article.lead h2.ttl { font-size: 1.5rem; }
+
+dl.facts {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.3rem 0.75rem;
+  margin: 0;
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--rule);
+}
+dl.facts dt {
+  font: 700 11px/1.9 Helvetica, Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--label);
+}
+dl.facts dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+dt:has(+ dd:empty), dd:empty { display: none; }
+
+[data-hn="score"] { font-weight: 700; }
+[data-hn="domain"] {
+  display: inline-block;
+  border: 2px solid var(--stamp);
+  color: var(--stamp);
+  padding: 0 0.35em;
+  font: 700 12px/1.5 Helvetica, Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  transform: rotate(-2deg);
+}
+
+.more { text-align: center; margin-top: 1rem; }
+.more a {
+  font: 700 13px/1.6 Helvetica, Arial, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+ol.comments, ol.kids { list-style: none; margin: 0; padding: 0; }
+ol.comments { display: grid; gap: 0.6rem; }
+li[data-hn-comment] {
+  min-width: 0;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--ink);
+  padding: 0.5rem 0.65rem;
+}
+ol.kids {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding-left: 0.6rem;
+}
+ol.kids:empty { display: none; }
+ol.kids ol.kids ol.kids ol.kids { padding-left: 0; }
+li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.chead {
+  font: 12px/1.5 Helvetica, Arial, sans-serif;
+  color: var(--label);
+  margin-bottom: 0.3rem;
+}
+.chead a { color: var(--ink); font-weight: 700; }
+
+[data-hn="text"] { margin: 0.3rem 0; }
+[data-hn="text"] p { margin: 0.4rem 0; }
+
+code {
+  font-size: 0.92em;
+  background: var(--paper);
+  padding: 0 0.15em;
+}
+pre {
+  max-width: 100%;
+  margin: 0.4rem 0;
+  padding: 0.4rem 0.5rem;
+  background: var(--paper);
+  font-size: 13px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+pre code { background: none; padding: 0; }
+
+footer {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0.75rem;
+  border-top: 3px double var(--ink);
+  font: 12px/1.5 Helvetica, Arial, sans-serif;
+  color: var(--label);
+  overflow-wrap: anywhere;
+}
+footer p[data-hn="about"] {
+  margin: 0 0 0.5rem;
+  font-size: 13px;
+  color: var(--ink);
+}
+footer a { color: var(--ink); }
+
+@media (min-width: 48rem) {
+  ol.kids { padding-left: 1rem; }
+}
