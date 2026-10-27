@@ -1,0 +1,38 @@
+{
+  "id": "20261027-093319-65e849f",
+  "runId": "20261027-090843",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 7.01,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 79,
+    "notes": "The front page is a genuine table with visible Title, Domain, Score, Author, Age and Comments headers, thin cell grid, monospace figures and right-aligned numbers, and a single yellow highlight on the lead row, so the spreadsheet brief reads at a glance. However, the brief's frozen header feel is not evident and the Title column is oversized while Domain and Author wrap awkwardly into narrow cells. At 375px the table overflows horizontally, clipping the Comments column and squeezing titles into one-word-per-line columns, which is hard to scan. The thread page keeps the table header for the story and uses indented prose for comments, which is a reasonable adaptation.",
+    "adherence": 84,
+    "novelty": 88,
+    "craft": 62
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 2,
+  "costUsd": 0.1218,
+  "previousRelease": "20261026-093712-25d81bd",
+  "diffStat": "+174 -239",
+  "candidate": 7,
+  "brief": "spreadsheet",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1793093599
+}
