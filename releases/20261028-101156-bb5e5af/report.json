@@ -1,0 +1,38 @@
+{
+  "id": "20261028-101156-bb5e5af",
+  "runId": "20261028-094942",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 5.12,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 79,
+    "notes": "The front page clearly delivers a vertical spine with timestamp nodes and titles branching right, with age as the most prominent metadata in teal, which matches the brief well. The thread page is weak: it shows only one deleted comment node and a nearly empty canvas, so the nested comment spine is barely demonstrated. At 375px the timeline holds together without overflow, though the spine is cramped and the header nav wraps awkwardly.",
+    "adherence": 80,
+    "novelty": 88,
+    "craft": 70
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 2,
+  "costUsd": 0.0983,
+  "previousRelease": "20261027-093319-65e849f",
+  "diffStat": "+259 -168",
+  "candidate": 15,
+  "brief": "timeline",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1793182316
+}

@@ -5,19 +5,19 @@
 <!-- generation:start -->
 ## Current generation
 
-[![Front page of generation 20261027-093319-65e849f at 1280px](releases/20261027-093319-65e849f/index-1280.png)](https://scasella.github.io/hn-formal/)
+[![Front page of generation 20261028-101156-bb5e5af at 1280px](releases/20261028-101156-bb5e5af/index-1280.png)](https://scasella.github.io/hn-formal/)
 
-Generation `20261027-093319-65e849f` (2026-10-27 09:33 UTC) · brief "spreadsheet" · judge 79/100 · novelty 88 · spec v3 · new DOM · 2 repair rounds · $0.12 · [report](releases/20261027-093319-65e849f/report.json)
+Generation `20261028-101156-bb5e5af` (2026-10-28 10:11 UTC) · brief "timeline" · judge 79/100 · novelty 88 · spec v3 · new DOM · 2 repair rounds · $0.10 · [report](releases/20261028-101156-bb5e5af/report.json)
 
 ### Previous generations
 
 <p>
+<a href="releases/20261027-093319-65e849f/"><img src="releases/20261027-093319-65e849f/index-375.png" width="120" alt="Generation 20261027-093319-65e849f, judge 79"></a>
 <a href="releases/20261026-093712-25d81bd/"><img src="releases/20261026-093712-25d81bd/index-375.png" width="120" alt="Generation 20261026-093712-25d81bd, judge 79"></a>
 <a href="releases/20261025-085139-c456f17/"><img src="releases/20261025-085139-c456f17/index-375.png" width="120" alt="Generation 20261025-085139-c456f17, judge 74"></a>
 <a href="releases/20261024-083653-21d015c/"><img src="releases/20261024-083653-21d015c/index-375.png" width="120" alt="Generation 20261024-083653-21d015c, judge 75"></a>
 <a href="releases/20261021-090026-676c413/"><img src="releases/20261021-090026-676c413/index-375.png" width="120" alt="Generation 20261021-090026-676c413, judge 82"></a>
 <a href="releases/20261020-091228-e3824d9/"><img src="releases/20261020-091228-e3824d9/index-375.png" width="120" alt="Generation 20261020-091228-e3824d9, judge 81"></a>
-<a href="releases/20261019-092320-83dca25/"><img src="releases/20261019-092320-83dca25/index-375.png" width="120" alt="Generation 20261019-092320-83dca25, judge 76"></a>
 </p>
 
 Every generation, with its proof, stylesheet, report and screenshots, is under [releases/](releases/). Run history is on the [dashboard](https://scasella.github.io/hn-formal/loop/). This section is rewritten by the release step; see CONTRACT.md.
