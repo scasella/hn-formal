@@ -1,0 +1,190 @@
+{
+  "runId": "20261029-100928",
+  "startedAt": 1793268618,
+  "finishedAt": 1793270582,
+  "candidates": 16,
+  "passedTier1": 16,
+  "passedTier2": 0,
+  "released": null,
+  "costUsd": 2.7737,
+  "calls": 160,
+  "stopReason": "no-passer",
+  "perCandidate": [
+    {
+      "n": 0,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":2,\"axe\":0,\"contrastMin\":7.66,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)"
+    },
+    {
+      "n": 1,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":2,\"axe\":0,\"contrastMin\":6.61,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)"
+    },
+    {
+      "n": 2,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":2,\"axe\":0,\"contrastMin\":6.21,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)"
+    },
+    {
+      "n": 3,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":2,\"axe\":0,\"contrastMin\":6.06,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)"
+    },
+    {
+      "n": 4,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":2,\"axe\":0,\"contrastMin\":6.06,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)"
+    },
+    {
+      "n": 5,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":2,\"axe\":0,\"contrastMin\":7.3,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)"
+    },
+    {
+      "n": 6,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":2,\"axe\":0,\"contrastMin\":5.64,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)"
+    },
+    {
+      "n": 7,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":2,\"axe\":0,\"contrastMin\":6.01,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)"
+    },
+    {
+      "n": 8,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":2,\"axe\":0,\"contrastMin\":6.87,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)"
+    },
+    {
+      "n": 9,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":2,\"axe\":0,\"contrastMin\":5.84,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)"
+    },
+    {
+      "n": 10,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":2,\"axe\":0,\"contrastMin\":7.88,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)"
+    },
+    {
+      "n": 11,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":2,\"axe\":0,\"contrastMin\":6.32,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)"
+    },
+    {
+      "n": 12,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":2,\"axe\":0,\"contrastMin\":6.04,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)"
+    },
+    {
+      "n": 13,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":2,\"axe\":0,\"contrastMin\":5.74,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)"
+    },
+    {
+      "n": 14,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":2,\"axe\":0,\"contrastMin\":7.61,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)"
+    },
+    {
+      "n": 15,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":2,\"axe\":0,\"contrastMin\":8.77,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)\n[vnu] item/50276998.html: Bad value  for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 2)"
+    }
+  ]
+}
