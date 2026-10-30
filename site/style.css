@@ -1,202 +1,160 @@
-/* hn-formal v3: a timeline. Ages are stamps on a spine; titles branch off it. No @import, no url(), no text in content. */
+/* hn-formal v2: cards on a grid. Styles the DOM from HnFormal/Render.lean. */
+
 :root {
-  --paper: #fbf7ef;
-  --ink: #1d1b16;
-  --muted: #5c574c;
-  --rust: #9a3412;
-  --visited: #6b3fa0;
-  --teal: #0f766e;
-  --rule: #cfc6b4;
-  --code: #ece5d5;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #15130f;
-    --ink: #efe9dc;
-    --muted: #b9b1a0;
-    --rust: #ffb078;
-    --visited: #d9c2f0;
-    --teal: #5eead4;
-    --rule: #4a4438;
-    --code: #26221b;
-  }
+  --page: #e9edf2;
+  --card: #ffffff;
+  --ink: #111827;
+  --muted: #4b5563;
+  --link: #1d4ed8;
+  --visited: #6d28d9;
+  --edge: #cfd8e3;
+  --tag-bg: #dbe7fb;
+  --tag-ink: #1e3a8a;
+  --bar: #1f2937;
+  --code-bg: #f1f5f9;
 }
 
 * { box-sizing: border-box; }
 
 html {
-  background: var(--paper);
+  background: var(--page);
   color: var(--ink);
-  font: 17px/1.5 Georgia, "Times New Roman", serif;
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-text-size-adjust: 100%;
 }
 
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: var(--paper);
-  overflow-wrap: anywhere;
-}
+body { margin: 0; min-height: 100vh; overflow-wrap: anywhere; }
 body > * { max-width: 100%; }
 
-a { color: var(--rust); text-decoration: underline; }
+a { color: var(--link); text-decoration: underline; }
 a:visited { color: var(--visited); }
-a:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+a:focus-visible { outline: 3px solid #b45309; outline-offset: 2px; }
 
-header { border-bottom: 3px double var(--ink); }
-header nav {
-  max-width: 48rem;
-  margin: 0 auto;
-  padding: 0.6rem 1rem;
-  font: 600 14px/1.7 ui-sans-serif, system-ui, sans-serif;
-}
-header nav a { color: var(--ink); text-decoration: none; }
-header nav a:visited { color: var(--ink); }
-header nav a:hover { text-decoration: underline; }
+/* Top bar */
+header { background: var(--bar); color: #ffffff; }
+header .brand { max-width: 78rem; margin: 0 auto; padding: 0.8rem 1rem 0; font-size: 1.15rem; }
+header nav { max-width: 78rem; margin: 0 auto; padding: 0.4rem 1rem 0.8rem; font-size: 0.9rem; }
+header a, header a:visited { color: #ffffff; text-decoration: none; }
+header a:hover { text-decoration: underline; }
 
-main {
-  max-width: 48rem;
-  margin: 0 auto;
-  padding: 1.5rem 1rem 2rem;
-}
+main { max-width: 78rem; margin: 0 auto; padding: 1.25rem 1rem 1rem; }
 
-/* The spine: a list with a vertical teal rule and a dot per node. */
-ol.timeline, ol.kids {
-  position: relative;
-  list-style: none;
-  margin: 0;
-  padding: 0 0 0 1.25rem;
-}
-ol.timeline::before, ol.kids::before {
-  content: "";
-  position: absolute;
-  left: 0.25rem;
-  top: 0.25rem;
-  bottom: 0.25rem;
-  width: 2px;
-  background: var(--teal);
-}
-ol.timeline > li, ol.kids > li {
-  position: relative;
-  padding: 0 0 1.5rem;
-}
-ol.kids > li { padding-bottom: 0.6rem; }
-ol.timeline > li::before, ol.kids > li::before {
-  content: "";
-  position: absolute;
-  left: -1.32rem;
-  top: 0.25rem;
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 50%;
-  border: 2px solid var(--teal);
-  background: var(--paper);
+/* Front page: responsive grid of story cards. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1rem;
+  align-items: stretch;
 }
 
-/* Stamp: the age, the most prominent metadata on the page. */
-.stamp { color: var(--teal); }
-time[data-hn="age"] {
-  font: 700 1.05rem/1.2 ui-sans-serif, system-ui, sans-serif;
-  letter-spacing: 0.01em;
-}
-
-/* Titles branch off the stamp. */
-.titleline { overflow-wrap: anywhere; }
-a[data-hn="title"] {
-  color: var(--ink);
-  font-weight: 700;
-  font-size: 1.2rem;
-  line-height: 1.3;
-  text-decoration: none;
-}
-a[data-hn="title"]:visited { color: var(--ink); }
-a[data-hn="title"]:hover { text-decoration: underline; }
-span[data-hn="domain"] {
-  font: 0.85rem ui-sans-serif, system-ui, sans-serif;
-  color: var(--muted);
-}
-
-.subline {
-  margin-top: 0.1rem;
-  font: 0.85rem/1.5 ui-sans-serif, system-ui, sans-serif;
-  color: var(--muted);
-}
-.subline a, .chead a { color: var(--muted); text-decoration: none; }
-.subline a:visited, .chead a:visited { color: var(--muted); }
-.subline a:hover, .chead a:hover { text-decoration: underline; }
-
-.more {
-  margin: 1.5rem 0 0 1.25rem;
-  font: 600 0.95rem ui-sans-serif, system-ui, sans-serif;
-}
-
-/* Wide screens: the stamp sits in its own column beside the branch. */
-@media (min-width: 40rem) {
-  ol.stories > li {
-    display: grid;
-    grid-template-columns: 7.5rem 1fr;
-    column-gap: 1rem;
-    align-items: start;
-  }
-}
-
-/* Thread page: story header, then the comment spine. */
-article[data-hn-story] {
-  margin: 0 0 1.5rem;
-  padding: 0 0 1.25rem;
-  border-bottom: 3px double var(--ink);
-}
-article[data-hn-story] a[data-hn="title"] { font-size: 1.7rem; }
-article[data-hn-story] time[data-hn="age"] { font-size: 1.15rem; }
-
-[data-hn="text"] {
-  margin: 0.4rem 0 0;
-  font-size: 0.97rem;
+.card {
+  background: var(--card);
+  border: 1px solid var(--edge);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 6px 16px rgba(15, 23, 42, 0.06);
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
   overflow-wrap: anywhere;
 }
+
+.ttl { margin: 0; font-size: 1.05rem; line-height: 1.3; font-weight: 700; }
+.ttl a, .ttl a:visited { color: var(--ink); text-decoration: none; }
+.ttl a:hover { text-decoration: underline; }
+
+.meta { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.meta:empty { display: none; }
+.meta span {
+  background: var(--tag-bg);
+  color: var(--tag-ink);
+  border-radius: 999px;
+  padding: 0 0.6rem;
+  font-size: 0.8rem;
+  line-height: 1.6;
+}
+
+/* Metadata pinned to the bottom edge of each card. */
+.subline {
+  margin-top: auto;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e5eaf1;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+.subline a, .subline a:visited { color: var(--muted); }
+
+.more { padding-top: 1.25rem; }
+.more a, .more a:visited {
+  display: inline-block;
+  background: var(--bar);
+  color: #ffffff;
+  padding: 0.5rem 1.1rem;
+  border-radius: 8px;
+  font-weight: 700;
+  text-decoration: none;
+}
+.more a:hover { text-decoration: underline; }
+
+/* Thread page: a wide story card, then nested comment cards. */
+main > .story { margin-bottom: 1.25rem; border-left: 6px solid #2563eb; }
+.story .ttl { font-size: 1.4rem; }
+
+ol.comments, ol.kids { list-style: none; margin: 0; padding: 0; }
+ol.comments { display: flex; flex-direction: column; gap: 0.75rem; }
+
+li[data-hn-comment] {
+  background: var(--card);
+  border: 1px solid var(--edge);
+  border-radius: 10px;
+  padding: 0.6rem 0.8rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Replies are indented; depth 4 and deeper stop indenting so 375px still fits. */
+ol.kids {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+  padding-left: 0.85rem;
+  border-left: 3px solid #bfdbfe;
+}
+ol.kids:empty { display: none; }
+ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left-width: 0; }
+
+.chead { color: var(--muted); font-size: 0.8rem; margin-bottom: 0.3rem; }
+.chead a, .chead a:visited { color: var(--muted); }
+
+[data-hn="text"] { margin: 0.2rem 0; overflow-wrap: anywhere; }
 [data-hn="text"] p { margin: 0.4rem 0; }
-[data-hn="text"] a { text-decoration: underline; }
+[data-hn="text"] a, [data-hn="text"] p a { text-decoration: underline; }
 
 code, pre {
-  font: 0.85rem/1.4 ui-monospace, Menlo, Consolas, monospace;
-  background: var(--code);
+  font-family: ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.85rem;
+  background: var(--code-bg);
   color: var(--ink);
 }
-code { padding: 0 0.2em; }
+code { padding: 0 0.25em; border-radius: 4px; }
 pre {
   margin: 0.4rem 0;
-  padding: 0.4rem 0.6rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 6px;
   max-width: 100%;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 pre code { padding: 0; background: none; }
 
-.chead {
-  font: 0.85rem/1.5 ui-sans-serif, system-ui, sans-serif;
-  color: var(--muted);
-}
-ol.timeline { margin-top: 0.5rem; }
-ol.kids { margin-top: 0.2rem; }
-ol.kids:empty { display: none; }
-
-/* Deep threads: spines stop indenting past depth five so 375px still fits. */
-ol.kids ol.kids ol.kids ol.kids ol.kids {
-  padding-left: 0;
-}
-ol.kids ol.kids ol.kids ol.kids ol.kids::before,
-ol.kids ol.kids ol.kids ol.kids ol.kids > li::before {
-  display: none;
-}
-
 footer {
-  max-width: 48rem;
+  max-width: 78rem;
   margin: 0 auto;
   padding: 1rem;
-  border-top: 3px double var(--ink);
-  color: var(--muted);
-  font: 0.85rem/1.5 ui-sans-serif, system-ui, sans-serif;
+  color: #334155;
+  font-size: 0.85rem;
   overflow-wrap: anywhere;
 }
 footer p { margin: 0 0 0.5rem; }
-footer a { color: var(--ink); }

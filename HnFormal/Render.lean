@@ -1,8 +1,9 @@
 import HnFormal.Lemmas
 /-!
-# Renderer v3: a timeline
+# Renderer: cards on a grid
 
-Each story is a node on a spine. Its age is the spine's stamp (a `time` element carrying a duration in `datetime`, so the element is valid HTML whatever the text says); its title branches off it. Comments nest as smaller spines.
+Stories are `article` cards with an `h2` title, metadata pinned to the bottom edge.
+Comments are nested bordered cards with capped indentation.
 -/
 set_option maxHeartbeats 2000000
 set_option maxRecDepth 4096
@@ -36,8 +37,8 @@ def pageHead (titleParts : List String) : Dom :=
 
 def topNav : Dom :=
   .el "header" [] [
+    .el "h1" [("class", "brand")] [a homeHref "HN, formally"],
     .el "nav" [] [
-      a homeHref "HN, formally", .text " | ",
       a (hnBase ++ "newest") "new", .text " | ",
       a (hnBase ++ "front") "past", .text " | ",
       a (hnBase ++ "newcomments") "comments", .text " | ",
@@ -53,46 +54,27 @@ def footer : Dom :=
     a hnBase "The original is at", .text " ", a hnBase "news.ycombinator.com", .text ". ",
     a loopHref "how this works"]
 
-/-- The age stamp: the spine's timestamp, the one `age` field of a story. The
-`datetime` attribute is the elapsed time as an HTML duration (`PT<n>S`), which
-is a valid `time` value for any age. -/
-def stamp (now : Nat) (s : Item) : Dom :=
-  .el "div" [("class", "stamp")]
-    (s.time.toList.map fun t => .el "time" [("data-hn", "age"), ("datetime", "PT" ++ toString (now - t) ++ "S")] [.text (ageString now t)])
-
-def subline (s : Item) : List Dom :=
+def subline (now : Nat) (s : Item) : List Dom :=
   (s.score.toList.flatMap fun n => [field "score" (toString n), .text " points "]) ++
   (s.author.toList.flatMap fun u => [.text "by ", .el "a" [("href", userHref u), ("data-hn", "by")] [.text (displayUser u)], .text " "]) ++
+  (s.time.toList.map fun t => field "age" (ageString now t)) ++
   (s.descendants.toList.flatMap fun n => [.text " | ", field "descendants" (toString n), .text " "]) ++
   (if s.type = .job then [] else
     [.el "a" [("href", itemHref s.id), ("data-hn", "comments")] [.text "comments"]])
 
-def titleLine (s : Item) : Dom :=
-  .el "div" [("class", "titleline")]
-    ([.el "a" [("href", titleHref s), ("data-hn", "title")] [.text (displayTitle s)]] ++
-     (s.url.toList.flatMap fun u => [.text " (", field "domain" (domainOf u), .text ")"]))
-
 def storyRow (now : Nat) (s : Item) : Dom :=
-  .el "li" [("data-hn-story", toString s.id)] [
-    stamp now s,
-    .el "div" [("class", "branch")] [titleLine s, .el "div" [("class", "subline")] (subline s)]]
-
-def renderFront (f : Front) : Dom :=
-  .el "html" [("lang", "en")] [
-    pageHead frontTitle,
-    .el "body" [] [
-      topNav,
-      .el "main" [] [
-        .el "ol" [("class", "timeline stories")] (f.stories.map (storyRow f.fetchedAt)),
-        .el "div" [("class", "more")] [a (hnBase ++ "news?p=2") "More"]],
-      footer]]
+  .el "article" [("class", "card"), ("data-hn-story", toString s.id)] [
+    .el "h2" [("class", "ttl")] [.el "a" [("href", titleHref s), ("data-hn", "title")] [.text (displayTitle s)]],
+    .el "div" [("class", "meta")] (s.url.toList.map fun u => field "domain" (domainOf u)),
+    .el "div" [("class", "subline")] (subline now s)]
 
 def storyHeader (now : Nat) (s : Item) : Dom :=
-  .el "article" [("data-hn-story", toString s.id)]
-    ([stamp now s, titleLine s, .el "div" [("class", "subline")] (subline s)] ++
+  .el "article" [("class", "card story"), ("data-hn-story", toString s.id)]
+    ([.el "h2" [("class", "ttl")] [.el "a" [("href", titleHref s), ("data-hn", "title")] [.text (displayTitle s)]],
+      .el "div" [("class", "meta")] (s.url.toList.map fun u => field "domain" (domainOf u)),
+      .el "div" [("class", "subline")] (subline now s)] ++
      (s.text.toList.map fun t => .el "div" [("data-hn", "text")] (Sanitize.body t)))
 
-/-- One comment: header, body, nested kids. -/
 def wrap (now : Nat) (c : Item) (kids : List Dom) : Dom :=
   .el "li" [("data-hn-comment", toString c.id)] [
     .el "div" [("class", "chead")]
@@ -117,7 +99,17 @@ def renderThread (t : Thread) : Dom :=
       topNav,
       .el "main" [] [
         storyHeader t.fetchedAt t.story,
-        .el "ol" [("class", "timeline")] (renderComments t.fetchedAt t.comments)],
+        .el "ol" [("class", "comments")] (renderComments t.fetchedAt t.comments)],
+      footer]]
+
+def renderFront (f : Front) : Dom :=
+  .el "html" [("lang", "en")] [
+    pageHead frontTitle,
+    .el "body" [] [
+      topNav,
+      .el "main" [] [
+        .el "div" [("class", "grid")] (f.stories.map (storyRow f.fetchedAt)),
+        .el "div" [("class", "more")] [a (hnBase ++ "news?p=2") "More"]],
       footer]]
 
 /-- THE RENDERER. -/
@@ -127,43 +119,29 @@ def render : Page → Dom
 
 /-! ## Proof -/
 
-theorem subline_ok (p : Page) (s : Item) (hi : s ∈ p.items) :
-    (nodesList (subline s)).all (commonP p) = true := by
-  unfold subline field
-  cases hsc : s.score <;> cases hau : s.author <;> cases hde : s.descendants
-    <;> rcases Decidable.em (s.type = .job) with hj | hj <;> simp only [hj, ite_true, ite_false] <;> hn_auto
-
-theorem titleLine_ok (p : Page) (s : Item) (hi : s ∈ p.items) :
-    (nodes (titleLine s)).all (commonP p) = true := by
-  unfold titleLine field
-  cases hu : s.url <;> hn_auto
-
-theorem stamp_ok (p : Page) (now : Nat) (s : Item) (hi : s ∈ p.items) (hnow : p.fetchedAt = now) :
-    (nodes (stamp now s)).all (commonP p) = true := by
+theorem subline_ok (p : Page) (now : Nat) (s : Item) (hi : s ∈ p.items) (hnow : p.fetchedAt = now) :
+    (nodesList (subline now s)).all (commonP p) = true := by
   subst hnow
-  unfold stamp
-  cases hti : s.time <;> hn_auto
+  unfold subline field
+  cases hsc : s.score <;> cases hau : s.author <;> cases hti : s.time <;> cases hde : s.descendants
+    <;> rcases Decidable.em (s.type = .job) with hj | hj <;> simp only [hj, ite_true, ite_false] <;> hn_auto
 
 theorem storyRow_ok (p : Page) (now : Nat) (s : Item) (hi : s ∈ p.items) (hnow : p.fetchedAt = now) :
     (nodes (storyRow now s)).all (commonP p) = true := by
-  have h1 := titleLine_ok p s hi
-  have h2 := subline_ok p s hi
-  have h3 := stamp_ok p now s hi hnow
-  unfold storyRow
-  hn_auto
+  have h2 := subline_ok p now s hi hnow
+  unfold storyRow field
+  cases hu : s.url <;> hn_auto
 
 theorem storyHeader_ok (p : Page) (now : Nat) (s : Item) (hi : s ∈ p.items) (hnow : p.fetchedAt = now) :
     (nodes (storyHeader now s)).all (commonP p) = true := by
-  have h1 := titleLine_ok p s hi
-  have h2 := subline_ok p s hi
-  have h3 := stamp_ok p now s hi hnow
-  have h4 := body_commonP p s hi
-  unfold storyHeader
+  have h2 := subline_ok p now s hi hnow
+  have h3 := body_commonP p s hi
+  unfold storyHeader field
   cases ht : s.text with
-  | none => hn_auto
+  | none => cases hu : s.url <;> hn_auto
   | some x =>
-    have h4' : (nodesList (Sanitize.body x)).all (commonP p) = true := by simpa [itemBody, ht] using h4
-    hn_auto
+    have h3' : (nodesList (Sanitize.body x)).all (commonP p) = true := by simpa [itemBody, ht] using h3
+    cases hu : s.url <;> hn_auto
 
 theorem topNav_ok (p : Page) : (nodes topNav).all (commonP p) = true := by
   unfold topNav a; hn_auto
@@ -194,7 +172,7 @@ theorem wrapShape (now : Nat) : WrapShape (wrap now) (renderComment now) (render
 
 set_option maxHeartbeats 4000000 in
 theorem storyRow_fidelity (now : Nat) (s : Item) : StoryOk false now s (storyRow now s) := by
-  unfold StoryOk storyRow titleLine subline stamp field fieldLink fieldText fieldBy fieldBody commentsExpected
+  unfold StoryOk storyRow subline field fieldLink fieldText fieldBy fieldBody commentsExpected
   cases hu : s.url <;> cases hsc : s.score <;> cases hau : s.author <;> cases hti : s.time
     <;> cases hde : s.descendants <;> rcases Decidable.em (s.type = .job) with hj | hj <;> simp only [hj, ite_true, ite_false]
   all_goals
@@ -203,7 +181,7 @@ theorem storyRow_fidelity (now : Nat) (s : Item) : StoryOk false now s (storyRow
 
 set_option maxHeartbeats 4000000 in
 theorem storyHeader_fidelity (now : Nat) (s : Item) : StoryOk true now s (storyHeader now s) := by
-  unfold StoryOk storyHeader titleLine subline stamp field fieldLink fieldText fieldBy fieldBody commentsExpected
+  unfold StoryOk storyHeader subline field fieldLink fieldText fieldBy fieldBody commentsExpected
   cases hu : s.url <;> cases hsc : s.score <;> cases hau : s.author <;> cases hti : s.time
     <;> cases hde : s.descendants <;> cases htx : s.text <;> rcases Decidable.em (s.type = .job) with hj | hj <;> simp only [hj, ite_true, ite_false]
   all_goals
@@ -309,7 +287,7 @@ theorem thread_ok (t : Thread) : ThreadOk t (renderThread t) := by
     rw [this]
     exact ⟨storyHeader_fidelity _ _, trivial⟩
   · have : commentTree (renderThread t) = commentTreeList (renderComments t.fetchedAt t.comments) := by
-      unfold renderThread pageHead topNav footer a storyHeader titleLine subline stamp field
+      unfold renderThread pageHead topNav footer a storyHeader subline field
       cases t.story.text <;> cases t.story.url <;> cases t.story.score <;> cases t.story.author
         <;> cases t.story.time <;> cases t.story.descendants
         <;> rcases Decidable.em (t.story.type = .job) with hj | hj

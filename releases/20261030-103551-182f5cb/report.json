@@ -1,0 +1,38 @@
+{
+  "id": "20261030-103551-182f5cb",
+  "runId": "20261030-101108",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 5.7,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 81,
+    "notes": "The front page follows the cards-on-a-grid brief closely: bordered rounded cards with bold titles, domain pill tags, and metadata along the bottom, arranged 4-across at 1280px and single column at 375px. The thread page nests comments as indented cards with left rules, matching the brief. Cards have uneven heights, leaving some dead space above the metadata divider, and the 375px view stacks cleanly without overflow. The brief's requirement for the title to be an h2 or h3 is plausibly met, though the metadata line wraps awkwardly on several cards.",
+    "adherence": 88,
+    "novelty": 78,
+    "craft": 76
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 1,
+  "costUsd": 0.0922,
+  "previousRelease": "20261028-101156-bb5e5af",
+  "diffStat": "+152 -216",
+  "candidate": 6,
+  "brief": "cards on a grid",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1793356551
+}
