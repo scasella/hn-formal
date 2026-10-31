@@ -1,0 +1,38 @@
+{
+  "id": "20261031-101110-422c94f",
+  "runId": "20261031-094700",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 5.38,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 80,
+    "notes": "The front page reads as a long-form column with no list bullets, no rules, no borders, and no gutter numbers, and the warm neutral palette and serif headlines match the brief's quiet direction. Metadata sits quietly under each title and the 375px version reflows cleanly. The brief asked for each story to be a short prose block in a single comfortable measure, but the stories are only lightly prose-like, with the title and byline reading as a standard stacked list. The thread page is nicely nested with indentation, though the comment hierarchy is shallow and the sans-serif metadata against serif body text is a little uneven.",
+    "adherence": 78,
+    "novelty": 88,
+    "craft": 74
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 0,
+  "costUsd": 0.0606,
+  "previousRelease": "20261030-103551-182f5cb",
+  "diffStat": "+202 -168",
+  "candidate": 10,
+  "brief": "minimal reader",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1793441470
+}

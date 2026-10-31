@@ -1,0 +1,145 @@
+:root {
+  --paper: #f6f1e7;
+  --ink: #2a241d;
+  --muted: #6b6155;
+  --link: #7a3b1e;
+  --well: #ebe4d4;
+  --measure: 36rem;
+  --serif: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
+  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #1c1914;
+    --ink: #e9e1d3;
+    --muted: #a39a8a;
+    --link: #e0a77c;
+    --well: #2a251d;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--paper);
+  overflow-wrap: anywhere;
+}
+
+a, a:visited { color: var(--link); }
+a:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+
+/* Masthead: the site name and one quiet line of sections. */
+header { max-width: var(--measure); margin: 0 auto; padding: 2.25rem 1.25rem 0; }
+header h1 { margin: 0; font-family: var(--sans); font-size: 1rem; font-weight: 700; letter-spacing: 0.02em; }
+header h1 a, header h1 a:visited { color: var(--ink); text-decoration: none; }
+header nav { margin-top: 0.5rem; font-family: var(--sans); font-size: 0.8rem; line-height: 1.8; color: var(--muted); }
+header nav a, header nav a:visited { color: var(--muted); text-decoration: none; }
+header nav a:hover { color: var(--ink); text-decoration: underline; }
+
+/* One column. Space separates stories; nothing is boxed. */
+main { max-width: var(--measure); margin: 0 auto; padding: 2.5rem 1.25rem 2rem; }
+
+.feed > article { margin: 0 0 2.75rem; }
+.feed > article:first-child h2 { font-size: 1.7rem; }
+
+.kicker {
+  margin: 0 0 0.25rem;
+  font-family: var(--sans);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.kicker:empty { display: none; }
+
+article h2 { margin: 0; font-size: 1.3rem; line-height: 1.25; font-weight: 700; }
+article h2 a, article h2 a:visited { color: var(--ink); text-decoration: none; }
+article h2 a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.15em; }
+
+.byline {
+  margin: 0.4rem 0 0;
+  font-family: var(--sans);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.byline a, .byline a:visited, .chead a, .chead a:visited, footer a, footer a:visited {
+  color: var(--muted);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.more { font-family: var(--sans); font-size: 0.85rem; }
+.more a, .more a:visited { color: var(--ink); font-weight: 700; text-decoration: underline; text-underline-offset: 0.2em; }
+
+/* Thread page: the story is set as a lead, then its text in a larger measure. */
+main > article > h2 { font-size: 1.6rem; }
+main > article > .byline { margin-bottom: 0; }
+main > article > [data-hn="text"] {
+  margin-top: 1.4rem;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+/* Comments: nested blocks, indented by margin only, flat below four levels. */
+.thread { margin-top: 2.75rem; }
+.thread > [data-hn-comment] { margin-top: 2.25rem; }
+[data-hn-comment] [data-hn-comment] { margin-top: 1.5rem; }
+.chead {
+  margin: 0 0 0.3rem;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.chead:empty { display: none; }
+[data-hn-comment] [data-hn="text"] { font-size: 1rem; line-height: 1.6; overflow-wrap: anywhere; }
+[data-hn="text"]:empty { display: none; }
+[data-hn="text"] p { margin: 0 0 0.85em; }
+[data-hn="text"] p:last-child { margin-bottom: 0; }
+[data-hn="text"] a, [data-hn="text"] a:visited {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+.kids { margin: 0 0 0 0.9rem; }
+.kids:empty { display: none; }
+.kids .kids .kids .kids { margin-left: 0; }
+
+code, pre { font-family: var(--mono); font-size: 0.85em; }
+code { background: var(--well); padding: 0 0.2em; overflow-wrap: anywhere; }
+pre {
+  margin: 0 0 0.85em;
+  padding: 0.6rem 0.75rem;
+  max-width: 100%;
+  background: var(--well);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+pre code { background: none; padding: 0; }
+
+footer {
+  max-width: var(--measure);
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 3rem;
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+footer p { margin: 0 0 0.75rem; }
+footer [data-hn="about"] { font-family: var(--serif); font-size: 0.95rem; line-height: 1.55; color: var(--ink); }
