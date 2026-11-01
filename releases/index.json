@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261101-110657-e547c16",
+    "runId": "20261101-103718",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 5.36,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 82,
+      "notes": "The front page reads clearly as index cards: manila fill, ink borders, red top rule, a stamp-like circle, and every card shows labelled uppercase sans fields (POINTS, BY, AGE, DOMAIN, COMMENTS) with typewriter values, and the metadata appears to be a dl structure. The palette is muted with one rubber-stamp red as the brief asked. Weaknesses: the grid's ragged card heights leave empty space in shorter cards, the thread page drops the card grammar for the nested comment view and only uses the card for the story header, and the 375px view stacks cards cleanly but makes the list long. The grid also lacks the fixed-width index-card feel at the 1280px width of the cards' content.",
+      "adherence": 84,
+      "novelty": 88,
+      "craft": 72
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 1,
+    "costUsd": 0.087,
+    "previousRelease": "20261031-101110-422c94f",
+    "diffStat": "+230 -217",
+    "candidate": 6,
+    "brief": "library catalog",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1793531217
+  },
+  {
     "id": "20261031-101110-422c94f",
     "runId": "20261031-094700",
     "specVersion": 3,

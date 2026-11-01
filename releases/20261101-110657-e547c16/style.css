@@ -1,0 +1,190 @@
+/* hn-formal v2: library catalog. Index cards with labelled fields, manila paper, one rubber-stamp red. No content: text, no url(), no @import. */
+
+:root {
+  --paper: #e8d9b5;
+  --card: #f5ecd3;
+  --ink: #1f1a14;
+  --soft: #4d4132;
+  --stamp: #9e2a1f;
+  --rule: #8c7650;
+  --visited: #5c3a2a;
+  --well: #dccb9f;
+  --label: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --typewriter: "Courier New", Courier, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  color-scheme: light;
+  font: 15px/1.45 var(--typewriter);
+  -webkit-text-size-adjust: 100%;
+}
+
+body { margin: 0; min-height: 100vh; overflow-wrap: anywhere; }
+
+a { color: var(--stamp); }
+a:visited { color: var(--visited); }
+a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+header { background: var(--card); border-bottom: 3px double var(--ink); }
+header nav {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0.6rem 0.75rem;
+  font: 700 12px/1.8 var(--label);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+header nav a { color: var(--ink); text-decoration: none; }
+header nav a:visited { color: var(--ink); }
+header nav a:hover { color: var(--stamp); text-decoration: underline; }
+
+main { max-width: 64rem; margin: 0 auto; padding: 1rem 0.75rem 2rem; }
+
+ol.stories {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr));
+}
+
+.card {
+  position: relative;
+  margin: 0;
+  min-width: 0;
+  padding: 0.85rem 0.85rem 0.75rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-top: 6px solid var(--stamp);
+  box-shadow: 3px 3px 0 var(--rule);
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  border: 2px solid var(--stamp);
+  border-radius: 50%;
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.card-title {
+  margin: 0 0 0.6rem;
+  padding-right: 2.9rem;
+  font: 700 17px/1.25 var(--label);
+  overflow-wrap: anywhere;
+}
+.card-title a { color: var(--ink); text-decoration: none; }
+.card-title a:visited { color: var(--visited); }
+.card-title a:hover { color: var(--stamp); text-decoration: underline; }
+
+.facts {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 0.3rem 0.75rem;
+  align-items: baseline;
+  margin: 0;
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--rule);
+}
+.facts dt {
+  font: 700 11px/1.6 var(--label);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--soft);
+}
+.facts dd {
+  margin: 0;
+  min-width: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.75rem;
+  overflow-wrap: anywhere;
+}
+.facts dd a { font-weight: bold; }
+
+article.card { margin: 0 0 1.25rem; }
+article.card .card-title { font-size: 19px; }
+
+[data-hn="text"] {
+  margin: 0.7rem 0 0;
+  font: 15px/1.5 Georgia, "Times New Roman", serif;
+  overflow-wrap: anywhere;
+}
+[data-hn="text"] p { margin: 0.4rem 0; }
+[data-hn="text"] a { text-decoration: underline; }
+
+ol.comments { list-style: none; margin: 0; padding: 0; }
+ol.comments > li {
+  min-width: 0;
+  margin-top: 0.6rem;
+  padding: 0.6rem 0 0;
+  border-top: 2px solid var(--ink);
+}
+
+.chead {
+  font: 11px/1.5 var(--label);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--soft);
+}
+.chead a { color: var(--soft); }
+
+ol.kids {
+  list-style: none;
+  margin: 0.4rem 0 0;
+  padding: 0 0 0 0.75rem;
+  border-left: 2px dashed var(--rule);
+}
+ol.kids ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
+ol.kids:empty { display: none; }
+
+code, pre {
+  font-family: var(--typewriter);
+  font-size: 13px;
+  background: var(--well);
+}
+code { padding: 0 0.2em; }
+pre {
+  margin: 0.4rem 0;
+  padding: 0.4rem 0.5rem;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+pre code { padding: 0; background: none; }
+
+.more {
+  padding: 1rem 0 0;
+  font: 700 13px var(--label);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.more a { color: var(--ink); }
+
+footer {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 1rem 0.75rem 2rem;
+  border-top: 3px double var(--ink);
+  font: 12px/1.6 var(--label);
+  color: var(--soft);
+  overflow-wrap: anywhere;
+}
+footer a { color: var(--ink); }
+footer p { margin: 0 0 0.5rem; font-size: 13px; }
+
+@media (min-width: 48rem) {
+  ol.stories { gap: 1.25rem; }
+  ol.kids { padding-left: 1.25rem; }
+  ol.kids ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
+}
