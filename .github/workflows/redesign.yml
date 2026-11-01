@@ -50,7 +50,7 @@ jobs:
       candidates: ${{ steps.decide.outputs.candidates }}
       rounds: ${{ steps.decide.outputs.rounds }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Kill switch
         id: kill
@@ -170,7 +170,7 @@ jobs:
       ANTHROPIC_WORKSPACE_ID: ${{ vars.ANTHROPIC_WORKSPACE_ID }}
       RUN_ID: ${{ needs.prepare.outputs.runId }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Lean toolchain and baseline build (cached .lake)
         uses: leanprover/lean-action@v1
         with:
@@ -232,7 +232,7 @@ jobs:
       RUN_ID: ${{ needs.prepare.outputs.runId }}
       GH_TOKEN: ${{ github.token }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           # The tip of main, not the commit the run was dispatched at: a run
           # queued behind another (concurrency group) starts from a stale
