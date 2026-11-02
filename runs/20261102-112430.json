@@ -1,0 +1,190 @@
+{
+  "runId": "20261102-112430",
+  "startedAt": 1793618743,
+  "finishedAt": 1793620440,
+  "candidates": 16,
+  "passedTier1": 16,
+  "passedTier2": 0,
+  "released": null,
+  "costUsd": 2.7391,
+  "calls": 159,
+  "stopReason": "no-passer",
+  "perCandidate": [
+    {
+      "n": 0,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":5.88,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50323088.html: Bad value “https://ramp.com/data/ai-index#adoption#overall” for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 3)"
+    },
+    {
+      "n": 1,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":7.09,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50323088.html: Bad value “https://ramp.com/data/ai-index#adoption#overall” for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 3)"
+    },
+    {
+      "n": 2,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":4.98,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50323088.html: Bad value “https://ramp.com/data/ai-index#adoption#overall” for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 3)"
+    },
+    {
+      "n": 3,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":6.65,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50323088.html: Bad value “https://ramp.com/data/ai-index#adoption#overall” for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 3)"
+    },
+    {
+      "n": 4,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":6.76,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50323088.html: Bad value “https://ramp.com/data/ai-index#adoption#overall” for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 3)"
+    },
+    {
+      "n": 5,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":5.98,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50323088.html: Bad value “https://ramp.com/data/ai-index#adoption#overall” for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 3)"
+    },
+    {
+      "n": 6,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":6.67,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50323088.html: Bad value “https://ramp.com/data/ai-index#adoption#overall” for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 3)"
+    },
+    {
+      "n": 7,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":5.02,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50323088.html: Bad value “https://ramp.com/data/ai-index#adoption#overall” for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 3)"
+    },
+    {
+      "n": 8,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":5.14,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50323088.html: Bad value “https://ramp.com/data/ai-index#adoption#overall” for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 3)"
+    },
+    {
+      "n": 9,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":6.42,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50323088.html: Bad value “https://ramp.com/data/ai-index#adoption#overall” for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 3)"
+    },
+    {
+      "n": 10,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":7.39,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50323088.html: Bad value “https://ramp.com/data/ai-index#adoption#overall” for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 3)"
+    },
+    {
+      "n": 11,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":9.99,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50323088.html: Bad value “https://ramp.com/data/ai-index#adoption#overall” for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 3)"
+    },
+    {
+      "n": 12,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":7.88,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50323088.html: Bad value “https://ramp.com/data/ai-index#adoption#overall” for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 3)"
+    },
+    {
+      "n": 13,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":9.4,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50323088.html: Bad value “https://ramp.com/data/ai-index#adoption#overall” for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 3)"
+    },
+    {
+      "n": 14,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":9.69,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50323088.html: Bad value “https://ramp.com/data/ai-index#adoption#overall” for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 3)"
+    },
+    {
+      "n": 15,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":7.45,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50323088.html: Bad value “https://ramp.com/data/ai-index#adoption#overall” for attribute “href” on element “a”: Illegal character in fragment. “#” is not allowed. (line 3)"
+    }
+  ]
+}
