@@ -1,0 +1,38 @@
+{
+  "id": "20261103-112116-17e4038",
+  "runId": "20261103-110024",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 5.52,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 77,
+    "notes": "The front page delivers a clear vertical spine with dot nodes, and ages sit on the left of the spine as the most prominent metadata in green, matching the brief's emphasis. Titles branch off the spine with metadata beneath, and the thread page uses nested spines with smaller nodes for comments, as requested. The 375px view keeps the spine and age column intact without overflow, though long titles wrap heavily in the narrow column. The brief's requirement that each age be a time element cannot be verified from screenshots, and the thread page's nested depth is only lightly differentiated by indentation.",
+    "adherence": 80,
+    "novelty": 78,
+    "craft": 72
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 2,
+  "costUsd": 0.1034,
+  "previousRelease": "20261101-110657-e547c16",
+  "diffStat": "+209 -198",
+  "candidate": 9,
+  "brief": "timeline",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1793704876
+}
