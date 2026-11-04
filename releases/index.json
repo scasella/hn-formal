@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261104-112555-9cbf6c4",
+    "runId": "20261104-110744",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 6.73,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 80,
+      "notes": "The front page delivers a genuine card grid: four across at 1280px, one column at 375px, with titles as bold headings, domain tags as small pills, and metadata along the bottom of each card, which matches the brief closely. The thread page nests comments as bordered cards with visible left indents, as requested. Titles are clearly dominant and the mint domain tags are restrained, though some cards have uneven heights leaving gaps under short titles, and the 375px view uses a single long column with the card metadata wrapping awkwardly. The header nav pills are a nice touch but the brief's structural requirements of article/h2 elements cannot be confirmed visually.",
+      "adherence": 84,
+      "novelty": 82,
+      "craft": 72
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 0,
+    "costUsd": 0.0422,
+    "previousRelease": "20261103-112116-17e4038",
+    "diffStat": "+276 -207",
+    "candidate": 1,
+    "brief": "cards on a grid",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1793791555
+  },
+  {
     "id": "20261103-112116-17e4038",
     "runId": "20261103-110024",
     "specVersion": 3,

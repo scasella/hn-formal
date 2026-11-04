@@ -1,202 +1,256 @@
-:root {
-  --bg: #f3f1ea;
-  --bg-code: #e6e3d7;
-  --text: #171717;
-  --muted: #55554d;
-  --link: #8a3200;
-  --visited: #5b3d7a;
-  --accent: #1f6f2a;
-  --rule: #a9a897;
-}
+/* hn-formal v2: story cards on a responsive grid, nested comment cards.
+   Sans-serif type, solid colours only, no images, no external origins. */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #101210;
-    --bg-code: #1d221d;
-    --text: #dce5d8;
-    --muted: #9aa897;
-    --link: #f0b27a;
-    --visited: #c9aee3;
-    --accent: #7fd18b;
-    --rule: #3c463b;
-  }
+:root {
+  --page: #eef1f5;
+  --card: #ffffff;
+  --card-nested: #f8fafc;
+  --ink: #111827;
+  --muted: #4b5563;
+  --link: #1e40af;
+  --link-hover: #1e3a8a;
+  --rule: #d1d9e3;
+  --brand: #0f172a;
+  --tag-bg: #ccfbf1;
+  --tag-ink: #115e59;
+  --code-bg: #f1f5f9;
 }
 
 * { box-sizing: border-box; }
 
 html {
-  background: var(--bg);
-  color: var(--text);
-  font: 14px/1.4 ui-monospace, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+  background: var(--page);
+  color: var(--ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
   -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--bg);
+  background: var(--page);
   overflow-wrap: anywhere;
 }
 
-a { color: var(--link); text-decoration: underline; }
-a:visited { color: var(--visited); }
-a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-header { border-bottom: 3px double var(--text); }
-header nav { max-width: 56rem; margin: 0 auto; padding: 0.5rem 0.75rem; }
-header nav a { color: var(--text); font-weight: bold; text-decoration: none; }
-header nav a:visited { color: var(--text); }
-header nav a:hover { text-decoration: underline; }
-
-main { max-width: 56rem; margin: 0 auto; padding: 1rem 0.75rem 1.5rem; }
-
-ol.timeline, ol.comments, ol.kids { list-style: none; margin: 0; padding: 0; }
-
-/* The spine: each story is a grid of stamp, rail and branch. */
-ol.timeline > li {
-  position: relative;
-  display: grid;
-  grid-template-columns: 6rem 1.5rem minmax(0, 1fr);
+a {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
 }
-ol.timeline > li::before {
-  content: "";
-  grid-column: 2;
-  grid-row: 1;
-  justify-self: center;
-  width: 2px;
-  background: var(--rule);
-}
-ol.timeline > li::after {
-  content: "";
-  grid-column: 2;
-  grid-row: 1;
-  justify-self: center;
-  align-self: start;
-  margin-top: 0.45rem;
-  width: 0.7rem;
-  height: 0.7rem;
-  border-radius: 50%;
-  background: var(--accent);
-  box-shadow: 0 0 0 3px var(--bg);
-}
-ol.timeline > li > .when {
-  grid-column: 1;
-  grid-row: 1;
-  padding: 0 0.6rem 1.1rem 0;
-  text-align: right;
-}
-ol.timeline > li > .branch {
-  grid-column: 3;
-  grid-row: 1;
-  min-width: 0;
-  padding-bottom: 1.1rem;
-}
+a:visited { color: var(--link); }
+a:hover { color: var(--link-hover); }
+a:focus-visible { outline: 3px solid var(--link); outline-offset: 2px; }
 
-/* The age is the loudest metadata: the stamp on the spine. */
-time[data-hn="age"] {
-  display: block;
-  color: var(--accent);
-  font-weight: bold;
-  font-size: 15px;
-  line-height: 1.2;
+header {
+  background: var(--brand);
+  color: #f8fafc;
+}
+header .brand {
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: 0.8rem 1rem 0.3rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+header .brand a,
+header .brand a:visited { color: #ffffff; }
+header .brand a:hover { color: #bfdbfe; }
+header nav {
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: 0.4rem 1rem 0.9rem;
+}
+header nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+header nav a,
+header nav a:visited {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: #1e293b;
+  color: #e2e8f0;
+  font-size: 0.85rem;
+}
+header nav a:hover { background: #334155; color: #ffffff; }
+header a:focus-visible { outline-color: #bfdbfe; }
+
+main {
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 2rem;
 }
 
-.titleline { overflow-wrap: anywhere; }
-a[data-hn="title"] { color: var(--text); font-size: 16px; font-weight: bold; text-decoration: none; }
-a[data-hn="title"]:visited { color: var(--visited); }
-a[data-hn="title"]:hover { text-decoration: underline; }
-[data-hn="domain"] { color: var(--muted); font-size: 12px; }
-
-.subline { margin-top: 0.2rem; color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
-.subline a, .subline a:visited { color: var(--muted); text-decoration: none; }
-.subline a:hover { text-decoration: underline; }
-
-.more { padding: 0.75rem 0 0 6.75rem; font-weight: bold; }
-.more a { text-decoration: none; }
-.more a:hover { text-decoration: underline; }
-
-/* Thread page: the story is the root node of the spine. */
+/* Story cards: one article card style on the front page and the thread page. */
 article[data-hn-story] {
-  display: grid;
-  grid-template-columns: 6rem minmax(0, 1fr);
-  margin-bottom: 1.25rem;
-  padding-bottom: 1rem;
-  border-bottom: 3px double var(--text);
-}
-article[data-hn-story] > .when {
-  grid-column: 1;
-  grid-row: 1;
-  padding: 0 0.6rem 0 0;
-  text-align: right;
-}
-article[data-hn-story] > .branch {
-  grid-column: 2;
-  grid-row: 1;
   min-width: 0;
-  padding-left: 1rem;
-  border-left: 2px solid var(--accent);
+  padding: 1rem 1.05rem 0.75rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 6px 16px rgba(15, 23, 42, 0.06);
 }
-article[data-hn-story] a[data-hn="title"] { font-size: 19px; }
+article[data-hn-story] h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+article[data-hn-story] h2 a,
+article[data-hn-story] h2 a:visited { color: var(--ink); }
+article[data-hn-story] h2 a:hover { color: var(--link); }
 
-[data-hn="text"] { margin: 0.3rem 0; overflow-wrap: anywhere; }
-[data-hn="text"] p { margin: 0.4rem 0; }
-[data-hn="text"] p:first-child { margin-top: 0; }
+[data-hn="domain"] {
+  display: inline-block;
+  margin-left: 0.35rem;
+  padding: 0 0.45rem;
+  border-radius: 999px;
+  background: var(--tag-bg);
+  color: var(--tag-ink);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.6;
+  vertical-align: middle;
+}
+
+.subline {
+  margin-top: auto;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.subline a { color: var(--link); }
+[data-hn="score"] { font-weight: 800; color: var(--ink); }
+[data-hn="age"] { color: var(--muted); }
+
+/* Front page: a responsive grid of cards, 4 across on wide screens, 1 on phones. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: 1rem;
+}
+.grid > article[data-hn-story] {
+  display: flex;
+  flex-direction: column;
+}
+
+.more {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+.more a,
+.more a:visited {
+  display: inline-block;
+  padding: 0.55rem 1.2rem;
+  border-radius: 999px;
+  background: var(--link);
+  color: #ffffff;
+  font-weight: 700;
+}
+.more a:hover { background: var(--link-hover); color: #ffffff; }
+
+/* Thread page: one wide story card, then the comment cards. */
+main > article[data-hn-story] {
+  margin-bottom: 1.25rem;
+  padding: 1.25rem 1.3rem 1rem;
+}
+main > article[data-hn-story] h2 {
+  font-size: 1.4rem;
+  margin-bottom: 0.6rem;
+}
+main > article[data-hn-story] .subline { margin-top: 0; }
+
+[data-hn="text"] {
+  margin-top: 0.75rem;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+[data-hn="text"] p { margin: 0.5rem 0; }
+[data-hn="text"] a { color: var(--link); text-decoration: underline; }
+
+ol.comments,
+ol.kids {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+ol.comments {
+  margin-top: 1.25rem;
+  display: grid;
+  gap: 0.75rem;
+}
+ol.comments > li,
+ol.kids > li {
+  min-width: 0;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 0.7rem 0.85rem 0.6rem;
+}
+
+/* Replies: nested cards with a visible guide, indent capped at three levels. */
+ol.kids {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+  padding-left: 0.7rem;
+  border-left: 3px solid var(--rule);
+}
+ol.kids > li { background: var(--card-nested); }
+ol.kids ol.kids ol.kids ol.kids {
+  padding-left: 0;
+  border-left-width: 0;
+}
+
+.chead {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.chead a,
+.chead a:visited { color: var(--ink); font-weight: 700; }
 
 code, pre {
-  font-family: inherit;
-  font-size: 12px;
-  background: var(--bg-code);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.82rem;
 }
-code { padding: 0 0.25em; }
+code {
+  padding: 0 0.25em;
+  border-radius: 4px;
+  background: var(--code-bg);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
 pre {
-  margin: 0.4rem 0;
-  padding: 0.4rem 0.6rem;
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.6rem;
   max-width: 100%;
+  border-radius: 6px;
+  background: var(--code-bg);
+  color: var(--ink);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 pre code { padding: 0; background: none; }
 
-/* Comments: nodes on nested spines. Depth is capped so deep threads fit 375px. */
-ol.comments { margin-top: 0.5rem; }
-li[data-hn-comment] {
-  position: relative;
-  margin-top: 0.4rem;
-  padding-left: 1rem;
-  border-left: 1px solid var(--rule);
-}
-li[data-hn-comment]::before {
-  content: "";
-  position: absolute;
-  left: -4px;
-  top: 0.75rem;
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--muted);
-}
-li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] {
-  padding-left: 0;
-  border-left: 0;
-}
-li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment]::before {
-  display: none;
-}
-
-.chead { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
-.chead a { color: var(--muted); text-decoration: none; }
-.chead a:hover { text-decoration: underline; }
-.chead time[data-hn="age"] { display: inline; font-size: 12px; }
-ol.kids { margin-top: 0.3rem; }
-ol.kids:empty { display: none; }
-
 footer {
-  max-width: 56rem;
-  margin: 0 auto;
-  padding: 0.75rem;
-  border-top: 1px dashed var(--rule);
-  color: var(--muted);
-  font-size: 12px;
+  background: #e2e8f0;
+  color: #334155;
+  font-size: 0.85rem;
+  padding: 1.25rem max(1rem, calc(50% - 38rem)) 1.5rem;
   overflow-wrap: anywhere;
 }
-footer p { margin: 0 0 0.4rem; }
+footer a { color: var(--link); }

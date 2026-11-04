@@ -1,0 +1,256 @@
+/* hn-formal v2: story cards on a responsive grid, nested comment cards.
+   Sans-serif type, solid colours only, no images, no external origins. */
+
+:root {
+  --page: #eef1f5;
+  --card: #ffffff;
+  --card-nested: #f8fafc;
+  --ink: #111827;
+  --muted: #4b5563;
+  --link: #1e40af;
+  --link-hover: #1e3a8a;
+  --rule: #d1d9e3;
+  --brand: #0f172a;
+  --tag-bg: #ccfbf1;
+  --tag-ink: #115e59;
+  --code-bg: #f1f5f9;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--page);
+  color: var(--ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--page);
+  overflow-wrap: anywhere;
+}
+
+a {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+a:visited { color: var(--link); }
+a:hover { color: var(--link-hover); }
+a:focus-visible { outline: 3px solid var(--link); outline-offset: 2px; }
+
+header {
+  background: var(--brand);
+  color: #f8fafc;
+}
+header .brand {
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: 0.8rem 1rem 0.3rem;
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+header .brand a,
+header .brand a:visited { color: #ffffff; }
+header .brand a:hover { color: #bfdbfe; }
+header nav {
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: 0.4rem 1rem 0.9rem;
+}
+header nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+header nav a,
+header nav a:visited {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border-radius: 999px;
+  background: #1e293b;
+  color: #e2e8f0;
+  font-size: 0.85rem;
+}
+header nav a:hover { background: #334155; color: #ffffff; }
+header a:focus-visible { outline-color: #bfdbfe; }
+
+main {
+  max-width: 78rem;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 2rem;
+}
+
+/* Story cards: one article card style on the front page and the thread page. */
+article[data-hn-story] {
+  min-width: 0;
+  padding: 1rem 1.05rem 0.75rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 6px 16px rgba(15, 23, 42, 0.06);
+}
+article[data-hn-story] h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+article[data-hn-story] h2 a,
+article[data-hn-story] h2 a:visited { color: var(--ink); }
+article[data-hn-story] h2 a:hover { color: var(--link); }
+
+[data-hn="domain"] {
+  display: inline-block;
+  margin-left: 0.35rem;
+  padding: 0 0.45rem;
+  border-radius: 999px;
+  background: var(--tag-bg);
+  color: var(--tag-ink);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.6;
+  vertical-align: middle;
+}
+
+.subline {
+  margin-top: auto;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.subline a { color: var(--link); }
+[data-hn="score"] { font-weight: 800; color: var(--ink); }
+[data-hn="age"] { color: var(--muted); }
+
+/* Front page: a responsive grid of cards, 4 across on wide screens, 1 on phones. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: 1rem;
+}
+.grid > article[data-hn-story] {
+  display: flex;
+  flex-direction: column;
+}
+
+.more {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+.more a,
+.more a:visited {
+  display: inline-block;
+  padding: 0.55rem 1.2rem;
+  border-radius: 999px;
+  background: var(--link);
+  color: #ffffff;
+  font-weight: 700;
+}
+.more a:hover { background: var(--link-hover); color: #ffffff; }
+
+/* Thread page: one wide story card, then the comment cards. */
+main > article[data-hn-story] {
+  margin-bottom: 1.25rem;
+  padding: 1.25rem 1.3rem 1rem;
+}
+main > article[data-hn-story] h2 {
+  font-size: 1.4rem;
+  margin-bottom: 0.6rem;
+}
+main > article[data-hn-story] .subline { margin-top: 0; }
+
+[data-hn="text"] {
+  margin-top: 0.75rem;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+[data-hn="text"] p { margin: 0.5rem 0; }
+[data-hn="text"] a { color: var(--link); text-decoration: underline; }
+
+ol.comments,
+ol.kids {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+ol.comments {
+  margin-top: 1.25rem;
+  display: grid;
+  gap: 0.75rem;
+}
+ol.comments > li,
+ol.kids > li {
+  min-width: 0;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  padding: 0.7rem 0.85rem 0.6rem;
+}
+
+/* Replies: nested cards with a visible guide, indent capped at three levels. */
+ol.kids {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+  padding-left: 0.7rem;
+  border-left: 3px solid var(--rule);
+}
+ol.kids > li { background: var(--card-nested); }
+ol.kids ol.kids ol.kids ol.kids {
+  padding-left: 0;
+  border-left-width: 0;
+}
+
+.chead {
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.chead a,
+.chead a:visited { color: var(--ink); font-weight: 700; }
+
+code, pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.82rem;
+}
+code {
+  padding: 0 0.25em;
+  border-radius: 4px;
+  background: var(--code-bg);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+pre {
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.6rem;
+  max-width: 100%;
+  border-radius: 6px;
+  background: var(--code-bg);
+  color: var(--ink);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+pre code { padding: 0; background: none; }
+
+footer {
+  background: #e2e8f0;
+  color: #334155;
+  font-size: 0.85rem;
+  padding: 1.25rem max(1rem, calc(50% - 38rem)) 1.5rem;
+  overflow-wrap: anywhere;
+}
+footer a { color: var(--link); }
