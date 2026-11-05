@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261105-112708-82ec073",
+    "runId": "20261105-110836",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 6.63,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 80,
+      "notes": "The candidate closely follows the warm paper brief: cream ground, dark brown ink, a serif title face, small-caps metadata running under each title, and a book-measure column with no gutter numbering. The front page reads as prose entries rather than cards, a genuinely different shape from the live site. The thread page nests comments with left rules and indentation, which makes depth visible, though the text is somewhat dense. I cannot verify from screenshots that each story is an article element or that no ol/ul sits in main, and the brief's broadside character is only partly realized, since the page feels more like a clean book page than a bold printed sheet.",
+      "adherence": 85,
+      "novelty": 80,
+      "craft": 74
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 1,
+    "costUsd": 0.086,
+    "previousRelease": "20261104-112555-9cbf6c4",
+    "diffStat": "+54 -302",
+    "candidate": 12,
+    "brief": "warm paper",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1793878028
+  },
+  {
     "id": "20261104-112555-9cbf6c4",
     "runId": "20261104-110744",
     "specVersion": 3,
