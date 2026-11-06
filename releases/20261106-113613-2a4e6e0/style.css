@@ -1,0 +1,149 @@
+/* hn-formal v2: library catalog. Index cards on a manila drawer, ink type, one rubber-stamp red. No url(), no @import, no text in content. */
+:root {
+  --page: #e6dcc0;
+  --card: #efe3c4;
+  --ink: #1d1b17;
+  --muted: #5a4e36;
+  --stamp: #9b1d14;
+  --rule: #8c7a55;
+  --mono: ui-monospace, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+  --sans: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--page);
+  color: var(--ink);
+  font: 14px/1.4 var(--mono);
+  -webkit-text-size-adjust: 100%;
+}
+
+body { margin: 0; min-height: 100vh; background: var(--page); overflow-wrap: anywhere; }
+body > * { max-width: 100%; }
+
+a { color: var(--ink); text-decoration: underline; text-underline-offset: 0.2em; }
+a:visited { color: var(--ink); }
+a:focus-visible { outline: 2px solid var(--stamp); outline-offset: 2px; }
+
+header { background: var(--ink); color: var(--card); border-bottom: 4px double var(--rule); }
+header nav { max-width: 64rem; margin: 0 auto; padding: 0.55rem 0.75rem; font-family: var(--sans); font-size: 0.85rem; }
+header a, header a:visited { color: var(--card); font-weight: bold; }
+
+main { max-width: 64rem; margin: 0 auto; padding: 1rem 0.75rem 2rem; }
+
+ol.stories {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+ol.stories > li {
+  min-width: 0;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-top: 6px solid var(--ink);
+  box-shadow: 3px 3px 0 var(--rule);
+  padding: 0.7rem 0.8rem 0.6rem;
+}
+
+.titleline {
+  font-family: var(--sans);
+  font-size: 1.05rem;
+  font-weight: bold;
+  line-height: 1.25;
+  margin-bottom: 0.6rem;
+  overflow-wrap: anywhere;
+}
+a[data-hn="title"] { color: var(--ink); text-decoration-thickness: 1px; }
+
+dl.fields {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  gap: 0.35rem 0.7rem;
+  align-items: baseline;
+  margin: 0;
+}
+dl.fields dt {
+  font-family: var(--sans);
+  font-size: 0.66rem;
+  font-weight: bold;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+dl.fields dd { margin: 0; min-width: 0; overflow-wrap: anywhere; }
+dl.fields dd span[data-hn="score"] {
+  display: inline-block;
+  padding: 0 0.45rem;
+  border: 2px solid var(--stamp);
+  color: var(--stamp);
+  font-weight: bold;
+  transform: rotate(-3deg);
+}
+dl.fields dd span[data-hn="age"] { font-style: italic; }
+dl.fields dd a { color: var(--ink); }
+
+article[data-hn-story] {
+  min-width: 0;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-top: 6px solid var(--stamp);
+  box-shadow: 4px 4px 0 var(--rule);
+  padding: 0.9rem 1rem;
+  margin-bottom: 1.25rem;
+}
+article[data-hn-story] .titleline { font-size: 1.25rem; }
+article[data-hn-story] dl.fields { margin-bottom: 0.4rem; }
+
+[data-hn="text"] { overflow-wrap: anywhere; margin: 0.3rem 0; }
+[data-hn="text"] p { margin: 0.45rem 0; }
+[data-hn="text"] a { color: var(--ink); text-decoration: underline; }
+
+code, pre { font-family: var(--mono); font-size: 0.85em; background: var(--page); }
+code { padding: 0 0.2em; }
+pre {
+  margin: 0.4rem 0;
+  padding: 0.4rem 0.5rem;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  border-left: 3px solid var(--rule);
+}
+pre code { padding: 0; background: none; }
+
+ol.comments { display: grid; gap: 0.8rem; list-style: none; margin: 0; padding: 0; }
+ol.comments > li {
+  min-width: 0;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  padding: 0.5rem 0.65rem;
+}
+ol.kids { list-style: none; margin: 0.5rem 0 0; padding: 0 0 0 0.6rem; border-left: 3px solid var(--rule); }
+ol.kids:empty { display: none; }
+ol.kids li[data-hn-comment] { min-width: 0; padding: 0.4rem 0 0; }
+ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
+
+.chead {
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 0.3rem;
+  overflow-wrap: anywhere;
+}
+.chead a { color: var(--ink); }
+
+.more { margin-top: 1.25rem; font-family: var(--sans); font-weight: bold; }
+
+footer {
+  background: var(--ink);
+  color: var(--card);
+  font-family: var(--sans);
+  font-size: 0.8rem;
+  padding: 0.9rem 0.75rem 1.2rem;
+  overflow-wrap: anywhere;
+}
+footer a { color: var(--card); }
+footer p { margin: 0 0 0.5rem; max-width: 64rem; }

@@ -1,0 +1,38 @@
+{
+  "id": "20261106-113613-2a4e6e0",
+  "runId": "20261106-110541",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 6.38,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 75,
+    "notes": "The front page reads as index cards: bordered cards in a three-column grid with uppercase sans labels (POINTS, BY, AGE, DOMAIN, COMMENTS), typewriter values, and red rubber-stamp points badges, so the brief is recognizable at a glance. The metadata is visually a label/value grid, but the brief's required dt/dd structure is not evident from the render and cannot be verified. The 375px view stacks cards cleanly, though the thread page drops the card treatment for plain bordered comment blocks, and the palette shifts toward a bright cream rather than a clearly manila-and-ink institutional tone. Cards are dense and scannable, though the title type is small relative to the card area.",
+    "adherence": 80,
+    "novelty": 78,
+    "craft": 66
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 1,
+  "costUsd": 0.0875,
+  "previousRelease": "20261105-112708-82ec073",
+  "diffStat": "+229 -88",
+  "candidate": 1,
+  "brief": "library catalog",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1793964973
+}
