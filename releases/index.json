@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261107-104128-600b8f6",
+    "runId": "20261107-102439",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 6.33,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 71,
+      "notes": "The candidate reads convincingly as a dense monospace terminal: one story per line, a numbered gutter, prompt-like parentheses, and a single face throughout, with a dark palette and nested thread indentation. However, the fields are not in fixed columns, since points, author, and age float with the title length, and the 375px view wraps each story across four or more lines. The title is bold and the metadata is dimmed, so hierarchy holds, but the prompt markers are minimal and the code-element requirement is only partly evident in the rendered output.",
+      "adherence": 80,
+      "novelty": 62,
+      "craft": 68
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 1,
+    "costUsd": 0.0769,
+    "previousRelease": "20261106-113613-2a4e6e0",
+    "diffStat": "+95 -211",
+    "candidate": 6,
+    "brief": "dense monospace terminal",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1794048088
+  },
+  {
     "id": "20261106-113613-2a4e6e0",
     "runId": "20261106-110541",
     "specVersion": 3,
