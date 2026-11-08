@@ -1,0 +1,173 @@
+/* hn-formal v2: spreadsheet. A bordered grid with a sticky header row; numbers right-aligned. */
+
+:root {
+  --paper: #fbfbf8;
+  --ink: #1d2328;
+  --mute: #5a6168;
+  --rule: #d5d9de;
+  --head: #eef1f4;
+  --link: #1a4f9c;
+  --visit: #5a3f8a;
+  --hi: #fff4c2;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #15181c;
+    --ink: #e6e9ec;
+    --mute: #a7b0b9;
+    --rule: #353c44;
+    --head: #1f252b;
+    --link: #8ab4f8;
+    --visit: #c3a6ec;
+    --hi: #2e2a14;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  font: 13px/1.4 system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-variant-numeric: tabular-nums;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  overflow-wrap: anywhere;
+}
+
+a { color: var(--link); text-decoration: underline; }
+a:visited { color: var(--visit); }
+a:focus-visible { outline: 2px solid var(--link); outline-offset: 1px; }
+
+header {
+  background: var(--head);
+  border-bottom: 1px solid var(--rule);
+}
+header nav {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0.4rem 0.5rem;
+}
+header nav a { color: var(--ink); font-weight: 600; }
+header nav a:visited { color: var(--ink); }
+
+main {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0.5rem 0.5rem 1rem;
+}
+
+/* The front page grid. */
+table.grid {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--paper);
+}
+table.grid th,
+table.grid td {
+  border: 1px solid var(--rule);
+  padding: 0.3rem 0.4rem;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+table.grid td { font-size: 12px; }
+table.grid thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--head);
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-bottom: 2px solid var(--ink);
+}
+table.grid th:nth-child(3), table.grid td:nth-child(3),
+table.grid th:nth-child(5), table.grid td:nth-child(5),
+table.grid th:nth-child(6), table.grid td:nth-child(6) {
+  text-align: right;
+}
+table.grid td:first-child a {
+  color: var(--ink);
+  font-weight: 700;
+}
+table.grid td:first-child a:visited { color: var(--visit); }
+table.grid tbody tr:first-child td { background: var(--hi); }
+table.grid tbody tr:hover td { background: var(--head); }
+
+.more { padding: 0.5rem 0; }
+.more a { font-weight: 700; }
+
+/* Thread page: the story as a boxed header, comments as an indented list. */
+article[data-hn-story] {
+  border: 1px solid var(--rule);
+  background: var(--head);
+  padding: 0.6rem 0.7rem;
+  margin-bottom: 0.75rem;
+}
+article[data-hn-story] a[data-hn="title"] {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.titleline { display: block; }
+.subline, .chead { color: var(--mute); font-size: 12px; }
+.subline a, .chead a { color: var(--mute); }
+
+[data-hn="text"] { margin: 0.4rem 0; }
+[data-hn="text"] p { margin: 0.35rem 0; }
+
+code, pre {
+  font-family: ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 12px;
+  background: var(--head);
+}
+code { padding: 0 0.2em; }
+pre {
+  padding: 0.4rem;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+ol.comments, ol.kids {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+ol.comments > li {
+  border-top: 1px solid var(--rule);
+  padding: 0.4rem 0;
+}
+ol.kids {
+  margin-top: 0.3rem;
+  padding-left: 0.6rem;
+  border-left: 2px solid var(--rule);
+}
+ol.kids ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
+ol.kids:empty { display: none; }
+
+footer {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0.6rem 0.5rem;
+  border-top: 1px solid var(--rule);
+  color: var(--mute);
+  font-size: 12px;
+}
+
+@media (min-width: 48rem) {
+  html { font-size: 13px; }
+  main { padding: 1rem; }
+  table.grid th, table.grid td { padding: 0.4rem 0.6rem; }
+  table.grid td { font-size: 13px; }
+  table.grid thead th { font-size: 11px; }
+}

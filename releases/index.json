@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261108-104907-45ef52a",
+    "runId": "20261108-103238",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 5.54,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 78,
+      "notes": "The front page reads as a true spreadsheet: a bordered table with uppercase column headers for title, domain, score, author, age and comments, right-aligned numerals, and a single yellow highlight on the lead row, which matches the brief closely. Weaknesses: the font is proportional rather than monospace or tabular-figure throughout, and the narrow columns at 375px wrap titles into one-word-per-line ribbons, so the mobile view is hard to scan. The frozen header and thin grid are only partly realized, and the thread page is not in table form, so the spreadsheet grammar does not carry over to it.",
+      "adherence": 80,
+      "novelty": 85,
+      "craft": 68
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 1,
+    "costUsd": 0.0902,
+    "previousRelease": "20261107-104128-600b8f6",
+    "diffStat": "+226 -76",
+    "candidate": 15,
+    "brief": "spreadsheet",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1794134947
+  },
+  {
     "id": "20261107-104128-600b8f6",
     "runId": "20261107-102439",
     "specVersion": 3,
