@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261109-120530-3797f95",
+    "runId": "20261109-114634",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 8.78,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 74,
+      "notes": "The front page realizes the vertical timeline well: a continuous spine with orange dots, ages large and right-aligned on the left, and titles branching right, so the brief is recognizable at a glance. The thread page shows the story as a spine node, but comments are rendered as indented quoted blocks with left rules rather than clearly nested spine nodes, so the comment-timeline part of the brief is only partly met. At 375px the ages wrap awkwardly into narrow columns (e.g. '1 hour ago' split over three lines), and the metadata lines wrap heavily, though nothing overflows. Ages are visibly the most prominent metadata, as requested.",
+      "adherence": 80,
+      "novelty": 72,
+      "craft": 68
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 1,
+    "costUsd": 0.1053,
+    "previousRelease": "20261108-104907-45ef52a",
+    "diffStat": "+200 -209",
+    "candidate": 3,
+    "brief": "timeline",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1794225930
+  },
+  {
     "id": "20261108-104907-45ef52a",
     "runId": "20261108-103238",
     "specVersion": 3,

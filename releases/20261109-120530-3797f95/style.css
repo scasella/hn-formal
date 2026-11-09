@@ -1,0 +1,154 @@
+:root {
+  --bg: #0b1d2a;
+  --panel: #12293a;
+  --text: #f3ead8;
+  --muted: #a9bccb;
+  --amber: #ffb84d;
+  --link: #ffd8a0;
+  --visited: #d7bfff;
+  --spine: #3d5a70;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  overflow-wrap: anywhere;
+}
+
+a { color: var(--link); text-decoration: none; }
+a:visited { color: var(--visited); }
+a:hover { text-decoration: underline; }
+a:focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
+
+header { border-bottom: 1px solid var(--spine); }
+header nav { max-width: 56rem; margin: 0 auto; padding: 0.75rem 1rem; font-size: 0.9rem; }
+header nav a { color: var(--text); font-weight: 700; }
+header nav a:visited { color: var(--text); }
+
+main { max-width: 56rem; margin: 0 auto; padding: 1rem 1rem 2rem; }
+
+footer {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 1rem;
+  border-top: 1px solid var(--spine);
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+footer p { margin: 0 0 0.5rem; }
+footer a { color: var(--link); }
+
+/* Timeline: ages on a spine down the left, each story on a branch to the right. */
+ol.timeline, ol.comments, ol.kids { list-style: none; margin: 0; padding: 0; }
+ol.timeline > li, article[data-hn-story] {
+  display: grid;
+  grid-template-columns: minmax(6rem, 8rem) minmax(0, 1fr);
+  gap: 0 1.25rem;
+}
+ol.timeline > li { padding: 0; }
+.when {
+  position: relative;
+  border-right: 2px solid var(--spine);
+  padding: 0.9rem 1.1rem 1rem 0;
+  text-align: right;
+}
+.when time {
+  display: block;
+  color: var(--amber);
+  font-weight: 800;
+  font-size: 1.05rem;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+.when::after {
+  content: "";
+  position: absolute;
+  top: 1.1rem;
+  right: -6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 0 4px var(--bg);
+}
+.branch { min-width: 0; padding: 0.9rem 0 1rem; }
+
+.titleline {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 1.2rem;
+  line-height: 1.25;
+}
+a[data-hn="title"] { color: var(--text); font-weight: 700; }
+a[data-hn="title"]:visited { color: var(--visited); }
+a[data-hn="title"]:hover { color: var(--link); text-decoration: underline; }
+span[data-hn="domain"] {
+  font: 0.8rem system-ui, sans-serif;
+  color: var(--muted);
+  margin-left: 0.35rem;
+}
+
+.subline { margin-top: 0.4rem; font-size: 0.875rem; color: var(--muted); }
+.subline a { color: var(--muted); font-weight: 600; }
+.subline a:visited { color: var(--muted); }
+.subline a:hover { color: var(--text); }
+.subline span { color: var(--text); }
+
+.more { padding: 1rem 0 0 calc(8rem + 1.25rem); }
+.more a { font-weight: 700; }
+
+/* Thread page: the story is the first node of the spine. */
+article[data-hn-story] {
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--spine);
+}
+article .titleline { font-size: 1.6rem; }
+[data-hn="text"] { margin-top: 0.5rem; overflow-wrap: anywhere; font-size: 0.95rem; }
+[data-hn="text"] p { margin: 0.5rem 0; }
+[data-hn="text"] a { color: var(--link); text-decoration: underline; }
+
+/* Comments nest on their own spine. */
+ol.comments { margin-top: 0.5rem; }
+ol.comments > li { padding: 0.9rem 0 0; border-top: 1px dotted var(--spine); }
+ol.kids {
+  margin-top: 0.4rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--spine);
+}
+ol.kids ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
+.chead { font-size: 0.85rem; color: var(--muted); }
+.chead a { color: var(--text); font-weight: 700; }
+.chead time { color: var(--amber); font-weight: 700; }
+
+code, pre {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+  background: var(--panel);
+}
+code { padding: 0 0.2em; }
+pre {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+pre code { padding: 0; background: none; }
+
+@media (max-width: 30rem) {
+  ol.timeline > li, article[data-hn-story] {
+    grid-template-columns: 5rem minmax(0, 1fr);
+    gap: 0 0.9rem;
+  }
+  .more { padding-left: 0; }
+}
