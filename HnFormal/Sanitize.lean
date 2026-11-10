@@ -238,25 +238,49 @@ def tagName (cs : List Char) : List Char × List Char :=
 Validators reject characters that are not URL code points (`[`, `]`, `{`,
 `}`, `|`, `\`, `^`, `` ` ``, `"`, `<`, `>`, space, control characters) and
 stray `%`. Percent-encoding them keeps the link's meaning and makes every
-emitted href valid. Non-ASCII characters are URL code points and are kept. -/
+emitted href valid. Non-ASCII characters are URL code points and are kept.
+
+`#` is not a URL code point either: it is legal only as the single delimiter
+that starts the fragment, and the validator rejects any later `#` ("Illegal
+character in fragment"). So the first `#` stays and every later one becomes
+`%23`. A real story link (`…/ai-index#adoption#overall`) made all 16
+candidates of three redesign runs fail tier 2 on exactly this. -/
 
 def urlCodePoint (c : Char) : Bool :=
-  c.isAlphanum || "!$&'()*+,-./:;=?@_~#".toList.contains c || c.toNat ≥ 0x80
+  c.isAlphanum || "!$&'()*+,-./:;=?@_~".toList.contains c || c.toNat ≥ 0x80
 
 def hexDigit (n : Nat) : Char :=
   if n < 10 then Char.ofNat ('0'.toNat + n) else Char.ofNat ('A'.toNat + n - 10)
 
 def pct (n : Nat) : List Char := ['%', hexDigit (n / 16 % 16), hexDigit (n % 16)]
 
-def encodeHrefList : List Char → List Char
+/-- Percent-encode every non-URL-code-point (including `#`) and stray `%`. -/
+def encodeHrefChars : List Char → List Char
   | [] => []
   | '%' :: a :: b :: rest =>
-    if (hexVal a).isSome && (hexVal b).isSome then '%' :: a :: b :: encodeHrefList rest
-    else pct 37 ++ encodeHrefList (a :: b :: rest)
-  | c :: rest => (if urlCodePoint c then [c] else pct c.toNat) ++ encodeHrefList rest
+    if (hexVal a).isSome && (hexVal b).isSome then '%' :: a :: b :: encodeHrefChars rest
+    else pct 37 ++ encodeHrefChars (a :: b :: rest)
+  | c :: rest => (if urlCodePoint c then [c] else pct c.toNat) ++ encodeHrefChars rest
 termination_by cs => cs.length
 
+/-- The href encoder: `encodeHrefChars`, except that the first `#` (the
+fragment delimiter) is kept. -/
+def encodeHrefList (cs : List Char) : List Char :=
+  match cs.dropWhile (· ≠ '#') with
+  | [] => encodeHrefChars cs
+  | _ :: frag => encodeHrefChars (cs.takeWhile (· ≠ '#')) ++ '#' :: encodeHrefChars frag
+
 @[irreducible] def encodeHref (s : String) : String := String.ofList (encodeHrefList s.toList)
+
+/-! Regression checks, evaluated at build time (`lake build` fails if one is
+wrong): the real story links that broke three redesign runs, the single-`#`
+case that must stay as is, and the earlier `[`/space/`%` behaviour. -/
+#guard encodeHref "https://ramp.com/data/ai-index#adoption#overall" ==
+  "https://ramp.com/data/ai-index#adoption%23overall"
+#guard encodeHref "https://a.example/p?q=1#a#b#c" == "https://a.example/p?q=1#a%23b%23c"
+#guard encodeHref "https://a.example/p#frag" == "https://a.example/p#frag"
+#guard encodeHref "https://a.example/p" == "https://a.example/p"
+#guard encodeHref "https://a.example/a b[1]%zz#x%23y" == "https://a.example/a%20b%5B1%5D%25zz#x%23y"
 
 /-- Find `href="..."` or `href='...'` in a tag body. -/
 def findHrefF : Nat → List Char → Option String
