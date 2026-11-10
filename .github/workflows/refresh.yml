@@ -58,15 +58,9 @@ jobs:
           git -C data config user.name "github-actions[bot]"
           git -C data config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Lean toolchain and build (cached .lake)
+      - name: Lean toolchain and build (cached .lake; retries flaky downloads)
         if: steps.kill.outputs.paused != 'true'
-        uses: leanprover/lean-action@v1
-        with:
-          auto-config: false
-          build: true
-          test: false
-          lint: false
-          use-github-cache: true
+        uses: ./.github/actions/setup-lean
 
       - uses: actions/setup-node@v7
         if: steps.kill.outputs.paused != 'true'

@@ -95,7 +95,8 @@ time. Not a claim about matching HN's displayed order (it drifts).
 - Refresh: every 15 minutes, static regeneration by the compiled Lean binary.
   The proven program is exactly what produced the bytes.
 - Hosting: GitHub Actions + GitHub Pages at the default URL. Lean via
-  lean-action with `.lake` cache.
+  lean-action with `.lake` cache, wrapped in `.github/actions/setup-lean`,
+  which retries flaky toolchain downloads (never a failing build).
 - Baseline check against real HN: manual workflow only, once per spec
   version, fetched HTML committed as a timestamped fixture. Never scheduled.
 
@@ -137,6 +138,10 @@ Writing the proof forced four spec decisions that the grilling did not reach:
   the HTML validator rejects. The sanitizer and `titleHref` percent-encode
   characters that are not URL code points. The public claim is "faithful to
   the API, with hrefs percent-encoded where the URL standard requires it".
+  `#` counts too: only the first one (the fragment delimiter) is kept, later
+  ones become `%23`. A story link with two `#` failed vnu in every candidate
+  of three redesign runs (2026-10-13, 10-29, 11-02). Not fixable by encoding,
+  and so still open: a story URL whose host is invalid (`https://1234.5`).
 
 Proof engineering facts the loop depends on: `Render.lean` must start with
 `set_option maxHeartbeats 2000000` and `set_option maxRecDepth 4096`; the

@@ -1,0 +1,92 @@
+# Lean toolchain + lake build (cached .lake), with retries for flaky downloads.
+#
+# leanprover/lean-action has no retry of its own, and its first steps download
+# elan (github.com) and the toolchain (releases.lean-lang.org). Those downloads
+# fail now and then: 504s, or a truncated archive ("Unknown frame descriptor").
+# One such blip cost a whole redesign run 14 of its 16 candidates, and two
+# refresh runs their tick.
+#
+# So: up to three attempts, 60 s then 180 s apart. An attempt is retried only
+# if no working toolchain got installed (toolchain-installed.sh). If one is
+# present, lean-action got past the downloads and the failure is the build
+# itself (a proof that does not compile), which a retry cannot fix, so it fails
+# straight away.
+name: Set up Lean
+description: leanprover/lean-action (toolchain from lean-toolchain, lake build, .lake cached) with retries on download failures.
+
+runs:
+  using: composite
+  steps:
+    - name: Lean toolchain and build (attempt 1)
+      id: attempt1
+      continue-on-error: true
+      uses: leanprover/lean-action@v1
+      with:
+        auto-config: false
+        build: true
+        test: false
+        lint: false
+        use-github-cache: true
+
+    - name: Was it a download failure? (after attempt 1)
+      id: gate1
+      if: steps.attempt1.outcome == 'failure'
+      shell: bash
+      run: |
+        if "${{ github.action_path }}/toolchain-installed.sh"; then
+          echo "::error::lean-action failed after the toolchain was installed (build/test failure); not retrying"
+          echo "retry=false" >> "$GITHUB_OUTPUT"
+        else
+          echo "::warning::Lean toolchain install failed (attempt 1); retrying in 60 s"
+          # Drop any half-extracted toolchain and elan's temp downloads.
+          rm -rf "$HOME/.elan/tmp" "$HOME/.elan/toolchains"
+          echo "retry=true" >> "$GITHUB_OUTPUT"
+          sleep 60
+        fi
+
+    - name: Lean toolchain and build (attempt 2)
+      id: attempt2
+      if: steps.gate1.outputs.retry == 'true'
+      continue-on-error: true
+      uses: leanprover/lean-action@v1
+      with:
+        auto-config: false
+        build: true
+        test: false
+        lint: false
+        use-github-cache: true
+
+    - name: Was it a download failure? (after attempt 2)
+      id: gate2
+      if: steps.attempt2.outcome == 'failure'
+      shell: bash
+      run: |
+        if "${{ github.action_path }}/toolchain-installed.sh"; then
+          echo "::error::lean-action failed after the toolchain was installed (build/test failure); not retrying"
+          echo "retry=false" >> "$GITHUB_OUTPUT"
+        else
+          echo "::warning::Lean toolchain install failed (attempt 2); retrying in 180 s"
+          rm -rf "$HOME/.elan/tmp" "$HOME/.elan/toolchains"
+          echo "retry=true" >> "$GITHUB_OUTPUT"
+          sleep 180
+        fi
+
+    - name: Lean toolchain and build (attempt 3)
+      id: attempt3
+      if: steps.gate2.outputs.retry == 'true'
+      uses: leanprover/lean-action@v1
+      with:
+        auto-config: false
+        build: true
+        test: false
+        lint: false
+        use-github-cache: true
+
+    # attempt 1 or 2 failed with continue-on-error, so the composite would
+    # otherwise report success. Fail it unless some attempt succeeded.
+    - name: Fail unless an attempt succeeded
+      if: steps.attempt1.outcome != 'success' && steps.attempt2.outcome != 'success' && steps.attempt3.outcome != 'success'
+      shell: bash
+      run: |
+        echo "::error::Lean toolchain/build did not succeed (attempt outcomes: 1=${{ steps.attempt1.outcome }} 2=${{ steps.attempt2.outcome }} 3=${{ steps.attempt3.outcome }})"
+        exit 1
