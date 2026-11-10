@@ -27,7 +27,7 @@ jobs:
     outputs:
       paused: ${{ steps.kill.outputs.paused }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Kill switch
         id: kill
