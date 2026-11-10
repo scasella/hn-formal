@@ -36,7 +36,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       UA: 'hn-formal-baseline/1.0 (+https://github.com/scasella/hn-formal; one manual fetch per spec version; contact via repo issues)'
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Kill switch
         id: kill
