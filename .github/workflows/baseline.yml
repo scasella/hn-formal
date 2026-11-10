@@ -88,15 +88,12 @@ jobs:
             > "$dir/meta.json"
           find "$dir" -type f | sort | head -50
 
-      - name: Lean toolchain and build (cached .lake)
+      # Retries flaky toolchain downloads in-job: this step runs after the HN
+      # HTML fetch above, and a failed run would otherwise mean re-dispatching
+      # (and re-fetching news.ycombinator.com) by hand.
+      - name: Lean toolchain and build (cached .lake; retries flaky downloads)
         if: steps.kill.outputs.paused != 'true'
-        uses: leanprover/lean-action@v1
-        with:
-          auto-config: false
-          build: true
-          test: false
-          lint: false
-          use-github-cache: true
+        uses: ./.github/actions/setup-lean
 
       - uses: actions/setup-node@v7
         if: steps.kill.outputs.paused != 'true'

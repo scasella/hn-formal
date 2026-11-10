@@ -95,7 +95,8 @@ time. Not a claim about matching HN's displayed order (it drifts).
 - Refresh: every 15 minutes, static regeneration by the compiled Lean binary.
   The proven program is exactly what produced the bytes.
 - Hosting: GitHub Actions + GitHub Pages at the default URL. Lean via
-  lean-action with `.lake` cache.
+  lean-action with `.lake` cache, wrapped in `.github/actions/setup-lean`,
+  which retries flaky toolchain downloads (never a failing build).
 - Baseline check against real HN: manual workflow only, once per spec
   version, fetched HTML committed as a timestamped fixture. Never scheduled.
 

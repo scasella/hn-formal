@@ -25,14 +25,8 @@ jobs:
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
-      - name: Build with lean-action (toolchain from lean-toolchain, .lake cached)
-        uses: leanprover/lean-action@v1
-        with:
-          auto-config: false
-          build: true
-          test: false
-          lint: false
-          use-github-cache: true
+      - name: Lean toolchain (from lean-toolchain) and build, .lake cached; retries flaky downloads
+        uses: ./.github/actions/setup-lean
       - name: Selftest (built-in fixtures through the decidable spec)
         run: lake exe hnformal selftest
       - name: Axiom check on HnFormal.Render.render_ok

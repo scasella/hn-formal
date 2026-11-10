@@ -58,15 +58,9 @@ jobs:
           git -C data config user.name "github-actions[bot]"
           git -C data config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Lean toolchain and build (cached .lake)
+      - name: Lean toolchain and build (cached .lake; retries flaky downloads)
         if: steps.kill.outputs.paused != 'true'
-        uses: leanprover/lean-action@v1
-        with:
-          auto-config: false
-          build: true
-          test: false
-          lint: false
-          use-github-cache: true
+        uses: ./.github/actions/setup-lean
 
       - uses: actions/setup-node@v7
         if: steps.kill.outputs.paused != 'true'
@@ -114,13 +108,25 @@ jobs:
     needs: build
     if: needs.build.outputs.paused != 'true'
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # Two attempts (5 min, then the 10 min default) plus cancel/cleanup slack.
+    timeout-minutes: 20
     permissions:
       pages: write
       id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: ${{ steps.deployment-retry.outputs.page_url || steps.deployment.outputs.page_url }}
     steps:
+      # A Pages deployment occasionally sticks in `syncing_files` until
+      # deploy-pages gives up (refresh #205: 10 min, then "Timeout reached").
+      # Deploys here normally finish in seconds, so give the first attempt 5
+      # minutes; deploy-pages cancels the stuck deployment on timeout, and a
+      # second attempt publishes the same artifact fresh.
       - id: deployment
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+        with:
+          timeout: 300000
+      - id: deployment-retry
+        if: steps.deployment.outcome == 'failure'
         uses: actions/deploy-pages@v4
