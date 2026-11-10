@@ -1,0 +1,211 @@
+:root {
+  --page: #e7ebf3;
+  --card: #ffffff;
+  --card-2: #f3f6fb;
+  --ink: #161d2b;
+  --muted: #3d4a5f;
+  --link: #1d4ea8;
+  --visited: #5b2a86;
+  --head: #161d2b;
+  --rule: #cbd3e2;
+  --tag-bg: #dce7ff;
+  --tag-ink: #173f8c;
+  --coral: #e4572e;
+  --teal: #2a9d8f;
+  --gold: #e9a23b;
+  --violet: #7a5cc2;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--page);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--page);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+a { color: var(--link); }
+a:visited { color: var(--visited); }
+a:focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
+
+/* Masthead bar: one wrapping line of links on dark ink. */
+header { background: var(--head); color: #ffffff; }
+header nav {
+  max-width: 90rem;
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  line-height: 1.9;
+}
+header nav a { color: #ffffff; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+header nav a:visited { color: #ffffff; }
+
+main {
+  max-width: 90rem;
+  margin: 0 auto;
+  padding: 0 1rem 2.5rem;
+}
+
+/* Front-page masthead. */
+.masthead { padding: 1.5rem 0 1.25rem; }
+.masthead h1 { margin: 0; font-size: 2.1rem; line-height: 1.1; font-weight: 800; letter-spacing: -0.02em; }
+.kicker { margin: 0.4rem 0 0; color: var(--muted); font-size: 0.95rem; font-weight: 600; }
+
+/* The grid: one column at 375px, about four across at 1280px. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr));
+  gap: 1rem;
+  align-items: stretch;
+}
+
+article.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-width: 0;
+  padding: 1rem 1rem 0.85rem;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-top: 6px solid var(--coral);
+  border-radius: 14px;
+  box-shadow: 0 6px 18px rgba(22, 29, 43, 0.12);
+  overflow-wrap: anywhere;
+}
+.grid > article:nth-child(4n+2) { border-top-color: var(--teal); }
+.grid > article:nth-child(4n+3) { border-top-color: var(--violet); }
+.grid > article:nth-child(4n) { border-top-color: var(--gold); }
+
+article.card h2.ttl { margin: 0; font-size: 1.05rem; line-height: 1.3; font-weight: 700; }
+article.card h2.ttl a { color: var(--ink); text-decoration: none; }
+article.card h2.ttl a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
+article.card h2.ttl a:visited { color: var(--visited); }
+
+/* Domain as a pill; hidden when the story has no url. */
+.dom:empty { display: none; }
+.dom span[data-hn="domain"] {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  background: var(--tag-bg);
+  color: var(--tag-ink);
+  font-size: 0.78rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+/* Metadata along the bottom edge of each card. */
+.subline {
+  margin-top: auto;
+  padding-top: 0.65rem;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.subline span[data-hn] { color: var(--ink); font-weight: 700; }
+.subline a { font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+
+.more { padding: 1.75rem 0 0; text-align: center; }
+.more a { font-weight: 700; font-size: 1rem; text-underline-offset: 3px; }
+
+/* Thread page: the story as one wide card. */
+article.story { max-width: 54rem; margin: 0 auto 1.75rem; }
+article.story h2.ttl { font-size: 1.35rem; }
+article.story .subline { margin-top: 0.25rem; }
+
+[data-hn="text"] { overflow-wrap: anywhere; font-size: 0.95rem; line-height: 1.55; color: var(--ink); }
+[data-hn="text"] p { margin: 0.5rem 0; }
+[data-hn="text"] a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
+[data-hn="text"] a:visited { color: var(--visited); }
+
+code, pre {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+  background: #eef1f8;
+  color: var(--ink);
+}
+code { padding: 0 0.25em; border-radius: 4px; }
+pre {
+  margin: 0.5rem 0;
+  padding: 0.6rem 0.75rem;
+  max-width: 100%;
+  border-radius: 10px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+pre code { padding: 0; background: none; }
+
+/* Comments: a card per comment. Replies nest inside, indented; past depth five they lose their borders so the text keeps its width. */
+ol.comments { list-style: none; max-width: 54rem; margin: 0 auto; padding: 0; }
+ol.comments > li {
+  list-style: none;
+  margin: 0 0 1rem;
+  padding: 0.85rem 0.85rem 0.75rem;
+  min-width: 0;
+  background: var(--card);
+  border: 1px solid var(--rule);
+  border-left: 5px solid var(--teal);
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(22, 29, 43, 0.08);
+}
+li[data-hn-comment] li[data-hn-comment] {
+  list-style: none;
+  margin-top: 0.75rem;
+  padding: 0.7rem 0.7rem 0.6rem;
+  background: var(--card-2);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--violet);
+  box-shadow: none;
+}
+li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] {
+  margin-top: 0.6rem;
+  padding: 0.4rem 0 0;
+  background: none;
+  border: 0;
+}
+ol.kids {
+  list-style: none;
+  margin: 0.7rem 0 0;
+  padding: 0 0 0 0.5rem;
+  border-left: 2px solid var(--rule);
+  min-width: 0;
+}
+ol.kids:empty { display: none; }
+ol.kids ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
+@media (min-width: 48rem) {
+  ol.kids { padding-left: 0.9rem; }
+}
+
+.chead {
+  margin-bottom: 0.45rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.chead a { font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+
+footer {
+  background: #d5dcea;
+  color: var(--ink);
+  padding: 1.25rem 1rem 2rem;
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+footer > p { max-width: 90rem; margin: 0 auto 0.6rem; }
+footer a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
+footer a:visited { color: var(--visited); }

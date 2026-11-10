@@ -1,0 +1,38 @@
+{
+  "id": "20261110-114404-d3e94e0",
+  "runId": "20261110-112328",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 5.63,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 83,
+    "notes": "The front page delivers a clear card grid: four across at 1280px, single column at 375px, each story a bordered card with a bold title, a domain pill tag, and a metadata row along the bottom. Comments on the thread page are nested cards with visible left indents and colored rules, matching the brief. Gaps: the metadata wraps awkwardly (e.g. 'comments' orphaned on its own line) and the card titles are not visibly distinguished as h2/h3 in the rendering, and the thread card's top accent differs from the grid cards without clear reason.",
+    "adherence": 88,
+    "novelty": 80,
+    "craft": 78
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 0,
+  "costUsd": 0.0576,
+  "previousRelease": "20261109-120530-3797f95",
+  "diffStat": "+258 -205",
+  "candidate": 15,
+  "brief": "cards on a grid",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1794311044
+}
