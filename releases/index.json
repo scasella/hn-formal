@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261111-113248-d807e4e",
+    "runId": "20261111-111005",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 4.93,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 84,
+      "notes": "The front page delivers a clear vertical spine with age labels as the most prominent metadata and titles branching off each node, matching the brief's grammar closely. The thread page uses nested spines with comment nodes and indentation, which reads well. At 375px the spine and timestamps still hold up and titles stay dominant, though the 1280px front page leaves a wide empty gutter on the left and the metadata lines are small. The <time> requirement appears satisfied visually through the age labels.",
+      "adherence": 88,
+      "novelty": 82,
+      "craft": 80
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 2,
+    "costUsd": 0.1093,
+    "previousRelease": "20261110-114404-d3e94e0",
+    "diffStat": "+201 -257",
+    "candidate": 1,
+    "brief": "timeline",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1794396768
+  },
+  {
     "id": "20261110-114404-d3e94e0",
     "runId": "20261110-112328",
     "specVersion": 3,

@@ -1,211 +1,166 @@
+/* hn-formal v3: a vertical timeline. Each age is the timestamp on a spine; stories and comments are nodes on it. No @import, no url(), no text content. */
 :root {
-  --page: #e7ebf3;
-  --card: #ffffff;
-  --card-2: #f3f6fb;
-  --ink: #161d2b;
-  --muted: #3d4a5f;
-  --link: #1d4ea8;
-  --visited: #5b2a86;
-  --head: #161d2b;
-  --rule: #cbd3e2;
-  --tag-bg: #dce7ff;
-  --tag-ink: #173f8c;
-  --coral: #e4572e;
-  --teal: #2a9d8f;
-  --gold: #e9a23b;
-  --violet: #7a5cc2;
+  --paper: #f6f1e7;
+  --ink: #1d1b18;
+  --muted: #5a5448;
+  --accent: #b4441c;
+  --rule: #d6ccb8;
+  --well: #e9e0cd;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #16130f;
+    --ink: #f1ebdf;
+    --muted: #b9ae9a;
+    --accent: #f08a5d;
+    --rule: #3a342b;
+    --well: #241f18;
+  }
 }
 
-* { box-sizing: border-box; }
+*, *::before, *::after { box-sizing: border-box; }
 
 html {
-  background: var(--page);
+  background: var(--paper);
   color: var(--ink);
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 1.45;
+  font: 1rem/1.5 Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, serif;
   -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--page);
-  color: var(--ink);
+  background: var(--paper);
   overflow-wrap: anywhere;
 }
+body > * { max-width: 100%; }
 
-a { color: var(--link); }
-a:visited { color: var(--visited); }
-a:focus-visible { outline: 3px solid var(--coral); outline-offset: 2px; }
+a { color: var(--accent); text-decoration: underline; text-underline-offset: 0.15em; }
+a:visited { color: var(--accent); }
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-/* Masthead bar: one wrapping line of links on dark ink. */
-header { background: var(--head); color: #ffffff; }
-header nav {
-  max-width: 90rem;
-  margin: 0 auto;
-  padding: 0.75rem 1rem;
-  font-size: 0.9rem;
-  line-height: 1.9;
+time {
+  font: 700 0.72rem/1.3 "Helvetica Neue", Arial, sans-serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
 }
-header nav a { color: #ffffff; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
-header nav a:visited { color: #ffffff; }
+span[data-hn] { color: var(--muted); }
+
+header { border-bottom: 3px double var(--rule); }
+header nav {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 0.6rem 0.75rem;
+  font: 600 0.85rem/1.7 "Helvetica Neue", Arial, sans-serif;
+}
+header nav a { color: var(--ink); }
+header nav a:first-child { font: 700 1.15rem Georgia, serif; }
 
 main {
-  max-width: 90rem;
+  max-width: 46rem;
   margin: 0 auto;
-  padding: 0 1rem 2.5rem;
+  padding: 1.5rem 0.75rem 1rem;
 }
 
-/* Front-page masthead. */
-.masthead { padding: 1.5rem 0 1.25rem; }
-.masthead h1 { margin: 0; font-size: 2.1rem; line-height: 1.1; font-weight: 800; letter-spacing: -0.02em; }
-.kicker { margin: 0.4rem 0 0; color: var(--muted); font-size: 0.95rem; font-weight: 600; }
+/* Spines: a list is a line; its items hang dots from it. */
+ol.spine, ol.comments, ol.kids {
+  list-style: none;
+  margin: 0 0 0 0.5rem;
+  padding: 0 0 0 1.25rem;
+  border-left: 2px solid var(--accent);
+}
+ol.comments { margin-top: 0.5rem; }
+ol.kids { margin: 0.25rem 0 0; border-left-color: var(--rule); }
 
-/* The grid: one column at 375px, about four across at 1280px. */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr));
-  gap: 1rem;
-  align-items: stretch;
+[data-hn-story], [data-hn-comment] {
+  position: relative;
+  padding: 0 0 1.1rem;
+}
+[data-hn-story]::before, [data-hn-comment]::before {
+  content: "";
+  position: absolute;
+  top: 0.4rem;
+  left: calc(-1.675rem - 1px);
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: var(--paper);
 }
 
-article.card {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  min-width: 0;
-  padding: 1rem 1rem 0.85rem;
-  background: var(--card);
-  border: 1px solid var(--rule);
-  border-top: 6px solid var(--coral);
-  border-radius: 14px;
-  box-shadow: 0 6px 18px rgba(22, 29, 43, 0.12);
-  overflow-wrap: anywhere;
+/* Thread page: the story is the top node; its spine continues into the comments. */
+article[data-hn-story] {
+  margin: 0 0 0 0.5rem;
+  padding: 0 0 1.25rem 1.25rem;
+  border-left: 2px solid var(--accent);
 }
-.grid > article:nth-child(4n+2) { border-top-color: var(--teal); }
-.grid > article:nth-child(4n+3) { border-top-color: var(--violet); }
-.grid > article:nth-child(4n) { border-top-color: var(--gold); }
+article[data-hn-story]::before { left: calc(-1px - 0.425rem); }
+article[data-hn-story] .titleline { font-size: 1.4rem; }
 
-article.card h2.ttl { margin: 0; font-size: 1.05rem; line-height: 1.3; font-weight: 700; }
-article.card h2.ttl a { color: var(--ink); text-decoration: none; }
-article.card h2.ttl a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
-article.card h2.ttl a:visited { color: var(--visited); }
+.when { margin: 0 0 0.1rem; }
+.titleline { font-size: 1.1rem; line-height: 1.3; }
+a[data-hn="title"] { color: var(--ink); font-weight: 700; }
+a[data-hn="title"]:visited { color: var(--ink); }
 
-/* Domain as a pill; hidden when the story has no url. */
-.dom:empty { display: none; }
-.dom span[data-hn="domain"] {
-  display: inline-block;
-  max-width: 100%;
-  padding: 0.1rem 0.6rem;
-  border-radius: 999px;
-  background: var(--tag-bg);
-  color: var(--tag-ink);
-  font-size: 0.78rem;
-  font-weight: 600;
-  overflow-wrap: anywhere;
-}
-
-/* Metadata along the bottom edge of each card. */
-.subline {
-  margin-top: auto;
-  padding-top: 0.65rem;
-  border-top: 1px solid var(--rule);
+.subline, .chead {
+  font: 0.8rem/1.5 "Helvetica Neue", Arial, sans-serif;
   color: var(--muted);
-  font-size: 0.8rem;
-  line-height: 1.6;
-  overflow-wrap: anywhere;
 }
-.subline span[data-hn] { color: var(--ink); font-weight: 700; }
-.subline a { font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+.subline { margin-top: 0.1rem; }
+.chead { margin-bottom: 0.15rem; }
+.subline a, .chead a { color: var(--muted); }
+.subline a:visited, .chead a:visited { color: var(--muted); }
 
-.more { padding: 1.75rem 0 0; text-align: center; }
-.more a { font-weight: 700; font-size: 1rem; text-underline-offset: 3px; }
+.more {
+  margin: 0.75rem 0 0 0.5rem;
+  font: 700 0.9rem "Helvetica Neue", Arial, sans-serif;
+}
 
-/* Thread page: the story as one wide card. */
-article.story { max-width: 54rem; margin: 0 auto 1.75rem; }
-article.story h2.ttl { font-size: 1.35rem; }
-article.story .subline { margin-top: 0.25rem; }
-
-[data-hn="text"] { overflow-wrap: anywhere; font-size: 0.95rem; line-height: 1.55; color: var(--ink); }
-[data-hn="text"] p { margin: 0.5rem 0; }
-[data-hn="text"] a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
-[data-hn="text"] a:visited { color: var(--visited); }
+[data-hn="text"] { overflow-wrap: anywhere; margin: 0.2rem 0 0; }
+[data-hn="text"] p { margin: 0.4rem 0; }
+[data-hn="text"] p:first-child { margin-top: 0; }
 
 code, pre {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 0.85rem;
-  background: #eef1f8;
-  color: var(--ink);
+  font-family: ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
+  background: var(--well);
 }
-code { padding: 0 0.25em; border-radius: 4px; }
+code { font-size: 0.9em; padding: 0 0.2em; }
 pre {
-  margin: 0.5rem 0;
-  padding: 0.6rem 0.75rem;
+  font-size: 0.85rem;
+  margin: 0.4rem 0;
+  padding: 0.4rem 0.5rem;
   max-width: 100%;
-  border-radius: 10px;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 pre code { padding: 0; background: none; }
 
-/* Comments: a card per comment. Replies nest inside, indented; past depth five they lose their borders so the text keeps its width. */
-ol.comments { list-style: none; max-width: 54rem; margin: 0 auto; padding: 0; }
-ol.comments > li {
-  list-style: none;
-  margin: 0 0 1rem;
-  padding: 0.85rem 0.85rem 0.75rem;
-  min-width: 0;
-  background: var(--card);
-  border: 1px solid var(--rule);
-  border-left: 5px solid var(--teal);
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(22, 29, 43, 0.08);
-}
-li[data-hn-comment] li[data-hn-comment] {
-  list-style: none;
-  margin-top: 0.75rem;
-  padding: 0.7rem 0.7rem 0.6rem;
-  background: var(--card-2);
-  border: 1px solid var(--rule);
-  border-left: 4px solid var(--violet);
-  box-shadow: none;
-}
-li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] li[data-hn-comment] {
-  margin-top: 0.6rem;
-  padding: 0.4rem 0 0;
-  background: none;
-  border: 0;
-}
-ol.kids {
-  list-style: none;
-  margin: 0.7rem 0 0;
-  padding: 0 0 0 0.5rem;
-  border-left: 2px solid var(--rule);
-  min-width: 0;
-}
-ol.kids:empty { display: none; }
-ol.kids ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
-@media (min-width: 48rem) {
-  ol.kids { padding-left: 0.9rem; }
-}
-
-.chead {
-  margin-bottom: 0.45rem;
-  color: var(--muted);
-  font-size: 0.8rem;
-  line-height: 1.5;
-  overflow-wrap: anywhere;
-}
-.chead a { font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+/* Deep replies stop indenting so long threads still fit a 375px screen. */
+ol.kids ol.kids ol.kids ol.kids ol.kids { margin: 0; padding: 0; border-left: 0; }
+ol.kids ol.kids ol.kids ol.kids ol.kids > [data-hn-comment]::before { display: none; }
 
 footer {
-  background: #d5dcea;
-  color: var(--ink);
-  padding: 1.25rem 1rem 2rem;
-  font-size: 0.85rem;
+  max-width: 46rem;
+  margin: 2rem auto 0;
+  padding: 1rem 0.75rem 2rem;
+  border-top: 3px double var(--rule);
+  font: 0.85rem/1.6 "Helvetica Neue", Arial, sans-serif;
+  color: var(--muted);
   overflow-wrap: anywhere;
 }
-footer > p { max-width: 90rem; margin: 0 auto 0.6rem; }
-footer a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
-footer a:visited { color: var(--visited); }
+footer a { color: var(--muted); }
+footer p { margin: 0 0 0.5rem; }
+
+/* Wide screens: the age sits in a column left of the spine. */
+@media (min-width: 40rem) {
+  ol.spine { margin-left: 9.75rem; }
+  ol.spine > [data-hn-story] > .when {
+    position: absolute;
+    top: 0.1rem;
+    right: calc(100% + 2.15rem + 1px);
+    width: 7.5rem;
+    text-align: right;
+  }
+}
