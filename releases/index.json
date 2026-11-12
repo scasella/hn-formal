@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261112-115550-849ca22",
+    "runId": "20261112-112754",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 5.71,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 79,
+      "notes": "The front page clearly delivers a card grid: each story is a bordered, shadowed box with a bold title, a domain pill, and metadata along the bottom, and it drops to one column at 375px as briefed. The thread page uses nested cards with a left indent for replies, which matches the brief's comment structure. Missing pieces: the cards show a top accent border and no visible article/heading hierarchy cue beyond bold text, and the 1280px grid leaves the 4th column of short cards and the bottom row unevenly filled. Metadata wraps awkwardly (e.g. 'ago | 1 comments' breaks across lines), and the 'More' button and footer are fine but the bottom of the page is empty space.",
+      "adherence": 84,
+      "novelty": 78,
+      "craft": 74
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 1,
+    "costUsd": 0.0746,
+    "previousRelease": "20261111-113248-d807e4e",
+    "diffStat": "+229 -208",
+    "candidate": 13,
+    "brief": "cards on a grid",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1794484550
+  },
+  {
     "id": "20261111-113248-d807e4e",
     "runId": "20261111-111005",
     "specVersion": 3,

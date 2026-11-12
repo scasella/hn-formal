@@ -1,166 +1,183 @@
-/* hn-formal v3: a vertical timeline. Each age is the timestamp on a spine; stories and comments are nodes on it. No @import, no url(), no text content. */
+/* hn-formal v2: cards on a grid. Styles the DOM from HnFormal/Render.lean. */
+
 :root {
-  --paper: #f6f1e7;
-  --ink: #1d1b18;
-  --muted: #5a5448;
-  --accent: #b4441c;
-  --rule: #d6ccb8;
-  --well: #e9e0cd;
-}
-@media (prefers-color-scheme: dark) {
-  :root {
-    --paper: #16130f;
-    --ink: #f1ebdf;
-    --muted: #b9ae9a;
-    --accent: #f08a5d;
-    --rule: #3a342b;
-    --well: #241f18;
-  }
+  --page: #e9edf5;
+  --card: #ffffff;
+  --ink: #111827;
+  --body: #1f2937;
+  --muted: #4a5468;
+  --line: #cfd6e4;
+  --soft: #e5e9f2;
+  --link: #1d4ed8;
+  --visited: #6d28d9;
+  --chip: #e8eefc;
+  --chip-ink: #1e3a8a;
+  --mast: #1e2a44;
+  --mast-link: #bfdbfe;
+  --mast-sep: #cbd5e1;
+  --rail: #b6c2d9;
+  --code: #eef2f7;
 }
 
-*, *::before, *::after { box-sizing: border-box; }
+* { box-sizing: border-box; }
 
 html {
-  background: var(--paper);
-  color: var(--ink);
-  font: 1rem/1.5 Georgia, "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+  background: var(--page);
+  color: var(--body);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--paper);
+  background: var(--page);
   overflow-wrap: anywhere;
 }
+
 body > * { max-width: 100%; }
 
-a { color: var(--accent); text-decoration: underline; text-underline-offset: 0.15em; }
-a:visited { color: var(--accent); }
+a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
+a:visited { color: var(--visited); }
 a:hover { text-decoration-thickness: 2px; }
-a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+a:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
 
-time {
-  font: 700 0.72rem/1.3 "Helvetica Neue", Arial, sans-serif;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--accent);
+/* Masthead: a dark band, brand on the left, wrapping nav pushed to the right. */
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.4rem 1.5rem;
+  padding: 0.8rem 1rem;
+  background: var(--mast);
+  color: var(--mast-sep);
 }
-span[data-hn] { color: var(--muted); }
+header h1 { margin: 0; font-size: 1.2rem; font-weight: 800; letter-spacing: -0.01em; }
+header h1 a, header h1 a:visited { color: #ffffff; text-decoration: none; }
+header h1 a:hover { text-decoration: underline; }
+header nav { margin-left: auto; font-size: 0.9rem; }
+header nav a, header nav a:visited { color: var(--mast-link); font-weight: 600; }
 
-header { border-bottom: 3px double var(--rule); }
-header nav {
-  max-width: 46rem;
-  margin: 0 auto;
-  padding: 0.6rem 0.75rem;
-  font: 600 0.85rem/1.7 "Helvetica Neue", Arial, sans-serif;
-}
-header nav a { color: var(--ink); }
-header nav a:first-child { font: 700 1.15rem Georgia, serif; }
+main { max-width: 1200px; margin: 0 auto; padding: 1.25rem 1rem 1rem; }
 
-main {
-  max-width: 46rem;
-  margin: 0 auto;
-  padding: 1.5rem 0.75rem 1rem;
-}
-
-/* Spines: a list is a line; its items hang dots from it. */
-ol.spine, ol.comments, ol.kids {
-  list-style: none;
-  margin: 0 0 0 0.5rem;
-  padding: 0 0 0 1.25rem;
-  border-left: 2px solid var(--accent);
-}
-ol.comments { margin-top: 0.5rem; }
-ol.kids { margin: 0.25rem 0 0; border-left-color: var(--rule); }
-
-[data-hn-story], [data-hn-comment] {
-  position: relative;
-  padding: 0 0 1.1rem;
-}
-[data-hn-story]::before, [data-hn-comment]::before {
-  content: "";
-  position: absolute;
-  top: 0.4rem;
-  left: calc(-1.675rem - 1px);
-  width: 0.85rem;
-  height: 0.85rem;
-  border-radius: 50%;
-  border: 2px solid var(--accent);
-  background: var(--paper);
+/* Front page: a responsive grid, three or four cards across on desktop, one on a phone. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  gap: 1rem;
 }
 
-/* Thread page: the story is the top node; its spine continues into the comments. */
 article[data-hn-story] {
-  margin: 0 0 0 0.5rem;
-  padding: 0 0 1.25rem 1.25rem;
-  border-left: 2px solid var(--accent);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0.9rem 1rem 0.8rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--link);
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.08), 0 8px 18px -12px rgba(15, 23, 42, 0.35);
 }
-article[data-hn-story]::before { left: calc(-1px - 0.425rem); }
-article[data-hn-story] .titleline { font-size: 1.4rem; }
+article[data-hn-story] h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.02rem;
+  line-height: 1.3;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+article[data-hn-story] h2 a, article[data-hn-story] h2 a:visited { color: var(--ink); text-decoration: none; }
+article[data-hn-story] h2 a:hover { text-decoration: underline; text-decoration-thickness: 2px; }
 
-.when { margin: 0 0 0.1rem; }
-.titleline { font-size: 1.1rem; line-height: 1.3; }
-a[data-hn="title"] { color: var(--ink); font-weight: 700; }
-a[data-hn="title"]:visited { color: var(--ink); }
+.domain { min-width: 0; margin: 0 0 0.6rem; }
+[data-hn="domain"] {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  background: var(--chip);
+  color: var(--chip-ink);
+  font-size: 0.78rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
 
-.subline, .chead {
-  font: 0.8rem/1.5 "Helvetica Neue", Arial, sans-serif;
+.foot {
+  margin-top: auto;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--soft);
   color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
 }
-.subline { margin-top: 0.1rem; }
-.chead { margin-bottom: 0.15rem; }
-.subline a, .chead a { color: var(--muted); }
-.subline a:visited, .chead a:visited { color: var(--muted); }
+.foot a, .foot a:visited { color: var(--link); }
+[data-hn="score"] { font-weight: 700; color: var(--body); }
 
-.more {
-  margin: 0.75rem 0 0 0.5rem;
-  font: 700 0.9rem "Helvetica Neue", Arial, sans-serif;
-}
-
-[data-hn="text"] { overflow-wrap: anywhere; margin: 0.2rem 0 0; }
-[data-hn="text"] p { margin: 0.4rem 0; }
-[data-hn="text"] p:first-child { margin-top: 0; }
+/* Thread page: the story is a wide card; its text sits under the metadata. */
+main > article[data-hn-story] { margin-bottom: 1.5rem; padding: 1rem 1.1rem; }
+main > article[data-hn-story] h2 { font-size: 1.35rem; }
+[data-hn="text"] { margin-top: 0.75rem; overflow-wrap: anywhere; }
+[data-hn="text"] p { margin: 0 0 0.6rem; }
 
 code, pre {
-  font-family: ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
-  background: var(--well);
+  font-family: ui-monospace, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.85em;
+  color: var(--ink);
+  background: var(--code);
 }
-code { font-size: 0.9em; padding: 0 0.2em; }
+code { padding: 0.05rem 0.3rem; border-radius: 4px; overflow-wrap: anywhere; }
 pre {
-  font-size: 0.85rem;
-  margin: 0.4rem 0;
-  padding: 0.4rem 0.5rem;
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.6rem;
+  border-radius: 8px;
   max-width: 100%;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 pre code { padding: 0; background: none; }
 
-/* Deep replies stop indenting so long threads still fit a 375px screen. */
-ol.kids ol.kids ol.kids ol.kids ol.kids { margin: 0; padding: 0; border-left: 0; }
-ol.kids ol.kids ol.kids ol.kids ol.kids > [data-hn-comment]::before { display: none; }
+/* Comments: nested cards. Indents stop at depth four so deep threads stay inside a phone screen. */
+ol.comments, ol.kids { list-style: none; margin: 0; padding: 0; }
+ol.comments {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem;
+}
+li[data-hn-comment] {
+  min-width: 0;
+  padding: 0.6rem 0.75rem 0.65rem;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+li[data-hn-comment] li[data-hn-comment] { margin-top: 0.6rem; }
+ol.kids { margin-top: 0.6rem; padding-left: 0.75rem; border-left: 3px solid var(--rail); }
+ol.kids:empty { display: none; }
+ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
+.chead { font-size: 0.8rem; line-height: 1.6; color: var(--muted); overflow-wrap: anywhere; }
+.chead a, .chead a:visited { color: var(--link); }
+
+/* Load more: centred pill. */
+.more { text-align: center; padding-top: 1.5rem; }
+.more a, .more a:visited {
+  display: inline-block;
+  padding: 0.55rem 1.2rem;
+  border-radius: 999px;
+  background: var(--link);
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: none;
+}
+.more a:hover { text-decoration: underline; }
 
 footer {
-  max-width: 46rem;
-  margin: 2rem auto 0;
-  padding: 1rem 0.75rem 2rem;
-  border-top: 3px double var(--rule);
-  font: 0.85rem/1.6 "Helvetica Neue", Arial, sans-serif;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem 1rem 2rem;
+  border-top: 1px solid var(--line);
   color: var(--muted);
+  font-size: 0.85rem;
   overflow-wrap: anywhere;
 }
-footer a { color: var(--muted); }
 footer p { margin: 0 0 0.5rem; }
-
-/* Wide screens: the age sits in a column left of the spine. */
-@media (min-width: 40rem) {
-  ol.spine { margin-left: 9.75rem; }
-  ol.spine > [data-hn-story] > .when {
-    position: absolute;
-    top: 0.1rem;
-    right: calc(100% + 2.15rem + 1px);
-    width: 7.5rem;
-    text-align: right;
-  }
-}
