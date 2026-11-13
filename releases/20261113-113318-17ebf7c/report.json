@@ -1,0 +1,38 @@
+{
+  "id": "20261113-113318-17ebf7c",
+  "runId": "20261113-111157",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 6.83,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 82,
+    "notes": "The front page is a true spreadsheet: a bordered table with uppercase column headers for title, domain, score, author, age and comments, monospace right-aligned numbers, and a single yellow highlight on the lead row, which matches the brief closely. At 375px the table keeps all seven columns but squeezes them badly, so domains, authors and headers wrap letter by letter and the grid becomes hard to scan. The thread page carries the same table header for the story and then uses indented comment blocks, which is coherent, though the frozen-header feel is not evident in the screenshots.",
+    "adherence": 88,
+    "novelty": 85,
+    "craft": 72
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 2,
+  "costUsd": 0.1144,
+  "previousRelease": "20261112-115550-849ca22",
+  "diffStat": "+248 -243",
+  "candidate": 10,
+  "brief": "spreadsheet",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1794569598
+}
