@@ -1,39 +1,39 @@
-/* hn-formal v2: spreadsheet. One data grid per page, column headers, thin cell grid, tabular figures, right-aligned numbers. Styles only the DOM in HnFormal/Render.lean. */
+/* hn-formal v2: cards on a grid. Light by default, dark when the reader asks for it. */
 
 :root {
-  --bg: #ffffff;
-  --head: #e9edf2;
-  --grid: #c3cbd5;
-  --text: #15181c;
-  --muted: #4b5563;
-  --link: #0b4f9c;
-  --visited: #5b2f86;
-  --focus: #b45309;
-  --lead: #fff4c2;
-  --code: #eef1f4;
+  --bg: #e9edf2;
+  --card: #ffffff;
+  --text: #1b1f24;
+  --muted: #4a5260;
+  --link: #1a4fa0;
+  --visited: #5b2a86;
+  --tag-bg: #dfe7f3;
+  --tag-text: #1d3557;
+  --accent: #2b6cb0;
+  --shadow: 0 1px 3px rgba(20, 30, 50, 0.16);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #14171b;
-    --head: #222931;
-    --grid: #3b4551;
-    --text: #e6e9ee;
-    --muted: #b4bcc8;
-    --link: #9fd0ff;
-    --visited: #d2b8f0;
-    --focus: #ffb86b;
-    --lead: #2d2b1a;
-    --code: #222931;
+    --bg: #0e1116;
+    --card: #181d25;
+    --text: #e6ebf2;
+    --muted: #a9b3c2;
+    --link: #8ab8ff;
+    --visited: #c7a6ff;
+    --tag-bg: #26324a;
+    --tag-text: #c9dcff;
+    --accent: #5b9bd5;
+    --shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
   }
 }
 
-* { box-sizing: border-box; }
+* { box-sizing: border-box; min-width: 0; }
 
 html {
   background: var(--bg);
   color: var(--text);
-  font: 13px/1.4 ui-monospace, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-text-size-adjust: 100%;
 }
 
@@ -44,108 +44,101 @@ body {
   overflow-wrap: anywhere;
 }
 
-body > * { max-width: 100%; }
-
-a { color: var(--link); text-decoration: underline; }
+a { color: var(--link); text-decoration: underline; text-underline-offset: 3px; }
 a:visited { color: var(--visited); }
-a:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 
-/* Top bar: a ribbon of menu links. */
-header { background: var(--head); border-bottom: 2px solid var(--grid); }
-header nav { max-width: 72rem; margin: 0 auto; padding: 0.4rem 0.5rem; }
-header nav a { font-weight: bold; color: var(--text); margin-right: 0.2rem; }
-header nav a:visited { color: var(--text); }
+/* Header: a quiet bar of links. */
+header { padding: 0.6rem 1rem; }
+header nav { max-width: 72rem; margin: 0 auto; font-size: 0.9rem; line-height: 1.9; }
+header nav a, header nav a:visited { color: var(--text); font-weight: 600; }
 
-main { max-width: 72rem; margin: 0 auto; padding: 0.5rem; }
+main { max-width: 72rem; margin: 0 auto; padding: 0.5rem 1rem 1.5rem; }
 
-/* The grid. */
-table.sheet {
-  width: 100%;
-  border-collapse: collapse;
-  border: 1px solid var(--grid);
-  font-variant-numeric: tabular-nums;
+/* Front page: one card per story, reflowing from one column to four. */
+.grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.9rem; }
+@media (min-width: 40rem) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 64rem) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 80rem) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+
+article {
+  background: var(--card);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 0.9rem 1rem 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  overflow-wrap: anywhere;
+}
+article h2 { margin: 0; font-size: 1.05rem; line-height: 1.3; font-weight: 700; }
+article h2 a, article h2 a:visited { color: var(--text); }
+article h2 a:visited { color: var(--visited); }
+
+.site { margin: 0; }
+.site [data-hn="domain"] {
+  display: inline-block;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  border-radius: 999px;
+  padding: 0.05rem 0.6rem;
+  font-size: 0.8rem;
 }
 
-table.sheet th,
-table.sheet td {
-  padding: 0.3rem 0.45rem;
-  border: 1px solid var(--grid);
-  text-align: left;
-  vertical-align: top;
+.meta { color: var(--muted); font-size: 0.85rem; line-height: 1.5; }
+.meta a, .meta a:visited { color: var(--muted); }
+.meta [data-hn="score"] { font-weight: 700; color: var(--text); }
+
+.more { margin-top: 1rem; text-align: center; }
+.more a { font-weight: 600; }
+
+/* Thread page: the story card, then the comment tree as nested cards. */
+ol.comments, ol.kids { list-style: none; margin: 0; padding: 0; }
+ol.comments { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.6rem; }
+
+li[data-hn-comment] {
+  background: var(--card);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 0.6rem 0.8rem;
   overflow-wrap: anywhere;
 }
 
-table.sheet thead th {
-  position: sticky;
-  top: 0;
-  background: var(--head);
-  color: var(--text);
-  font-size: 11px;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+ol.kids {
+  margin: 0.5rem 0 0;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--accent);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
+ol.kids:empty { display: none; }
+ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
 
-table.sheet th[scope="row"] { font-weight: normal; }
-table.sheet .num { text-align: right; }
-table.sheet .dm { color: var(--muted); }
-table.sheet .au { color: var(--muted); }
+.chead { color: var(--muted); font-size: 0.8rem; line-height: 1.5; }
+.chead a, .chead a:visited { color: var(--muted); }
 
-/* Lead row gets the only highlight. */
-table.sheet tbody tr:first-child > * { background: var(--lead); }
-table.sheet tbody tr:hover > * { background: var(--head); }
-table.sheet tbody tr:first-child:hover > * { background: var(--lead); }
+[data-hn="text"] { margin: 0.4rem 0 0; overflow-wrap: anywhere; }
+[data-hn="text"] p { margin: 0.35rem 0; }
 
-th.ti a { color: var(--text); font-weight: bold; }
-th.ti a:visited { color: var(--visited); }
-
-/* Thread page: the story is a one-row grid above its comments. */
-article[data-hn-story] { margin: 0 0 1rem; }
-article[data-hn-story] table.sheet thead th { position: static; }
-
-.more { padding: 0.6rem 0 0; }
-.more a { font-weight: bold; }
-
-[data-hn="text"] { overflow-wrap: anywhere; max-width: 60rem; margin: 0.5rem 0; }
-[data-hn="text"] p { margin: 0.4rem 0; }
-
-code, pre { font-family: inherit; font-size: 12px; background: var(--code); }
-code { padding: 0 0.2em; }
+code, pre { font-family: ui-monospace, Menlo, Consolas, "Liberation Mono", monospace; font-size: 0.85em; }
+code { background: var(--tag-bg); color: var(--tag-text); padding: 0 0.2em; border-radius: 4px; }
 pre {
-  margin: 0.4rem 0;
-  padding: 0.4rem 0.5rem;
+  background: var(--tag-bg);
+  color: var(--tag-text);
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
   max-width: 100%;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
-  border-left: 3px solid var(--grid);
 }
-pre code { padding: 0; background: none; }
-
-/* Comments: ruled rows, replies in a left rail, rail dropped past depth four. */
-ol.comments, ol.kids { list-style: none; margin: 0; padding: 0; }
-ol.comments { border: 1px solid var(--grid); }
-ol.comments > li { padding: 0.5rem 0.6rem; border-top: 1px solid var(--grid); }
-ol.comments > li:first-child { border-top: 0; }
-ol.kids { margin: 0.4rem 0 0; padding: 0 0 0 0.6rem; border-left: 2px solid var(--grid); }
-ol.kids ol.kids ol.kids ol.kids { margin: 0; padding: 0; border: 0; }
-
-.chead { font-size: 12px; color: var(--muted); margin-bottom: 0.25rem; }
-.chead a { color: var(--muted); }
+pre code { background: none; padding: 0; }
 
 footer {
   max-width: 72rem;
   margin: 0 auto;
-  padding: 0.6rem 0.5rem 1rem;
-  border-top: 2px solid var(--grid);
+  padding: 1rem;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 0.85rem;
   overflow-wrap: anywhere;
-}
-
-footer p { margin: 0 0 0.4rem; }
-
-@media (min-width: 48rem) {
-  main { padding: 0.75rem 1rem; }
-  table.sheet th,
-  table.sheet td { padding: 0.35rem 0.6rem; }
 }

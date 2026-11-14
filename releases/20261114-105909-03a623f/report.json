@@ -1,0 +1,38 @@
+{
+  "id": "20261114-105909-03a623f",
+  "runId": "20261114-103805",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 6.69,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 81,
+    "notes": "The front page follows the brief closely: every story is a white bordered card with a bold underlined title, a domain pill tag, and a points/author/age/comments line along the bottom, in a 4-across grid at 1280px that collapses to a single column at 375px. The thread page nests comments as cards with a visible left indent, though the nesting bars are faint and deep replies get cramped. Grid cards leave ragged empty space under shorter entries, and the 1280px grid ends with a half-empty final row. Overall the page shape is clearly distinct from the live table.",
+    "adherence": 88,
+    "novelty": 78,
+    "craft": 74
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 1,
+  "costUsd": 0.0901,
+  "previousRelease": "20261113-113318-17ebf7c",
+  "diffStat": "+148 -208",
+  "candidate": 11,
+  "brief": "cards on a grid",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1794653949
+}
