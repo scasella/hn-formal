@@ -1,0 +1,156 @@
+/* hn-formal: warm paper, a printed broadside. Cream stock, brown ink, book measure, serif titles, small-caps running metadata. No @import, no url(), no content text. */
+
+:root {
+  --paper: #f5efe0;
+  --ink: #2a1a10;
+  --soft: #5c4a3b;
+  --link: #7b2d0f;
+  --visited: #5a3670;
+  --rule: #bfae92;
+  --wash: #ebe2cc;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  font: 1.0625rem/1.6 Georgia, "Times New Roman", Times, serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--paper);
+  overflow-wrap: anywhere;
+}
+
+body > * { max-width: 100%; }
+
+a { color: var(--link); text-decoration: underline; text-underline-offset: 0.15em; }
+a:visited { color: var(--visited); }
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+
+/* Masthead: a double rule and a small-caps line of section names. */
+header {
+  background: var(--paper);
+  border-bottom: 3px double var(--rule);
+}
+header nav {
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 0.6rem 1rem;
+  font-variant: small-caps;
+  letter-spacing: 0.04em;
+  font-size: 0.95rem;
+}
+header nav a { color: var(--ink); text-decoration: none; }
+header nav a:visited { color: var(--ink); }
+header nav a:hover { text-decoration: underline; }
+
+main {
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 2rem;
+}
+
+/* Front page: stories are prose entries separated by hairlines. */
+article[data-hn-story] {
+  padding: 0 0 1.25rem;
+  margin: 0 0 1.25rem;
+  border-bottom: 1px solid var(--rule);
+}
+article[data-hn-story]:last-child { border-bottom: 0; margin-bottom: 0; }
+
+article h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  line-height: 1.25;
+  font-weight: bold;
+  overflow-wrap: anywhere;
+}
+article h2 a { color: var(--ink); text-decoration: none; }
+article h2 a:visited { color: var(--visited); }
+article h2 a:hover { text-decoration: underline; }
+
+/* Running line under each title: small caps, muted. */
+.subline {
+  margin-top: 0.2rem;
+  font-variant: small-caps;
+  font-size: 0.9rem;
+  letter-spacing: 0.03em;
+  color: var(--soft);
+  overflow-wrap: anywhere;
+}
+.subline a { color: var(--soft); }
+.subline a:visited { color: var(--soft); }
+
+.more {
+  margin-top: 1rem;
+  font-variant: small-caps;
+  font-size: 1rem;
+}
+.more a { font-weight: bold; }
+
+/* Thread page: the story is a larger headline above the comments. */
+main > article h2 { font-size: 1.6rem; }
+
+[data-hn="text"] {
+  margin: 0.5rem 0 0;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+[data-hn="text"] p { margin: 0 0 0.6rem; }
+
+code, pre {
+  font-family: ui-monospace, Menlo, Consolas, "Courier New", monospace;
+  font-size: 0.85em;
+  background: var(--wash);
+}
+code { padding: 0 0.2em; }
+pre {
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.6rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  border-left: 3px solid var(--rule);
+}
+pre code { padding: 0; background: none; }
+
+/* Comments: hairline-separated, nested replies set off by a thin rule. */
+.comments { margin-top: 0.5rem; }
+.comments > div[data-hn-comment] {
+  padding: 0.75rem 0 0;
+  border-top: 1px solid var(--rule);
+}
+div[data-hn-comment] div[data-hn-comment] { padding-top: 0.5rem; }
+
+.chead {
+  font-variant: small-caps;
+  font-size: 0.9rem;
+  color: var(--soft);
+  overflow-wrap: anywhere;
+}
+.chead a { color: var(--soft); }
+.chead a:visited { color: var(--soft); }
+
+.kids {
+  margin: 0.4rem 0 0;
+  padding: 0 0 0 0.75rem;
+  border-left: 1px solid var(--rule);
+}
+.kids .kids .kids .kids { padding-left: 0.5rem; }
+.kids .kids .kids .kids .kids { margin: 0; padding: 0; border-left: 0; }
+
+footer {
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 1rem;
+  border-top: 3px double var(--rule);
+  color: var(--soft);
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+footer a { color: var(--link); }

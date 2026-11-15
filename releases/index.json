@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261115-112928-820ffc4",
+    "runId": "20261115-111021",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 7.33,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 78,
+      "notes": "The candidate delivers the warm paper direction well: cream ground, dark brown ink, text serif titles, and small-caps metadata running under each title, with a book-measure column around 580px. Stories read as prose-like entries separated by hairline rules rather than list cards, and the thread page nests comments with a gutter rule that makes depth visible. Missing or weak: the front page is a plain stacked list with no visible article-level distinction beyond rules, and the 375px view has the metadata line breaking awkwardly around comment counts; the header nav wraps to two lines on mobile.",
+      "adherence": 80,
+      "novelty": 78,
+      "craft": 74
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 1,
+    "costUsd": 0.076,
+    "previousRelease": "20261114-105909-03a623f",
+    "diffStat": "+142 -147",
+    "candidate": 2,
+    "brief": "warm paper",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1794742168
+  },
+  {
     "id": "20261114-105909-03a623f",
     "runId": "20261114-103805",
     "specVersion": 3,
