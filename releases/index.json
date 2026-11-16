@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261116-120138-1bdb408",
+    "runId": "20261116-114015",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 6.55,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 81,
+      "notes": "The front page realizes the brief closely: every story is a bordered, shadowed card with a bold title, a domain tag, and a metadata line along the bottom, arranged in a four-across grid at 1280px that collapses to one column at 375px. The thread page shows nested comment cards with a visible orange left-rule indent, which fits the brief. Weaknesses: the grid's uneven card heights leave ragged bottoms and a large empty area below the grid, and the 375px view has no visible article-level hierarchy beyond titles, with metadata wrapping awkwardly onto second lines.",
+      "adherence": 88,
+      "novelty": 80,
+      "craft": 72
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 1,
+    "costUsd": 0.0881,
+    "previousRelease": "20261115-112928-820ffc4",
+    "diffStat": "+160 -156",
+    "candidate": 9,
+    "brief": "cards on a grid",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1794830498
+  },
+  {
     "id": "20261115-112928-820ffc4",
     "runId": "20261115-111021",
     "specVersion": 3,

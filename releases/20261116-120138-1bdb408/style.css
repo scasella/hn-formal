@@ -1,0 +1,161 @@
+:root {
+  --bg: #e9ebf0;
+  --card: #ffffff;
+  --text: #161a22;
+  --muted: #4b5263;
+  --link: #8a2f00;
+  --visited: #5e3a86;
+  --accent: #ff6600;
+  --line: #d3d7e0;
+  --chip: #eef1f6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b0d10;
+    --card: #15181e;
+    --text: #e8ecf1;
+    --muted: #a3adba;
+    --link: #ffb27a;
+    --visited: #d2b4f0;
+    --accent: #ff7a1a;
+    --line: #2a303b;
+    --chip: #1f242d;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--bg);
+  color: var(--text);
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+body { margin: 0; min-height: 100vh; background: var(--bg); overflow-wrap: anywhere; }
+
+a { color: var(--link); text-decoration: underline; }
+a:visited { color: var(--visited); }
+a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+header { background: #161a22; color: #ffffff; border-bottom: 4px solid var(--accent); }
+header > * { max-width: 80rem; margin: 0 auto; padding: 0.5rem 0.75rem; }
+header h1 { font-size: 1.1rem; padding-bottom: 0.1rem; }
+header a { color: #ffffff; font-weight: 700; }
+header a:visited { color: #e0d0ff; }
+header h1 a { text-decoration: none; }
+header h1 a:hover { text-decoration: underline; }
+
+main { max-width: 80rem; margin: 0 auto; padding: 1rem 0.75rem 1.5rem; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 0.9rem;
+}
+
+.more { margin-top: 1rem; text-align: center; font-weight: 700; }
+
+article.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--accent);
+  border-radius: 10px;
+  padding: 0.9rem 1rem;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 8%), 0 8px 18px rgb(0 0 0 / 6%);
+}
+
+article.card h2 { margin: 0; font-size: 1.05rem; line-height: 1.3; overflow-wrap: anywhere; }
+article.card h2 a { color: var(--text); font-weight: 700; text-decoration: none; }
+article.card h2 a:visited { color: var(--visited); }
+article.card h2 a:hover { text-decoration: underline; }
+
+.domain { margin: 0; }
+.domain span {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0.05rem 0.6rem;
+  border-radius: 999px;
+  background: var(--chip);
+  color: var(--muted);
+  font-size: 0.78rem;
+  overflow-wrap: anywhere;
+}
+
+.meta { margin-top: auto; font-size: 0.8rem; color: var(--muted); overflow-wrap: anywhere; }
+.meta a { color: var(--muted); }
+.meta a:visited { color: var(--muted); }
+
+article.story { max-width: 48rem; margin: 0 auto 1.25rem; }
+article.story h2 { font-size: 1.3rem; }
+
+[data-hn="text"] { margin-top: 0.5rem; padding-top: 0.5rem; border-top: 1px solid var(--line); overflow-wrap: anywhere; }
+[data-hn="text"] p { margin: 0.4rem 0; }
+[data-hn="text"] a { color: var(--link); text-decoration: underline; }
+
+ol.comments {
+  display: grid;
+  gap: 0.6rem;
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 0;
+  list-style: none;
+}
+
+ol.kids {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0.6rem 0 0;
+  padding: 0 0 0 0.7rem;
+  list-style: none;
+  border-left: 2px solid var(--line);
+}
+ol.kids:empty { display: none; }
+ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
+
+li[data-hn-comment] {
+  min-width: 0;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+}
+ol.kids ol.kids ol.kids ol.kids li[data-hn-comment] { border: 0; padding: 0.3rem 0 0; background: none; }
+
+.chead { font-size: 0.8rem; color: var(--muted); overflow-wrap: anywhere; }
+.chead a { color: var(--muted); }
+.chead a:visited { color: var(--muted); }
+li[data-hn-comment] [data-hn="text"] { margin-top: 0.35rem; padding-top: 0.35rem; }
+
+code, pre {
+  font-family: ui-monospace, Menlo, Consolas, monospace;
+  font-size: 0.82rem;
+  background: var(--chip);
+  border-radius: 4px;
+}
+code { padding: 0 0.25em; }
+pre {
+  margin: 0.4rem 0;
+  padding: 0.4rem 0.5rem;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+footer {
+  max-width: 80rem;
+  margin: 1.5rem auto 0;
+  padding: 1rem 0.75rem;
+  border-top: 4px solid var(--accent);
+  color: var(--muted);
+  font-size: 0.8rem;
+  overflow-wrap: anywhere;
+}
+footer p { margin: 0 0 0.4rem; }
+footer a { color: var(--link); }

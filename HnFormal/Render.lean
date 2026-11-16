@@ -1,5 +1,9 @@
 import HnFormal.Lemmas
-/-! Warm paper: a printed broadside. Stories are articles with an h2 title and a small-caps running line. No ol/ul anywhere in main. Markers come first in attribute lists so the lookup simp lemmas fire. -/
+/-!
+# Renderer: a card grid
+
+Stories are `article` cards with an `h2` title. Comments nest as indented cards.
+-/
 set_option maxHeartbeats 2000000
 set_option maxRecDepth 4096
 
@@ -32,8 +36,8 @@ def pageHead (titleParts : List String) : Dom :=
 
 def topNav : Dom :=
   .el "header" [] [
+    .el "h1" [] [a homeHref "HN, formally"],
     .el "nav" [] [
-      a homeHref "HN, formally", .text " | ",
       a (hnBase ++ "newest") "new", .text " | ",
       a (hnBase ++ "front") "past", .text " | ",
       a (hnBase ++ "newcomments") "comments", .text " | ",
@@ -58,42 +62,29 @@ def subline (now : Nat) (s : Item) : List Dom :=
     [.el "a" [("href", itemHref s.id), ("data-hn", "comments")] [.text "comments"]])
 
 def titleLine (s : Item) : Dom :=
-  .el "h2" []
-    ([.el "a" [("href", titleHref s), ("data-hn", "title")] [.text (displayTitle s)]] ++
-     (s.url.toList.flatMap fun u => [.text " (", field "domain" (domainOf u), .text ")"]))
+  .el "h2" [] [.el "a" [("href", titleHref s), ("data-hn", "title")] [.text (displayTitle s)]]
 
 def storyRow (now : Nat) (s : Item) : Dom :=
-  .el "article" [("data-hn-story", toString s.id)] [
+  .el "article" [("data-hn-story", toString s.id), ("class", "card")] [
     titleLine s,
-    .el "div" [("class", "subline")] (subline now s)]
-
-/-! ## Front page -/
-
-def renderFront (f : Front) : Dom :=
-  .el "html" [("lang", "en")] [
-    pageHead frontTitle,
-    .el "body" [] [
-      topNav,
-      .el "main" [] [
-        .el "div" [("class", "stories")] (f.stories.map (storyRow f.fetchedAt)),
-        .el "div" [("class", "more")] [a (hnBase ++ "news?p=2") "More"]],
-      footer]]
-
-/-! ## Thread page -/
+    .el "p" [("class", "domain")] (s.url.toList.map fun u => field "domain" (domainOf u)),
+    .el "div" [("class", "meta")] (subline now s)]
 
 def storyHeader (now : Nat) (s : Item) : Dom :=
-  .el "article" [("data-hn-story", toString s.id)]
-    ([titleLine s, .el "div" [("class", "subline")] (subline now s)] ++
+  .el "article" [("data-hn-story", toString s.id), ("class", "card story")]
+    ([titleLine s,
+      .el "p" [("class", "domain")] (s.url.toList.map fun u => field "domain" (domainOf u)),
+      .el "div" [("class", "meta")] (subline now s)] ++
      (s.text.toList.map fun t => .el "div" [("data-hn", "text")] (Sanitize.body t)))
 
 def wrap (now : Nat) (c : Item) (kids : List Dom) : Dom :=
-  .el "div" [("data-hn-comment", toString c.id)] [
+  .el "li" [("data-hn-comment", toString c.id), ("class", "comment")] [
     .el "div" [("class", "chead")]
       ((c.author.toList.flatMap fun u => [.el "a" [("href", userHref u), ("data-hn", "by")] [.text (displayUser u)], .text " "]) ++
        (c.time.toList.map fun t => field "age" (ageString now t)) ++
        (if c.deleted || c.dead then [.text " [deleted]"] else [])),
     .el "div" [("data-hn", "text")] (commentBody c),
-    .el "div" [("class", "kids")] kids]
+    .el "ol" [("class", "kids")] kids]
 
 mutual
 def renderComment (now : Nat) : CTree → Dom
@@ -103,6 +94,16 @@ def renderComments (now : Nat) : List CTree → List Dom
   | k :: ks => renderComment now k :: renderComments now ks
 end
 
+def renderFront (f : Front) : Dom :=
+  .el "html" [("lang", "en")] [
+    pageHead frontTitle,
+    .el "body" [] [
+      topNav,
+      .el "main" [] [
+        .el "div" [("class", "grid")] (f.stories.map (storyRow f.fetchedAt)),
+        .el "div" [("class", "more")] [a (hnBase ++ "news?p=2") "More"]],
+      footer]]
+
 def renderThread (t : Thread) : Dom :=
   .el "html" [("lang", "en")] [
     pageHead [displayTitle t.story, " | ", "HN, formally"],
@@ -110,7 +111,7 @@ def renderThread (t : Thread) : Dom :=
       topNav,
       .el "main" [] [
         storyHeader t.fetchedAt t.story,
-        .el "div" [("class", "comments")] (renderComments t.fetchedAt t.comments)],
+        .el "ol" [("class", "comments")] (renderComments t.fetchedAt t.comments)],
       footer]]
 
 def render : Page → Dom
@@ -128,27 +129,26 @@ theorem subline_ok (p : Page) (now : Nat) (s : Item) (hi : s ∈ p.items) (hnow 
 
 theorem titleLine_ok (p : Page) (s : Item) (hi : s ∈ p.items) :
     (nodes (titleLine s)).all (commonP p) = true := by
-  unfold titleLine field
-  cases hu : s.url <;> hn_auto
+  unfold titleLine; hn_auto
 
 theorem storyRow_ok (p : Page) (now : Nat) (s : Item) (hi : s ∈ p.items) (hnow : p.fetchedAt = now) :
     (nodes (storyRow now s)).all (commonP p) = true := by
   have h1 := titleLine_ok p s hi
   have h2 := subline_ok p now s hi hnow
-  unfold storyRow
-  hn_auto
+  unfold storyRow field
+  cases hu : s.url <;> hn_auto
 
 theorem storyHeader_ok (p : Page) (now : Nat) (s : Item) (hi : s ∈ p.items) (hnow : p.fetchedAt = now) :
     (nodes (storyHeader now s)).all (commonP p) = true := by
   have h1 := titleLine_ok p s hi
   have h2 := subline_ok p now s hi hnow
   have h3 := body_commonP p s hi
-  unfold storyHeader
+  unfold storyHeader field
   cases ht : s.text with
-  | none => hn_auto
+  | none => cases hu : s.url <;> hn_auto
   | some x =>
     have h3' : (nodesList (Sanitize.body x)).all (commonP p) = true := by simpa [itemBody, ht] using h3
-    hn_auto
+    cases hu : s.url <;> hn_auto
 
 theorem topNav_ok (p : Page) : (nodes topNav).all (commonP p) = true := by
   unfold topNav a; hn_auto
@@ -303,7 +303,6 @@ theorem thread_ok (t : Thread) : ThreadOk t (renderThread t) := by
     rw [this]
     exact htrees.2
 
-/-- THE THEOREM. -/
 theorem render_ok : ∀ p : Page, Spec p (render p)
   | .front f => front_ok f
   | .thread t => thread_ok t
