@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261117-122219-a68420f",
+    "runId": "20261117-120217",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 6.15,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 77,
+      "notes": "The front page is a real table with visible Title, Domain, Score, Author, Age and Comments headers, monospace right-aligned numbers, thin cell grid, and only the lead row highlighted, which matches the spreadsheet brief closely. At 375px the table keeps all seven columns but squeezes Score, Author and Comments into one-character-wide columns, so words break mid-letter and the page becomes hard to scan. The frozen header feel is not evident and the 'Comments' cell wraps awkwardly ('comment s') at 1280px, which is a visible alignment flaw. The thread page is sensible, with nested comment indentation and the lead row carried over, though the header table is cramped.",
+      "adherence": 82,
+      "novelty": 88,
+      "craft": 58
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 2,
+    "costUsd": 0.1184,
+    "previousRelease": "20261116-120138-1bdb408",
+    "diffStat": "+235 -250",
+    "candidate": 6,
+    "brief": "spreadsheet",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1794918139
+  },
+  {
     "id": "20261116-120138-1bdb408",
     "runId": "20261116-114015",
     "specVersion": 3,

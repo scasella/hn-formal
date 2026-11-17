@@ -1,0 +1,125 @@
+/* hn-formal: a spreadsheet. Ruled cells, a bold header row, tabular figures. */
+:root {
+  --bg: #ffffff;
+  --grid: #c3c9d3;
+  --head: #e4e8ee;
+  --ink: #1c2430;
+  --muted: #4b5563;
+  --link: #0a4a9e;
+  --visited: #5b2a86;
+  --lead: #fff1b8;
+  --focus: #b45309;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14171c;
+    --grid: #3a424e;
+    --head: #222832;
+    --ink: #e6ebf2;
+    --muted: #b7bfcb;
+    --link: #9cc3ff;
+    --visited: #d2b8f2;
+    --lead: #3a3316;
+    --focus: #f5b041;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+  font: 13px/1.4 ui-monospace, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+  -webkit-text-size-adjust: 100%;
+}
+
+body { margin: 0; min-height: 100vh; background: var(--bg); overflow-wrap: anywhere; }
+
+a { color: var(--link); text-decoration: underline; }
+a:visited { color: var(--visited); }
+a:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+
+/* Formula bar across the top. */
+header { background: var(--head); border-bottom: 2px solid var(--grid); color: var(--muted); }
+header nav { padding: 0.4rem 0.6rem; line-height: 1.8; }
+header nav a { color: var(--ink); font-weight: bold; text-decoration: none; }
+header nav a:visited { color: var(--ink); }
+header nav a:hover { text-decoration: underline; }
+
+main { padding: 0.5rem; }
+
+/* The grid. The scroll wrapper keeps the page itself from scrolling sideways. */
+.scroll { max-width: 100%; overflow-x: auto; }
+table.sheet {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.sheet th, .sheet td {
+  border: 1px solid var(--grid);
+  padding: 0.3rem 0.4rem;
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+.sheet thead th { background: var(--head); font-weight: bold; }
+/* Columns: 1 Title, 2 Domain, 3 Score, 4 Author, 5 Age, 6 Comments. */
+.sheet th:nth-child(3), .sheet td:nth-child(3),
+.sheet th:nth-child(5), .sheet td:nth-child(5),
+.sheet th:nth-child(6), .sheet td:nth-child(6) { text-align: right; }
+.sheet td:nth-child(2), .sheet td:nth-child(4), .sheet td:nth-child(5) { color: var(--muted); }
+
+/* The lead row is the only highlight. */
+tbody tr:first-child td { background: var(--lead); }
+td.title a { font-weight: bold; }
+td.title [data-hn="text"] { margin-top: 0.4rem; font-weight: normal; }
+[data-hn="text"] p { margin: 0.3rem 0; }
+[data-hn="text"] p:first-child { margin-top: 0; }
+
+code, pre { font-family: inherit; font-size: 11px; background: var(--head); }
+code { padding: 0 0.2em; }
+pre {
+  padding: 0.3rem 0.4rem;
+  margin: 0.3rem 0;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* Comments: ruled cells that nest under their parent. */
+ol.comments, ol.kids { list-style: none; margin: 0; padding: 0; }
+ol.comments { margin-top: 0.75rem; }
+li[data-hn-comment] {
+  margin-top: -1px;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--grid);
+  background: var(--bg);
+}
+.chead { color: var(--muted); font-size: 11px; }
+.chead a { color: var(--muted); }
+ol.kids {
+  margin: 0.2rem 0 0 0.5rem;
+  padding-left: 0.5rem;
+  border-left: 2px solid var(--grid);
+}
+ol.kids:empty { display: none; }
+ol.kids ol.kids ol.kids ol.kids { margin: 0; padding: 0; border: 0; }
+
+.more { padding: 0.5rem 0 0; }
+.more a { font-weight: bold; }
+
+footer {
+  margin-top: 0.5rem;
+  padding: 0.6rem 0.5rem;
+  border-top: 2px solid var(--grid);
+  color: var(--muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+footer p { margin: 0 0 0.4rem; }
+
+@media (min-width: 48rem) {
+  main { padding: 0.75rem 1rem; }
+  table.sheet { font-size: 13px; }
+}
