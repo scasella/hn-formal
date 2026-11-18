@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261118-121417-4b52967",
+    "runId": "20261118-115426",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 7.03,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 76,
+      "notes": "The front page delivers a clear vertical spine with orange age timestamps on the left and titles branching right, matching the brief's timeline grammar, and the thread page uses a nested spine for comments. The age is visually the most prominent metadata on the front page, as requested. However, the thread page's comment spine is shallow with no visible nesting depth for replies, and the 375px view truncates to about 30 stories with cramped metadata wrapping. The page shape is genuinely different from the live table, though the story rows are fairly uniform.",
+      "adherence": 84,
+      "novelty": 68,
+      "craft": 72
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 1,
+    "costUsd": 0.1056,
+    "previousRelease": "20261117-122219-a68420f",
+    "diffStat": "+280 -223",
+    "candidate": 14,
+    "brief": "timeline",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1795004057
+  },
+  {
     "id": "20261117-122219-a68420f",
     "runId": "20261117-120217",
     "specVersion": 3,

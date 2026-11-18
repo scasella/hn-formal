@@ -1,0 +1,167 @@
+/* hn-formal v2: a timeline. Ink ground, amber spine. Each story is a node on the spine and its age is the timestamp. */
+:root {
+  --ink: #0d1321;
+  --panel: #151d31;
+  --code: #1b2540;
+  --text: #e6ebf2;
+  --muted: #9aa9bf;
+  --age: #ffb547;
+  --link: #8ccfff;
+  --visited: #c9b3ff;
+  --rule: #2a3550;
+  --guide: #3c4b6b;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--ink);
+  color: var(--text);
+  font: 15px/1.45 system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+body { margin: 0; min-height: 100vh; overflow-wrap: anywhere; }
+body > * { max-width: 100%; }
+
+a { color: var(--link); text-decoration: underline; }
+a:visited { color: var(--visited); }
+a:focus-visible { outline: 2px solid var(--age); outline-offset: 2px; }
+
+header { background: var(--panel); border-bottom: 1px solid var(--rule); color: var(--muted); }
+header nav { max-width: 56rem; margin: 0 auto; padding: 0.6rem 0.75rem; }
+header nav a { color: var(--text); font-weight: 600; text-decoration: none; }
+header nav a:visited { color: var(--text); }
+header nav a:hover { text-decoration: underline; }
+
+main { max-width: 56rem; margin: 0 auto; padding: 0.75rem 0.75rem 1.5rem; }
+
+/* Spine rows: the first column holds the age, the second the story. */
+ol.timeline { list-style: none; margin: 0; padding: 0; }
+ol.timeline > li,
+article[data-hn-story] {
+  display: grid;
+  grid-template-columns: minmax(0, 6.5rem) minmax(0, 1fr);
+  column-gap: 1rem;
+}
+
+.when { padding-top: 0.1rem; text-align: right; min-width: 0; }
+
+time {
+  display: inline-block;
+  color: var(--age);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.what {
+  position: relative;
+  min-width: 0;
+  padding: 0 0 1.1rem 1rem;
+  border-left: 2px solid var(--age);
+}
+
+.what::before {
+  content: "";
+  position: absolute;
+  left: calc(-0.4rem - 1px);
+  top: 0.4rem;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: var(--age);
+  box-shadow: 0 0 0 3px var(--ink);
+}
+
+.titleline { font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; }
+a[data-hn="title"] { color: var(--text); font-weight: 700; text-decoration: none; }
+a[data-hn="title"]:visited { color: var(--visited); }
+a[data-hn="title"]:hover { text-decoration: underline; }
+span[data-hn="domain"] { color: var(--muted); font-weight: 400; }
+
+.subline { margin-top: 0.2rem; color: var(--muted); font-size: 0.85rem; }
+.subline a { color: var(--muted); text-decoration: none; }
+.subline a:visited { color: var(--muted); }
+.subline a:hover { text-decoration: underline; }
+
+.more { margin: 0.5rem 0 0 8.5rem; font-weight: 700; }
+.more a { text-decoration: none; }
+.more a:hover { text-decoration: underline; }
+
+/* Thread page: the story is the first node, comments hang from the same spine. */
+article[data-hn-story] { padding-top: 0.25rem; }
+article[data-hn-story] time { font-size: 1.2rem; }
+article[data-hn-story] .titleline { font-size: 1.2rem; }
+article[data-hn-story] .what { padding-bottom: 0.9rem; }
+
+[data-hn="text"] { overflow-wrap: anywhere; margin-top: 0.35rem; }
+[data-hn="text"] p { margin: 0.35rem 0; }
+[data-hn="text"] p:first-child { margin-top: 0; }
+
+code, pre {
+  font: 0.85rem/1.4 ui-monospace, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+  background: var(--code);
+}
+code { padding: 0 0.25em; border-radius: 3px; }
+pre {
+  margin: 0.4rem 0;
+  padding: 0.4rem 0.6rem;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  overflow-x: auto;
+}
+pre code { padding: 0; background: none; }
+
+ol.comments {
+  list-style: none;
+  margin: 0 0 0 7.5rem;
+  padding: 0 0 0 1rem;
+  border-left: 2px solid var(--age);
+}
+
+ol.kids {
+  list-style: none;
+  margin: 0.3rem 0 0;
+  padding: 0 0 0 1rem;
+  border-left: 2px solid var(--guide);
+}
+
+ol.comments > li,
+ol.kids > li { position: relative; min-width: 0; padding: 0.5rem 0 0.1rem; }
+
+ol.comments > li::before,
+ol.kids > li::before {
+  content: "";
+  position: absolute;
+  left: calc(-1.4rem - 1px);
+  top: 0.7rem;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  background: var(--muted);
+  box-shadow: 0 0 0 3px var(--ink);
+}
+
+/* Depth cap: past four levels, replies stop indenting so deep threads fit 375px. */
+ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
+ol.kids ol.kids ol.kids ol.kids > li::before { display: none; }
+
+.chead { color: var(--muted); font-size: 0.85rem; line-height: 1.45; }
+.chead a { color: var(--muted); text-decoration: none; }
+.chead a:visited { color: var(--muted); }
+.chead a:hover { text-decoration: underline; }
+.chead time { font-size: 0.85rem; }
+
+footer {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 1rem 0.75rem 2rem;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+footer p { margin: 0 0 0.5rem; }
+footer a { color: var(--link); }
