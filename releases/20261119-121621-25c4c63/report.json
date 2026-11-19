@@ -1,0 +1,38 @@
+{
+  "id": "20261119-121621-25c4c63",
+  "runId": "20261119-115143",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 5.7,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 80,
+    "notes": "The front page at 1280px is a clear card grid of four columns with bordered, shadowed cards, title headings, domain tags, and metadata along the bottom, closely matching the brief. At 375px it collapses to one column as requested. The thread page has nested comment cards with a left-rule indent, though the indent for replies is subtle and the nesting depth is shallow. Metadata is small and quiet relative to titles, but card bottoms have uneven empty space where titles are short, and the palette is restrained rather than especially bold.",
+    "adherence": 84,
+    "novelty": 82,
+    "craft": 72
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 1,
+  "costUsd": 0.0813,
+  "previousRelease": "20261118-121417-4b52967",
+  "diffStat": "+196 -180",
+  "candidate": 6,
+  "brief": "cards on a grid",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1795090581
+}

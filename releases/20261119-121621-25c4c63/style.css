@@ -1,0 +1,222 @@
+/* hn-formal v2: cards on a grid. Light and dark via prefers-color-scheme. */
+:root {
+  --page: #e9edf3;
+  --card: #ffffff;
+  --card-line: #d3d9e4;
+  --ink: #18202e;
+  --muted: #4a5366;
+  --link: #1d4ed8;
+  --visited: #6d28d9;
+  --bar: #1e2a3a;
+  --bar-ink: #f5f7fb;
+  --chip: #e3e9f5;
+  --chip-ink: #2d3a52;
+  --rule: #eef1f6;
+  --guide: #aab6cc;
+  --code: #eef1f7;
+  --focus: #1d4ed8;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --page: #0d1117;
+    --card: #161b26;
+    --card-line: #2a3346;
+    --ink: #e6ebf4;
+    --muted: #a9b4c8;
+    --link: #8ab4ff;
+    --visited: #c4a7ff;
+    --bar: #0a0e15;
+    --bar-ink: #e6ebf4;
+    --chip: #242e42;
+    --chip-ink: #d3dcee;
+    --rule: #252d3d;
+    --guide: #3b4860;
+    --code: #0d1117;
+    --focus: #8ab4ff;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--page);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--page);
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+
+body > * { max-width: 100%; }
+
+a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
+a:visited { color: var(--visited); }
+a:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+
+/* Top bar */
+header { background: var(--bar); }
+header nav {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 0.6rem 1rem;
+  color: var(--bar-ink);
+  line-height: 1.9;
+}
+header nav a, header nav a:visited { color: var(--bar-ink); text-decoration: none; font-weight: 600; }
+header nav a:hover { text-decoration: underline; }
+
+main {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 1rem;
+}
+
+/* Front page: a responsive grid of story cards. */
+.grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+  align-items: stretch;
+}
+
+.grid > article {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 0.9rem 1rem 0.7rem;
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-radius: 12px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(15, 23, 42, 0.05);
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.45rem;
+}
+.grid > article > .head { margin-bottom: 0.7rem; }
+
+.grid h2, main > article h2 {
+  margin: 0;
+  font-size: 1.02rem;
+  line-height: 1.3;
+  font-weight: 700;
+}
+
+a[data-hn="title"] { color: var(--ink); text-decoration: none; }
+a[data-hn="title"]:visited { color: var(--ink); }
+a[data-hn="title"]:hover { text-decoration: underline; }
+
+/* Domain as a small chip. */
+[data-hn="domain"] {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: var(--chip);
+  color: var(--chip-ink);
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+/* Metadata along the bottom edge of the card. */
+.subline {
+  margin-top: auto;
+  padding-top: 0.55rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.subline a { color: var(--link); }
+.subline a:visited { color: var(--visited); }
+
+.more { text-align: center; padding: 1.5rem 0 0.5rem; }
+.more a, .more a:visited {
+  display: inline-block;
+  padding: 0.5rem 1.4rem;
+  border-radius: 999px;
+  background: var(--bar);
+  color: var(--bar-ink);
+  font-weight: 600;
+  text-decoration: none;
+}
+.more a:hover { text-decoration: underline; }
+
+/* Thread page: the story as one large card, then the comment cards. */
+main > article[data-hn-story] {
+  padding: 1rem 1.1rem 0.8rem;
+  margin-bottom: 1.25rem;
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-radius: 12px;
+}
+main > article[data-hn-story] h2 { font-size: 1.3rem; }
+main > article[data-hn-story] > .head { margin-bottom: 0.7rem; }
+
+[data-hn="text"] { margin: 0.6rem 0 0; overflow-wrap: anywhere; }
+[data-hn="text"] p { margin: 0.4rem 0; }
+[data-hn="text"] p:first-child { margin-top: 0; }
+
+code, pre {
+  font-family: ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.85em;
+}
+code { background: var(--code); padding: 0 0.25em; border-radius: 3px; }
+pre {
+  margin: 0.5rem 0;
+  padding: 0.5rem 0.6rem;
+  max-width: 100%;
+  background: var(--code);
+  border-radius: 6px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+pre code { background: none; padding: 0; }
+
+ol.comments, ol.kids { list-style: none; margin: 0; padding: 0; }
+ol.comments { display: grid; gap: 0.7rem; }
+
+li[data-hn-comment] {
+  min-width: 0;
+  padding: 0.6rem 0.75rem;
+  background: var(--card);
+  border: 1px solid var(--card-line);
+  border-radius: 10px;
+}
+
+ol.kids {
+  margin-top: 0.6rem;
+  padding-left: 0.7rem;
+  border-left: 2px solid var(--guide);
+}
+ol.kids > li[data-hn-comment] + li[data-hn-comment] { margin-top: 0.5rem; }
+/* Indent stops after four levels so deep threads still fit a 375px screen. */
+ol.kids ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
+
+.chead {
+  margin-bottom: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+footer {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 1rem;
+  border-top: 1px solid var(--card-line);
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+footer p { margin: 0 0 0.4rem; }
