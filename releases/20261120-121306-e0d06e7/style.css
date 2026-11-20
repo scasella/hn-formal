@@ -1,0 +1,169 @@
+/* hn-formal: a vertical timeline. Stories are nodes on a spine; each age is the timestamp on it. */
+
+:root {
+  --bg: #eef3f7;
+  --ink: #0d1b2a;
+  --muted: #3e5164;
+  --link: #0b4f8a;
+  --visit: #5a3d7a;
+  --spine: #9fb3c6;
+  --dot: #0a6d69;
+  --code: #dde6ee;
+  --focus: #0a6d69;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c1620;
+    --ink: #dce7f0;
+    --muted: #9db0c2;
+    --link: #8ec5ff;
+    --visit: #c7b3e6;
+    --spine: #2c4156;
+    --dot: #5fd0c6;
+    --code: #17283a;
+    --focus: #5fd0c6;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+body { margin: 0; min-height: 100vh; overflow-wrap: anywhere; }
+body > * { max-width: 100%; }
+
+a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
+a:visited { color: var(--visit); }
+a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+header { border-bottom: 3px solid var(--spine); }
+header nav { max-width: 52rem; margin: 0 auto; padding: 0.6rem 0.75rem; font-size: 13px; line-height: 1.9; }
+header nav a { color: var(--ink); font-weight: 700; text-decoration: none; }
+header nav a:visited { color: var(--ink); }
+header nav a:hover { text-decoration: underline; }
+
+main { max-width: 52rem; margin: 0 auto; padding: 1rem 0.75rem 2rem; }
+
+/* Spine geometry: time column, spine column, entry column. */
+ol.spine, article[data-hn-story] { --cols: 6.5rem 1.5rem minmax(0, 1fr); }
+
+ol.spine { list-style: none; margin: 0; padding: 0; }
+ol.spine > li, article[data-hn-story] {
+  display: grid;
+  grid-template-columns: var(--cols);
+  position: relative;
+}
+
+ol.spine > li::after, article[data-hn-story]::after {
+  content: "";
+  grid-column: 2;
+  grid-row: 1 / -1;
+  justify-self: center;
+  width: 2px;
+  background: var(--spine);
+}
+ol.spine > li::before, article[data-hn-story]::before {
+  content: "";
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: center;
+  align-self: start;
+  margin-top: 0.4rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: var(--dot);
+  box-shadow: 0 0 0 3px var(--bg);
+  z-index: 1;
+}
+
+ol.spine > li > time, article[data-hn-story] > time {
+  grid-column: 1;
+  grid-row: 1;
+  padding: 0.15rem 0.5rem 0 0;
+  text-align: right;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--dot);
+  font-variant-numeric: tabular-nums;
+}
+ol.spine > li > .entry { grid-column: 3; grid-row: 1; min-width: 0; padding-bottom: 1.5rem; }
+article[data-hn-story] { padding-bottom: 1rem; margin-bottom: 1rem; }
+article[data-hn-story] > :not(time) { grid-column: 3; min-width: 0; }
+
+.titleline { font-size: 16px; line-height: 1.3; overflow-wrap: anywhere; }
+a[data-hn="title"] { color: var(--ink); font-weight: 700; text-decoration: none; }
+a[data-hn="title"]:visited { color: var(--ink); }
+a[data-hn="title"]:hover { text-decoration: underline; }
+article[data-hn-story] .titleline { font-size: 19px; }
+.titleline span[data-hn="domain"] { color: var(--muted); font-size: 13px; }
+
+.subline { font-size: 13px; color: var(--muted); margin-top: 0.1rem; }
+.subline a, .chead a { color: var(--muted); }
+
+.more { padding: 0.75rem 0 0 8rem; font-weight: 700; }
+
+/* Comments: a nested spine. Depth is capped so deep threads still fit 375px. */
+ol.comments, ol.kids {
+  list-style: none;
+  margin: 0.25rem 0 0 0.25rem;
+  padding: 0 0 0 0.9rem;
+  border-left: 2px solid var(--spine);
+}
+ol.comments { margin-top: 0.5rem; }
+ol.kids:empty { display: none; }
+ol.kids ol.kids ol.kids ol.kids { margin: 0; padding: 0; border-left: 0; }
+li[data-hn-comment] { padding: 0.5rem 0 0.2rem; }
+li[data-hn-comment] > time {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--dot);
+}
+.chead { font-size: 13px; color: var(--muted); }
+
+[data-hn="text"] { overflow-wrap: anywhere; margin: 0.3rem 0; }
+[data-hn="text"] p { margin: 0.4rem 0; }
+
+code, pre {
+  font: 13px/1.45 ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
+  background: var(--code);
+}
+code { padding: 0 0.25em; }
+pre {
+  margin: 0.4rem 0;
+  padding: 0.4rem 0.6rem;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+pre code { padding: 0; background: none; }
+
+footer {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 1rem 0.75rem 1.5rem;
+  border-top: 3px solid var(--spine);
+  color: var(--muted);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+footer p { margin: 0.3rem 0; }
+footer a { color: var(--link); }
+
+@media (min-width: 48rem) {
+  ol.spine, article[data-hn-story] { --cols: 9rem 1.75rem minmax(0, 1fr); }
+  ol.comments, ol.kids { padding-left: 1.25rem; }
+  .more { padding-left: 10.75rem; }
+}

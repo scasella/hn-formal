@@ -1,0 +1,38 @@
+{
+  "id": "20261120-121306-e0d06e7",
+  "runId": "20261120-115258",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 5.52,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 82,
+    "notes": "The front page reads immediately as a vertical timeline: a continuous spine with teal nodes, ages right-aligned in bold teal caps as the most prominent metadata, and titles branching off to the right. The thread page carries the same grammar, though its comment nesting is shallow: only one level of left rule is visible and the nested spine for comments is weak, so depth is hard to read. At 375px the timeline holds up with wrapped ages and titles, but the age column squeezes the titles into narrow lines and the spacing gets tight. Metadata lines and the item domain sit in a lighter gray that stays quiet, which keeps titles dominant.",
+    "adherence": 88,
+    "novelty": 85,
+    "craft": 72
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 1,
+  "costUsd": 0.1043,
+  "previousRelease": "20261119-121621-25c4c63",
+  "diffStat": "+187 -212",
+  "candidate": 12,
+  "brief": "timeline",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1795176786
+}
