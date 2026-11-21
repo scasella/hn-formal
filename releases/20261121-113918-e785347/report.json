@@ -1,0 +1,38 @@
+{
+  "id": "20261121-113918-e785347",
+  "runId": "20261121-112041",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 7.31,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 77,
+    "notes": "The front page delivers the brief's core: every story is a bordered, shadowed card with a bold heading, a domain tag, and metadata along the bottom, arranged 4-across at 1280px and collapsing to one column at 375px. The thread page uses nested indented cards for comments, as requested. Missing pieces are minor: on the front page, metadata wraps awkwardly across lines and rank numbers are absent, and the 375px view stays readable but the card titles and metadata sit close in weight. Overall a clearly different page shape from the live list.",
+    "adherence": 82,
+    "novelty": 78,
+    "craft": 70
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 3,
+  "costUsd": 0.1148,
+  "previousRelease": "20261120-121306-e0d06e7",
+  "diffStat": "+128 -220",
+  "candidate": 4,
+  "brief": "cards on a grid",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1795261158
+}
