@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261122-120004-96cb2f2",
+    "runId": "20261122-113814",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 7.11,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 80,
+      "notes": "The candidate delivers the warm paper brief well: cream ground, dark brown ink, a serif text face, book-measure column around 610px, and small-caps metadata running under each title with no list numbering. Stories read as prose-like entries separated by hairline rules, a genuinely different shape from the live card grid. The 375px view reflows cleanly, though the title and metadata weights are close and the thread page's nested comment blockquote is a nice touch. The brief's broadside feel (heavier masthead display, more print-like rhythm) is only partly realized, and the thread page's code table sits slightly outside the prose voice.",
+      "adherence": 85,
+      "novelty": 80,
+      "craft": 74
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 0,
+    "costUsd": 0.0438,
+    "previousRelease": "20261121-113918-e785347",
+    "diffStat": "+219 -117",
+    "candidate": 15,
+    "brief": "warm paper",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1795348804
+  },
+  {
     "id": "20261121-113918-e785347",
     "runId": "20261121-112041",
     "specVersion": 3,

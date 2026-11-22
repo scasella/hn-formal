@@ -1,0 +1,176 @@
+/* hn-formal: warm paper. A printed broadside on cream stock: dark brown ink, one book-measure column, serif headlines, small-caps running lines, hairline rules. No lists in main. No @import, no url(), no generated text. */
+
+:root {
+  --paper: #f4ecd8;
+  --ink: #2a1f14;
+  --muted: #5e4a36;
+  --link: #7b2d0f;
+  --visited: #6a3d5c;
+  --rule: #b9a886;
+  --code-bg: #ebe0c8;
+  --focus: #1f4f6b;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 17px;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+}
+
+@media (min-width: 48rem) {
+  html { font-size: 18px; }
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--paper);
+  overflow-wrap: anywhere;
+}
+
+body > * { max-width: 100%; }
+
+a {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.18em;
+}
+a:visited { color: var(--visited); }
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* Masthead: a centred line of small caps over a double rule. */
+header { border-bottom: 3px double var(--ink); }
+header nav {
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 0.9rem 1rem 0.75rem;
+  text-align: center;
+  font-variant: small-caps;
+  font-size: 1.02rem;
+  letter-spacing: 0.03em;
+}
+header nav a { color: var(--ink); }
+header nav a:visited { color: var(--ink); }
+header nav a:first-child { font-size: 1.45rem; font-weight: bold; letter-spacing: 0; }
+
+/* The column: book measure, centred on the page. */
+main {
+  max-width: 36rem;
+  margin: 0 auto;
+  padding: 1.25rem 1rem 1rem;
+}
+
+.stories { margin: 0; }
+
+article[data-hn-story] {
+  padding: 0.95rem 0 1rem;
+  border-top: 1px solid var(--rule);
+}
+.stories > article:first-child { border-top: 0; padding-top: 0.2rem; }
+
+h2 {
+  margin: 0;
+  font-size: 1.3rem;
+  line-height: 1.22;
+  font-weight: bold;
+  text-wrap: balance;
+}
+h2 a { color: var(--ink); }
+h2 a:visited { color: var(--visited); }
+h2 span[data-hn="domain"] {
+  font-size: 0.78em;
+  font-weight: normal;
+  font-style: italic;
+  color: var(--muted);
+}
+
+/* Running line: small caps under each headline. */
+.subline {
+  margin-top: 0.3rem;
+  font-variant: small-caps;
+  font-size: 0.98rem;
+  letter-spacing: 0.035em;
+  line-height: 1.55;
+  color: var(--muted);
+}
+.subline [data-hn="score"], .subline [data-hn="descendants"] { color: var(--ink); font-weight: bold; }
+.subline a { color: var(--ink); }
+
+.more {
+  margin-top: 1.4rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid var(--rule);
+  font-variant: small-caps;
+  font-size: 1.08rem;
+  letter-spacing: 0.04em;
+}
+.more a { font-weight: bold; }
+
+/* Footer: colophon under a double rule. */
+footer {
+  max-width: 36rem;
+  margin: 2.5rem auto 0;
+  padding: 1rem 1rem 2rem;
+  border-top: 3px double var(--ink);
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+footer p { margin: 0 0 0.6rem; }
+footer a { color: var(--link); }
+
+/* Thread: the story as a full article, then the comments. */
+main > article[data-hn-story] {
+  padding: 0.25rem 0 1.2rem;
+  border-top: 0;
+  border-bottom: 1px solid var(--rule);
+}
+main > article[data-hn-story] h2 { font-size: 1.62rem; line-height: 1.16; }
+main > article[data-hn-story] .subline { margin-top: 0.45rem; }
+
+[data-hn="text"] { margin: 0.6rem 0 0; overflow-wrap: anywhere; }
+[data-hn="text"] p { margin: 0 0 0.75rem; }
+[data-hn="text"] p:last-child { margin-bottom: 0; }
+
+code, pre {
+  font-family: ui-monospace, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 0.86em;
+  background: var(--code-bg);
+}
+code { padding: 0 0.2em; }
+pre {
+  margin: 0.5rem 0;
+  padding: 0.4rem 0.55rem;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+pre code { padding: 0; background: none; }
+
+.comments { margin-top: 1.1rem; }
+div[data-hn-comment] { padding-top: 0.7rem; }
+div[data-hn-comment] + div[data-hn-comment] { border-top: 1px dotted var(--rule); }
+.chead {
+  font-variant: small-caps;
+  font-size: 0.92rem;
+  letter-spacing: 0.03em;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.chead a { color: var(--ink); }
+
+/* Replies step in from a margin rule; depth is capped so 375px still fits. */
+.kids {
+  margin: 0.45rem 0 0 0.7rem;
+  padding-left: 0.7rem;
+  border-left: 1px solid var(--rule);
+}
+.kids .kids .kids .kids { margin-left: 0; padding-left: 0; border-left: 0; }
