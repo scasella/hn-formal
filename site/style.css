@@ -1,176 +1,72 @@
-/* hn-formal: warm paper. A printed broadside on cream stock: dark brown ink, one book-measure column, serif headlines, small-caps running lines, hairline rules. No lists in main. No @import, no url(), no generated text. */
-
-:root {
-  --paper: #f4ecd8;
-  --ink: #2a1f14;
-  --muted: #5e4a36;
-  --link: #7b2d0f;
-  --visited: #6a3d5c;
-  --rule: #b9a886;
-  --code-bg: #ebe0c8;
-  --focus: #1f4f6b;
+/* hn-formal v2: index cards on a grid, cobalt accents. Styles the DOM from HnFormal/Render.lean. */
+:root { --bg: #e7ecf3; --card: #ffffff; --ink: #141a26; --muted: #4a5568; --link: #1e40af; --visited: #6b21a8; --accent: #3b5bdb; --tag: #dfe7ff; --tag-ink: #1e3a8a; --edge: #c9d3e3; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1117; --card: #161c27; --ink: #e6ebf5; --muted: #a3afc2; --link: #9dbcff; --visited: #cdb4ff; --accent: #6d8dff; --tag: #1f2b47; --tag-ink: #c9d8ff; --edge: #2a3445; }
 }
 
 * { box-sizing: border-box; }
-
-html {
-  background: var(--paper);
-  color: var(--ink);
-  font-family: Georgia, "Times New Roman", Times, serif;
-  font-size: 17px;
-  line-height: 1.5;
-  -webkit-text-size-adjust: 100%;
-}
-
-@media (min-width: 48rem) {
-  html { font-size: 18px; }
-}
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  background: var(--paper);
-  overflow-wrap: anywhere;
-}
-
-body > * { max-width: 100%; }
-
-a {
-  color: var(--link);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.18em;
-}
+html { background: var(--bg); color: var(--ink); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-text-size-adjust: 100%; }
+body { margin: 0; min-height: 100vh; overflow-wrap: anywhere; }
+a { color: var(--link); }
 a:visited { color: var(--visited); }
-a:hover { text-decoration-thickness: 2px; }
-a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+a:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 
-/* Masthead: a centred line of small caps over a double rule. */
-header { border-bottom: 3px double var(--ink); }
-header nav {
-  max-width: 36rem;
-  margin: 0 auto;
-  padding: 0.9rem 1rem 0.75rem;
-  text-align: center;
-  font-variant: small-caps;
-  font-size: 1.02rem;
-  letter-spacing: 0.03em;
-}
-header nav a { color: var(--ink); }
+header { background: var(--card); border-bottom: 1px solid var(--edge); }
+header nav { max-width: 78rem; margin: 0 auto; padding: 0.6rem 0.75rem; color: var(--muted); font-size: 0.9rem; }
+header nav a { color: var(--ink); font-weight: 600; text-decoration: none; }
 header nav a:visited { color: var(--ink); }
-header nav a:first-child { font-size: 1.45rem; font-weight: bold; letter-spacing: 0; }
+header nav a:hover { text-decoration: underline; }
 
-/* The column: book measure, centred on the page. */
-main {
-  max-width: 36rem;
-  margin: 0 auto;
-  padding: 1.25rem 1rem 1rem;
-}
+main { max-width: 78rem; margin: 0 auto; padding: 1.25rem 0.75rem 1rem; }
 
-.stories { margin: 0; }
+.grid { display: grid; gap: 1rem; grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 36rem) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 60rem) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 84rem) { .grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 
-article[data-hn-story] {
-  padding: 0.95rem 0 1rem;
-  border-top: 1px solid var(--rule);
+.grid > article, main > article {
+  display: flex; flex-direction: column; min-width: 0;
+  background: var(--card); border: 1px solid var(--edge); border-top: 4px solid var(--accent); border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(20, 26, 38, 0.06), 0 6px 16px rgba(20, 26, 38, 0.08);
+  padding: 0.9rem 1rem 0.8rem;
 }
-.stories > article:first-child { border-top: 0; padding-top: 0.2rem; }
+main > article { margin-bottom: 1.25rem; }
+main > article h2 { font-size: 1.5rem; }
 
-h2 {
-  margin: 0;
-  font-size: 1.3rem;
-  line-height: 1.22;
-  font-weight: bold;
-  text-wrap: balance;
-}
-h2 a { color: var(--ink); }
-h2 a:visited { color: var(--visited); }
-h2 span[data-hn="domain"] {
-  font-size: 0.78em;
-  font-weight: normal;
-  font-style: italic;
-  color: var(--muted);
-}
+article h2 { margin: 0 0 0.5rem; font-size: 1.05rem; line-height: 1.3; font-weight: 700; }
+article h2 a { color: var(--ink); text-decoration: none; }
+article h2 a:visited { color: var(--ink); }
+article h2 a:hover { text-decoration: underline; }
 
-/* Running line: small caps under each headline. */
-.subline {
-  margin-top: 0.3rem;
-  font-variant: small-caps;
-  font-size: 0.98rem;
-  letter-spacing: 0.035em;
-  line-height: 1.55;
-  color: var(--muted);
-}
-.subline [data-hn="score"], .subline [data-hn="descendants"] { color: var(--ink); font-weight: bold; }
-.subline a { color: var(--ink); }
+.domain { align-self: flex-start; margin: 0 0 0.6rem; padding: 0.1rem 0.5rem; border-radius: 999px; background: var(--tag); color: var(--tag-ink); font-size: 0.78rem; }
 
-.more {
-  margin-top: 1.4rem;
-  padding-top: 0.6rem;
-  border-top: 1px solid var(--rule);
-  font-variant: small-caps;
-  font-size: 1.08rem;
-  letter-spacing: 0.04em;
-}
-.more a { font-weight: bold; }
+.subline { margin-top: auto; padding-top: 0.6rem; border-top: 1px dashed var(--edge); color: var(--muted); font-size: 0.82rem; }
+.subline a, .chead a { color: var(--muted); text-decoration: none; }
+.subline a:visited, .chead a:visited { color: var(--muted); }
+.subline a:hover, .chead a:hover { color: var(--link); text-decoration: underline; }
 
-/* Footer: colophon under a double rule. */
-footer {
-  max-width: 36rem;
-  margin: 2.5rem auto 0;
-  padding: 1rem 1rem 2rem;
-  border-top: 3px double var(--ink);
-  color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.55;
-  overflow-wrap: anywhere;
-}
-footer p { margin: 0 0 0.6rem; }
-footer a { color: var(--link); }
+.chead { color: var(--muted); font-size: 0.8rem; }
 
-/* Thread: the story as a full article, then the comments. */
-main > article[data-hn-story] {
-  padding: 0.25rem 0 1.2rem;
-  border-top: 0;
-  border-bottom: 1px solid var(--rule);
-}
-main > article[data-hn-story] h2 { font-size: 1.62rem; line-height: 1.16; }
-main > article[data-hn-story] .subline { margin-top: 0.45rem; }
-
-[data-hn="text"] { margin: 0.6rem 0 0; overflow-wrap: anywhere; }
-[data-hn="text"] p { margin: 0 0 0.75rem; }
-[data-hn="text"] p:last-child { margin-bottom: 0; }
-
-code, pre {
-  font-family: ui-monospace, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
-  font-size: 0.86em;
-  background: var(--code-bg);
-}
-code { padding: 0 0.2em; }
-pre {
-  margin: 0.5rem 0;
-  padding: 0.4rem 0.55rem;
-  max-width: 100%;
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
+[data-hn="text"] { margin-top: 0.5rem; overflow-wrap: anywhere; }
+[data-hn="text"] p { margin: 0.4rem 0; }
+[data-hn="text"] a { color: var(--link); text-decoration: underline; }
+code, pre { font-family: ui-monospace, Menlo, Consolas, "Liberation Mono", monospace; font-size: 0.85em; background: var(--bg); }
+code { padding: 0 0.2em; border-radius: 3px; }
+pre { margin: 0.4rem 0; padding: 0.4rem 0.5rem; max-width: 100%; white-space: pre-wrap; overflow-wrap: anywhere; border-radius: 6px; }
 pre code { padding: 0; background: none; }
 
-.comments { margin-top: 1.1rem; }
-div[data-hn-comment] { padding-top: 0.7rem; }
-div[data-hn-comment] + div[data-hn-comment] { border-top: 1px dotted var(--rule); }
-.chead {
-  font-variant: small-caps;
-  font-size: 0.92rem;
-  letter-spacing: 0.03em;
-  line-height: 1.5;
-  color: var(--muted);
+ol.comments, ol.kids { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.6rem; }
+ol.kids { margin-top: 0.6rem; margin-left: 0.6rem; padding-left: 0.6rem; border-left: 2px solid var(--edge); }
+ol.kids ol.kids ol.kids ol.kids { margin: 0.6rem 0 0; padding: 0; border-left: 0; }
+li[data-hn-comment] { min-width: 0; background: var(--card); border: 1px solid var(--edge); border-left: 4px solid var(--accent); border-radius: 8px; padding: 0.6rem 0.75rem; }
+ol.kids ol.kids ol.kids ol.kids li[data-hn-comment] { padding: 0.2rem 0 0; border: 0; border-radius: 0; background: none; }
+@media (min-width: 48rem) {
+  ol.kids { margin-left: 1rem; padding-left: 1rem; }
 }
-.chead a { color: var(--ink); }
 
-/* Replies step in from a margin rule; depth is capped so 375px still fits. */
-.kids {
-  margin: 0.45rem 0 0 0.7rem;
-  padding-left: 0.7rem;
-  border-left: 1px solid var(--rule);
-}
-.kids .kids .kids .kids { margin-left: 0; padding-left: 0; border-left: 0; }
+.more { margin-top: 1.25rem; text-align: center; }
+.more a { font-weight: 700; }
+
+footer { max-width: 78rem; margin: 0 auto; padding: 1rem 0.75rem 2rem; border-top: 1px solid var(--edge); color: var(--muted); font-size: 0.85rem; }
+footer a { color: var(--link); text-decoration: underline; }
+footer p { margin: 0 0 0.5rem; }
