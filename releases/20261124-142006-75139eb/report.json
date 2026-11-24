@@ -1,0 +1,38 @@
+{
+  "id": "20261124-142006-75139eb",
+  "runId": "20261124-135443",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 7.05,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 82,
+    "notes": "The front page delivers a clear vertical spine with dot nodes, ages in teal as the most prominent metadata, and titles branching off to the right, matching the brief closely. The thread page uses nested spines for comments with decreasing indentation, as requested. Weaknesses: the story items at 375px wrap heavily and the timestamp-to-title hierarchy is good, but the dot spine on the front page has no visible nesting depth cues beyond the thread view, and the title serif type is fairly dense for 30 stories. Overall a strong, distinct page shape with <time> ages required by the brief.",
+    "adherence": 88,
+    "novelty": 82,
+    "craft": 74
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 1,
+  "costUsd": 0.0962,
+  "previousRelease": "20261123-133055-b261aea",
+  "diffStat": "+197 -93",
+  "candidate": 8,
+  "brief": "timeline",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1795530006
+}

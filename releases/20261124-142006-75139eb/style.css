@@ -1,0 +1,165 @@
+:root {
+  --bg: #fbf8f1;
+  --ink: #1d1b18;
+  --muted: #5b5448;
+  --link: #7a2e0e;
+  --visited: #5e3b7a;
+  --accent: #0d5c63;
+  --spine: #b9ad98;
+  --code: #efe9dc;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.5 Charter, "Bitstream Charter", Georgia, "Times New Roman", serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  overflow-wrap: anywhere;
+}
+
+a { color: var(--link); }
+a:visited { color: var(--visited); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+header { border-bottom: 2px solid var(--spine); }
+header nav { max-width: 46rem; margin: 0 auto; padding: 0.6rem 1rem; font-size: 0.95rem; }
+header nav a { color: var(--ink); font-weight: 700; text-decoration: none; }
+header nav a:visited { color: var(--ink); }
+header nav a:hover { text-decoration: underline; }
+
+main { max-width: 46rem; margin: 0 auto; padding: 1.5rem 1rem 2rem; }
+
+ol.spine, ol.comments, ol.kids { list-style: none; margin: 0; }
+
+ol.spine {
+  --ind: 1.5rem;
+  padding: 0 0 0 var(--ind);
+  border-left: 2px solid var(--spine);
+}
+
+ol.spine > li, ol.comments > li, ol.kids > li { position: relative; }
+ol.spine > li { padding: 0 0 1.6rem; }
+
+ol.spine > li::before, ol.comments > li::before, ol.kids > li::before {
+  content: "";
+  position: absolute;
+  left: calc(-1 * var(--ind) - 7px);
+  top: 0.45rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+}
+
+.when { display: block; }
+
+time {
+  display: inline-block;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.titleline { overflow-wrap: anywhere; }
+
+a[data-hn="title"] {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+}
+a[data-hn="title"]:visited { color: var(--visited); }
+a[data-hn="title"]:hover { text-decoration: underline; }
+
+span[data-hn="domain"] { color: var(--muted); font-size: 0.85rem; }
+
+.subline, .chead {
+  color: var(--muted);
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+.subline a, .chead a { color: var(--muted); text-decoration: none; }
+.subline a:visited, .chead a:visited { color: var(--muted); }
+.subline a:hover, .chead a:hover { text-decoration: underline; }
+
+.more { padding: 0.25rem 0 0 1.5rem; font-weight: 700; }
+.more a { font-weight: 700; }
+
+article[data-hn-story] {
+  position: relative;
+  --ind: 1.25rem;
+  margin: 0 0 1rem;
+  padding: 0 0 1rem var(--ind);
+  border-left: 2px solid var(--spine);
+}
+article[data-hn-story]::before {
+  content: "";
+  position: absolute;
+  left: -7px;
+  top: 0.45rem;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+}
+article[data-hn-story] a[data-hn="title"] { font-size: 1.35rem; }
+article[data-hn-story] .subline { margin-top: 0.15rem; }
+
+[data-hn="text"] { margin: 0.5rem 0 0; overflow-wrap: anywhere; }
+[data-hn="text"] p { margin: 0.4rem 0; }
+[data-hn="text"] a { color: var(--link); text-decoration: underline; }
+[data-hn="text"] a:visited { color: var(--visited); }
+
+code, pre {
+  font: 14px/1.4 ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
+  background: var(--code);
+  color: var(--ink);
+}
+code { padding: 0 0.2em; overflow-wrap: anywhere; }
+pre {
+  margin: 0.4rem 0;
+  padding: 0.4rem 0.5rem;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+pre code { padding: 0; background: none; }
+
+ol.comments {
+  --ind: 1.25rem;
+  margin-top: 1rem;
+  padding: 0 0 0 var(--ind);
+  border-left: 2px solid var(--spine);
+}
+ol.kids {
+  --ind: 1rem;
+  padding: 0.6rem 0 0 var(--ind);
+  border-left: 2px solid var(--spine);
+}
+ol.comments:empty, ol.kids:empty { display: none; }
+ol.comments > li, ol.kids > li { padding: 0 0 0.9rem; }
+
+ol.kids ol.kids ol.kids ol.kids { --ind: 0; padding: 0; border-left: 0; }
+ol.kids ol.kids ol.kids ol.kids > li::before { display: none; }
+
+footer {
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 1rem;
+  border-top: 2px solid var(--spine);
+  color: var(--muted);
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+footer p { margin: 0 0 0.5rem; color: var(--ink); font-size: 1rem; }
