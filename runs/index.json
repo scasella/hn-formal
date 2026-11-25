@@ -1,5 +1,17 @@
 [
   {
+    "runId": "20261125-130905",
+    "startedAt": 1795612194,
+    "finishedAt": 1795614071,
+    "candidates": 16,
+    "passedTier1": 16,
+    "passedTier2": 0,
+    "released": null,
+    "costUsd": 2.6175,
+    "calls": 160,
+    "stopReason": "no-passer"
+  },
+  {
     "runId": "20261124-135443",
     "startedAt": 1795528531,
     "finishedAt": 1795530006,

@@ -1,0 +1,190 @@
+{
+  "runId": "20261125-130905",
+  "startedAt": 1795612194,
+  "finishedAt": 1795614071,
+  "candidates": 16,
+  "passedTier1": 16,
+  "passedTier2": 0,
+  "released": null,
+  "costUsd": 2.6175,
+  "calls": 160,
+  "stopReason": "no-passer",
+  "perCandidate": [
+    {
+      "n": 0,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":5.89,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50630594.html: Bad value “http://%5C*.localhost:%5C*” for attribute “href” on element “a”: Invalid host: Illegal character in domain: “\\” is not allowed. (line 5)"
+    },
+    {
+      "n": 1,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":6.37,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50630594.html: Bad value “http://%5C*.localhost:%5C*” for attribute “href” on element “a”: Invalid host: Illegal character in domain: “\\” is not allowed. (line 5)"
+    },
+    {
+      "n": 2,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":5.55,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50630594.html: Bad value “http://%5C*.localhost:%5C*” for attribute “href” on element “a”: Invalid host: Illegal character in domain: “\\” is not allowed. (line 5)"
+    },
+    {
+      "n": 3,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":7.72,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50630594.html: Bad value “http://%5C*.localhost:%5C*” for attribute “href” on element “a”: Invalid host: Illegal character in domain: “\\” is not allowed. (line 5)"
+    },
+    {
+      "n": 4,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":6.22,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50630594.html: Bad value “http://%5C*.localhost:%5C*” for attribute “href” on element “a”: Invalid host: Illegal character in domain: “\\” is not allowed. (line 5)"
+    },
+    {
+      "n": 5,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":5.71,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50630594.html: Bad value “http://%5C*.localhost:%5C*” for attribute “href” on element “a”: Invalid host: Illegal character in domain: “\\” is not allowed. (line 5)"
+    },
+    {
+      "n": 6,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":4.98,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50630594.html: Bad value “http://%5C*.localhost:%5C*” for attribute “href” on element “a”: Invalid host: Illegal character in domain: “\\” is not allowed. (line 5)"
+    },
+    {
+      "n": 7,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":5.63,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50630594.html: Bad value “http://%5C*.localhost:%5C*” for attribute “href” on element “a”: Invalid host: Illegal character in domain: “\\” is not allowed. (line 5)"
+    },
+    {
+      "n": 8,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":8.14,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50630594.html: Bad value “http://%5C*.localhost:%5C*” for attribute “href” on element “a”: Invalid host: Illegal character in domain: “\\” is not allowed. (line 5)"
+    },
+    {
+      "n": 9,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":8,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50630594.html: Bad value “http://%5C*.localhost:%5C*” for attribute “href” on element “a”: Invalid host: Illegal character in domain: “\\” is not allowed. (line 5)"
+    },
+    {
+      "n": 10,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":16.57,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50630594.html: Bad value “http://%5C*.localhost:%5C*” for attribute “href” on element “a”: Invalid host: Illegal character in domain: “\\” is not allowed. (line 5)"
+    },
+    {
+      "n": 11,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":11.22,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50630594.html: Bad value “http://%5C*.localhost:%5C*” for attribute “href” on element “a”: Invalid host: Illegal character in domain: “\\” is not allowed. (line 5)"
+    },
+    {
+      "n": 12,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":5.77,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50630594.html: Bad value “http://%5C*.localhost:%5C*” for attribute “href” on element “a”: Invalid host: Illegal character in domain: “\\” is not allowed. (line 5)"
+    },
+    {
+      "n": 13,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":7.59,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50630594.html: Bad value “http://%5C*.localhost:%5C*” for attribute “href” on element “a”: Invalid host: Illegal character in domain: “\\” is not allowed. (line 5)"
+    },
+    {
+      "n": 14,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":5.15,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50630594.html: Bad value “http://%5C*.localhost:%5C*” for attribute “href” on element “a”: Invalid host: Illegal character in domain: “\\” is not allowed. (line 5)"
+    },
+    {
+      "n": 15,
+      "rounds": 10,
+      "tier1": "ok",
+      "tier2": "fail:vnu",
+      "judge": null,
+      "novelty": null,
+      "briefOk": null,
+      "domChanged": null,
+      "lastError": "tier2 summary: {\"vnu\":1,\"axe\":0,\"contrastMin\":6.26,\"reflowWidth\":375,\"csp\":\"ok\"}\n[vnu] item/50630594.html: Bad value “http://%5C*.localhost:%5C*” for attribute “href” on element “a”: Invalid host: Illegal character in domain: “\\” is not allowed. (line 5)"
+    }
+  ]
+}
