@@ -1,0 +1,38 @@
+{
+  "id": "20261126-130928-223e83c",
+  "runId": "20261126-124924",
+  "specVersion": 3,
+  "tier1": {
+    "lakeBuild": "ok",
+    "axioms": [
+      "propext",
+      "Classical.choice",
+      "Quot.sound"
+    ],
+    "selftest": "ok"
+  },
+  "tier2": {
+    "vnu": 0,
+    "axe": 0,
+    "contrastMin": 9.4,
+    "reflowWidth": 375,
+    "csp": "ok"
+  },
+  "judge": {
+    "score": 71,
+    "notes": "The front page delivers the brutalist brief well: heavy black-bordered story blocks, raw system sans-serif, huge point numbers, and plain black metadata with underlined links. The brief's 'metadata in plain black' is partly undercut by the blue COMMENTS links, and the thick border rhythm is strong. Numbers are big but the 'huge' scale is only moderate on the 375px view, where stacked blocks read well but the nav wraps awkwardly. Thread page keeps nested indentation via thick left rules, though comment hierarchy is only lightly differentiated.",
+    "adherence": 82,
+    "novelty": 62,
+    "craft": 66
+  },
+  "model": "claude-haiku-5-5",
+  "repairRounds": 1,
+  "costUsd": 0.0879,
+  "previousRelease": "20261124-142006-75139eb",
+  "diffStat": "+201 -172",
+  "candidate": 9,
+  "brief": "brutalist",
+  "briefOk": true,
+  "domChanged": true,
+  "createdAt": 1795698568
+}

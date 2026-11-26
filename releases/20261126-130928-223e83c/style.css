@@ -1,0 +1,197 @@
+/* hn-formal v2: brutalist. Raw system type, heavy black rules, square corners, white paper. No url(), no @import, no text in content. */
+
+:root {
+  --ink: #000;
+  --paper: #fff;
+  --link: #0000ee;
+  --visited: #551a8b;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  font: 16px/1.4 system-ui, -apple-system, "Segoe UI", Helvetica, Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  overflow-wrap: anywhere;
+}
+
+body > * { max-width: 100%; }
+
+a {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+a:visited { color: var(--visited); }
+a:focus-visible { outline: 4px solid var(--ink); outline-offset: 2px; }
+
+/* Top bar: solid black, white links, all caps. */
+header { background: var(--ink); color: var(--paper); }
+header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.9rem;
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 0.6rem 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+header a, header a:visited { color: var(--paper); }
+header a:focus-visible { outline-color: var(--paper); }
+
+main {
+  max-width: 60rem;
+  margin: 0 auto;
+}
+
+/* Each story is a heavy bordered block; a black rule follows it. */
+article[data-hn-story] {
+  border: 4px solid var(--ink);
+  padding: 0.6rem 0.75rem 0.75rem;
+  min-width: 0;
+}
+
+hr {
+  display: block;
+  border: 0;
+  border-top: 6px solid var(--ink);
+  height: 0;
+  margin: 0;
+}
+
+.titleline {
+  font-size: 1.15rem;
+  line-height: 1.2;
+  font-weight: 900;
+}
+
+a[data-hn="title"] {
+  color: var(--ink);
+  text-decoration-thickness: 3px;
+}
+a[data-hn="title"]:visited { color: var(--ink); }
+
+[data-hn="domain"] {
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-left: 0.35rem;
+}
+
+.subline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.2rem 0.9rem;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* The score is the loudest thing on the line. */
+[data-hn="score"] {
+  font-size: 2.75rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+[data-hn="descendants"] {
+  font-size: 1.1rem;
+  font-weight: 900;
+}
+
+.more {
+  border: 4px solid var(--ink);
+  border-top-width: 0;
+  padding: 0.9rem 0.75rem;
+  font-size: 1.4rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+/* Thread page: story header block, then the comment tree. */
+article[data-hn-story] a[data-hn="title"] { font-size: 1.6rem; }
+
+[data-hn="text"] {
+  margin-top: 0.6rem;
+  font-size: 1rem;
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+[data-hn="text"] p { margin: 0.4rem 0; }
+
+code, pre {
+  font-family: ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 0.85rem;
+  background: #eee;
+  color: var(--ink);
+}
+code { padding: 0 0.2em; }
+pre {
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+  border: 2px solid var(--ink);
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+pre code { padding: 0; background: none; }
+
+.chead {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.chead a { color: var(--ink); }
+
+ol.comments, ol.kids {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+ol.comments {
+  margin-top: 0.5rem;
+  border-top: 6px solid var(--ink);
+}
+ol.comments > li {
+  padding: 0.6rem 0.25rem 0.5rem;
+  border-bottom: 3px solid var(--ink);
+}
+li[data-hn-comment] li[data-hn-comment] {
+  padding: 0.5rem 0 0;
+  border-bottom: 0;
+}
+
+/* Replies hang from a thick left rule. Depth capped so deep threads fit 375px. */
+ol.kids {
+  margin-top: 0.4rem;
+  padding-left: 0.7rem;
+  border-left: 4px solid var(--ink);
+}
+ol.kids ol.kids ol.kids ol.kids {
+  padding-left: 0;
+  border-left: 0;
+}
+ol.kids:empty { display: none; }
+
+footer {
+  margin-top: 0;
+  padding: 0.9rem 0.75rem 1.2rem;
+  border-top: 6px solid var(--ink);
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+footer p { margin: 0 0 0.5rem; }
