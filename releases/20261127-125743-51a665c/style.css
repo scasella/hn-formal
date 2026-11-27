@@ -1,0 +1,169 @@
+/* hn-formal v2: a vertical timeline. Styles the DOM in HnFormal/Render.lean. */
+
+:root {
+  --bg: #f6f8fa;
+  --text: #0f1d2a;
+  --muted: #4b5d6d;
+  --link: #0a4a80;
+  --visited: #53397a;
+  --time: #0b5136;
+  --spine: #8fb3d1;
+  --dot: #2b6cb0;
+  --rule: #d3dde6;
+  --code: #e6edf3;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0c141c;
+    --text: #dce8f2;
+    --muted: #9db0c0;
+    --link: #9fd0ff;
+    --visited: #d0b8f0;
+    --time: #f5cd7a;
+    --spine: #2f4f6a;
+    --dot: #6fb1ef;
+    --rule: #22364a;
+    --code: #17242f;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html {
+  background: var(--bg);
+  color: var(--text);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+
+body { margin: 0; min-height: 100vh; overflow-wrap: anywhere; }
+body > * { max-width: 100%; }
+
+a { color: var(--link); text-decoration: underline; text-underline-offset: 2px; }
+a:visited { color: var(--visited); }
+a:hover { text-decoration-thickness: 2px; }
+a:focus-visible { outline: 2px solid var(--dot); outline-offset: 2px; }
+
+header { border-bottom: 1px solid var(--rule); }
+header nav { max-width: 48rem; margin: 0 auto; padding: 0.6rem 0.75rem; font-size: 14px; }
+header nav a { font-weight: 700; }
+
+main { max-width: 48rem; margin: 0 auto; padding: 1.25rem 0.75rem 2rem; }
+
+/* The spine: each story is a node on a vertical line, its age on the node. */
+ol.timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 1.1rem;
+  border-left: 2px solid var(--spine);
+}
+ol.timeline > li { position: relative; padding: 0 0 1.4rem 1rem; }
+ol.timeline > li::before {
+  content: "";
+  position: absolute;
+  left: -1.55rem;
+  top: 0.4rem;
+  width: 0.85rem;
+  height: 0.85rem;
+  border-radius: 50%;
+  background: var(--dot);
+  box-shadow: 0 0 0 3px var(--bg);
+}
+
+time[data-hn="age"] {
+  color: var(--time);
+  font-weight: 700;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+.when time { display: block; font-size: 15px; }
+
+.titleline { font-size: 17px; line-height: 1.3; }
+a[data-hn="title"] { font-weight: 700; color: var(--text); }
+a[data-hn="title"]:visited { color: var(--visited); }
+
+.subline { font-size: 13px; color: var(--muted); }
+.subline a { color: var(--muted); }
+
+.more { padding: 0.75rem 0 0 1.1rem; font-weight: 700; }
+
+/* Thread page: the story is the root node, then the comment spine. */
+article[data-hn-story] {
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--rule);
+}
+article[data-hn-story] a[data-hn="title"] { font-size: 20px; }
+
+[data-hn="text"] { overflow-wrap: anywhere; margin: 0.5rem 0; font-size: 15px; }
+[data-hn="text"] p { margin: 0.4rem 0; }
+
+code, pre {
+  font-family: ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
+  font-size: 13px;
+  background: var(--code);
+}
+code { padding: 0 0.2em; border-radius: 3px; }
+pre {
+  margin: 0.4rem 0;
+  padding: 0.4rem 0.6rem;
+  max-width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+pre code { padding: 0; background: none; }
+
+ol.comments, ol.kids {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 0.9rem;
+  border-left: 2px solid var(--spine);
+}
+ol.comments { margin-top: 0.5rem; }
+ol.kids { margin-top: 0.4rem; }
+
+li[data-hn-comment] { position: relative; padding: 0 0 0.9rem; }
+li[data-hn-comment]::before {
+  content: "";
+  position: absolute;
+  left: -1.3rem;
+  top: 0.35rem;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: var(--dot);
+  box-shadow: 0 0 0 3px var(--bg);
+}
+
+.chead { font-size: 13px; color: var(--muted); }
+.chead a { color: var(--muted); }
+.chead time { font-size: 12px; }
+
+/* Depth cap: past six levels replies stop indenting so deep threads fit 375px. */
+ol.kids ol.kids ol.kids ol.kids ol.kids ol.kids { padding-left: 0; border-left: 0; }
+ol.kids ol.kids ol.kids ol.kids ol.kids ol.kids > li::before { display: none; }
+
+@media (min-width: 40rem) {
+  ol.timeline { margin-left: 9rem; }
+  ol.timeline > li > .when {
+    position: absolute;
+    top: 0.05rem;
+    right: calc(100% + 2.1rem);
+    width: 8rem;
+    text-align: right;
+  }
+  ol.timeline > li > .when time { font-size: 14px; }
+}
+
+footer {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 1rem 0.75rem 2rem;
+  border-top: 1px solid var(--rule);
+  font-size: 13px;
+  color: var(--muted);
+}
+footer p { margin: 0 0 0.5rem; }
+footer a { color: var(--link); }

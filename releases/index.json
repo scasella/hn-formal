@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261127-125743-51a665c",
+    "runId": "20261127-124219",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 6.39,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 78,
+      "notes": "The front page delivers a clear vertical spine with age-led nodes, and the thread page nests comment nodes on a spine as the brief asks. Ages are visually the most prominent metadata on the front page, though on the thread page the age sits beside the username rather than leading the node. The 375px version holds up with the spine and ages intact, and the thread nesting depth is visible, but the deep nesting narrows text columns quickly.",
+      "adherence": 85,
+      "novelty": 75,
+      "craft": 72
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 1,
+    "costUsd": 0.0924,
+    "previousRelease": "20261126-130928-223e83c",
+    "diffStat": "+182 -212",
+    "candidate": 5,
+    "brief": "timeline",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1795784263
+  },
+  {
     "id": "20261126-130928-223e83c",
     "runId": "20261126-124924",
     "specVersion": 3,
