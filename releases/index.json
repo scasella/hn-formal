@@ -1,5 +1,43 @@
 [
   {
+    "id": "20261128-121758-a2f7387",
+    "runId": "20261128-115757",
+    "specVersion": 3,
+    "tier1": {
+      "lakeBuild": "ok",
+      "axioms": [
+        "propext",
+        "Classical.choice",
+        "Quot.sound"
+      ],
+      "selftest": "ok"
+    },
+    "tier2": {
+      "vnu": 0,
+      "axe": 0,
+      "contrastMin": 7.77,
+      "reflowWidth": 375,
+      "csp": "ok"
+    },
+    "judge": {
+      "score": 83,
+      "notes": "The front page is a true spreadsheet: a real table with th headers (Score, Title, Domain, Author, Age, Comments), thin cell grid, monospace right-leaning figures, and only the lead row highlighted in pale yellow, which matches the brief closely. Numbers are not clearly right-aligned (score and comments sit left-aligned), and the 'comments' link text glued to the count reads cramped. At 375px the table keeps Score/Title/Domain but clips Author, Age and Comments off-screen, so the required columns are lost on mobile; the thread page keeps the table header but nests comments as prose, which is reasonable.",
+      "adherence": 88,
+      "novelty": 85,
+      "craft": 74
+    },
+    "model": "claude-haiku-5-5",
+    "repairRounds": 2,
+    "costUsd": 0.1225,
+    "previousRelease": "20261127-125743-51a665c",
+    "diffStat": "+216 -281",
+    "candidate": 15,
+    "brief": "spreadsheet",
+    "briefOk": true,
+    "domChanged": true,
+    "createdAt": 1795868278
+  },
+  {
     "id": "20261127-125743-51a665c",
     "runId": "20261127-124219",
     "specVersion": 3,
